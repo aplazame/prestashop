@@ -184,7 +184,7 @@ class Aplazame_Serializers
             $history[] = array(
                 "id"=>$Order->id_cart,
                 "amount"=>static::formatDecimals($this->_orderTotal($Order)),
-                "due"=> "",
+                "due"=> static::formatDecimals($this->_orderTotal($Order)),
                 "status"=>$status['name'],
                 "type"=>$Order->module,
                 "order_date"=>date(DATE_ISO8601, strtotime($Order->date_add)),
