@@ -8,6 +8,11 @@
 		</p>
 	</div>
 </div>
+<style>
+    #aplazame_payment_button a{
+        padding-left: 17px;
+    }
+</style>
 <script>
 var Aplazame_Button_Version = "{$aplazame_version}";
 var Aplazame_Button_Url = "{$aplazame_url}";
