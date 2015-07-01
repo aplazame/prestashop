@@ -311,32 +311,33 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         $result = $this->callToRest('GET', self::API_CHECKOUT_PATH . '?mid=' . $Order->id_cart, null, false);
         $result['response'] = json_decode($result['response'], true);
         if ($result['code'] == '200' && isset($result['response']['results'][0]['id'])) {
-            $result = $this->callToRest('POST', self::API_CHECKOUT_PATH . '/' . $result['response']['results'][0]['mid'].'/refund', array('amount'=>$price_refund), true);
-            if($result['code'] != '200'){
-                    $this->logError('Error: Cannot refund order #'.$Order->id.' - ID AP: '.$result['response']['results'][0]['id']);
+            $resultOrder = $this->callToRest('POST', self::API_CHECKOUT_PATH . '/' . $result['response']['results'][0]['mid'].'/refund', array('amount'=>$price_refund), true);
+            if($resultOrder['code'] != '200'){
+                    $this->logError('Error: Cannot refund order #'.$Order->id_cart.' - ID AP: '.$result['response']['results'][0]['id']);
             }
         }else{
-            $this->logError('Error: Cannot refund order #'.$Order->id.' not exists on Aplazame');
+            $this->logError('Error: Cannot refund order mid #'.$Order->id_cart.' not exists on Aplazame');
         }
     }
     public function hookActionProductCancel($params){
-        //We cannot do partial refund because the order detail is erased before. Other PrestaShop awesome non-sense feature :/
-        //We try to update all the order
-        $result = $this->callToRest('GET', self::API_CHECKOUT_PATH . '?mid=' . $params['order']->id_cart, null, false);
-        $result['response'] = json_decode($result['response'], true);
-        if ($result['code'] == '200' && isset($result['response']['results'][0]['id'])) {
-            $checkout_data = $this->getCheckoutSerializer(0, $params['order']->id_cart);
-            $order_data = array('order'=>$checkout_data['order']);
-            $order_data['order']['shipping'] = $checkout_data['shipping'];
-            $result = $this->callToRest('PUT', self::API_CHECKOUT_PATH . '/' . $result['response']['results'][0]['mid'], $order_data, true);
-            if($result['response']['success'] != 'true'){
-                    $this->logError('Error: Cannot update order #'.$params['order']->id.' - ID AP: '.$result['response']['results'][0]['id']);
+        if (!Tools::isSubmit('generateDiscount') && !Tools::isSubmit('generateCreditSlip') ){                      
+            $result = $this->callToRest('GET', self::API_CHECKOUT_PATH . '?mid=' . $params['order']->id_cart, null, false);
+            $result['response'] = json_decode($result['response'], true);
+            if ($result['code'] == '200' && isset($result['response']['results'][0]['id'])) {
+                $checkout_data = $this->getCheckoutSerializer($params['order']->id, false);
+                $order_data = array('order'=>$checkout_data['order']);
+                $order_data['order']['shipping'] = $checkout_data['shipping'];
+                $resultOrder = $this->callToRest('PUT', self::API_CHECKOUT_PATH . '/' . $result['response']['results'][0]['mid'], $order_data, true);
+                $resultOrder['response'] = json_decode($resultOrder['response'], true);
+                if($resultOrder['response']['success'] != 'true'){
+                    $this->logError('Error: Cannot update order mid #'.$params['order']->id_cart.' - ID AP: '.$result['response']['results'][0]['id'].' with_response: '.json_encode($resultOrder).' with data: '.json_encode($order_data));
+                }else{
+                    $this->logError('Success on update order mid #'.$params['order']->id_cart.' - ID AP: '.$result['response']['results'][0]['id'].' with data: '.json_encode($order_data));
+                }
+            }else{
+                $this->logError('Error: Cannot update order mid #'.$params['order']->id_cart.' not exists on Aplazame');
             }
-        }else{
-            $this->logError('Error: Cannot update order #'.$params['order']->id.' not exists on Aplazame');
-        }
-        
-        
+        } 
     }
     
     public function hookActionOrderStatusPostUpdate($params) {
@@ -352,10 +353,10 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                 $result = $this->callToRest('POST', self::API_CHECKOUT_PATH . '/' . $result['response']['results'][0]['mid'].'/cancel', null, false);
                 $result['response'] = json_decode($result['response'], true);
                 if($result['response']['success'] != 'true'){
-                    $this->logError('Error: Cannot cancel order #'.$id_order.' - ID AP: '.$result['response']['results'][0]['id']);
+                    $this->logError('Error: Cannot cancel order mid #'.$Order->id_cart.' - ID AP: '.$result['response']['results'][0]['id']);
                 }
             }else{
-                $this->logError('Error: Cannot cancel order #'.$id_order.' not exists on Aplazame');
+                $this->logError('Error: Cannot cancel order mid #'.$Order->id_cart.' not exists on Aplazame');
             }
         }
         
@@ -380,7 +381,8 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                         'annual_equivalent' => $result['response']['instalment_plan']['annual_equivalent'] / 100,
                         'total_interest_amount' => $result['response']['instalment_plan']['total_interest_amount'] / 100,
                         'total_to_pay' => ($result['response']['total_amount'] / 100) + ($result['response']['instalment_plan']['total_interest_amount'] / 100),
-                        'uuid' => $result['response']['id']
+                        'uuid' => $result['response']['id'],
+                        'mid' => $Order->id_cart
                     );
                     $dataAplazame['total_month'] = number_format((float) ($dataAplazame['total_to_pay'] / $dataAplazame['instalments']), 2, '.', '');
 
@@ -459,7 +461,10 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
     public function getCheckoutSerializer($id_order = 0, $id_cart = 0) {
         $serializer = new Aplazame_Serializers();
         $Order = new Order($id_order);
-        $Cart = new Cart($id_cart);
+        $Cart = false;
+        if($id_cart){
+            $Cart = new Cart($id_cart);
+        }
         return $serializer->getCheckout($Order, $Cart);
     }
     
@@ -568,7 +573,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
     }
 
     function logError($message) {
-        file_put_contents(dirname(__FILE__) . '/logs/exception_log', date(DATE_ISO8601) . ' ' . $message . '\n', FILE_APPEND);
+        file_put_contents(dirname(__FILE__) . '/logs/exception_log', PHP_EOL.date(DATE_ISO8601) . ' ' . $message . '\r\n', FILE_APPEND);
     }
     
     function validateController($id_order){

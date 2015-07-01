@@ -2,6 +2,9 @@
 
 class Aplazame_Serializers 
 {
+    var $to_refund = 0;
+    var $to_refund_tax = 0;
+        
     private static function formatDecimals($price)
     {
         return Aplazame::formatDecimals($price);
@@ -20,7 +23,7 @@ class Aplazame_Serializers
 
     private function _orderTotal(Order $order)
     {
-        return $order->getTotalPaid();
+        return $order->getTotalPaid() - $this->to_refund;
     }
 
     protected function _getAddr(Address $address)
@@ -99,10 +102,20 @@ class Aplazame_Serializers
 
     protected function getArticles(Order $order,$cart=false)
     {
+        $this->to_refund = 0;
+        $this->to_refund_tax = 0;
         if($cart){
             $products = $cart->getProducts();
         }else{
             $products = $order->getProducts();
+            foreach($products as $key => &$order_item){
+                $order_item['product_quantity'] -= $order_item['product_quantity_refunded'];
+                $this->to_refund += ($order_item['product_quantity_refunded'] * $order_item['unit_price_tax_incl']);
+                $this->to_refund_tax += ($order_item['product_quantity_refunded'] * $order_item['unit_price_tax_excl']);
+                if((int)$order_item['product_quantity'] <= 0 ){
+                    unset($products[$key]);
+                }
+            }
         }
 		
 		
@@ -121,6 +134,17 @@ class Aplazame_Serializers
                 $image_url = str_replace('http://', '', $link->getImageLink('product', $order_item['id_image']));
                 $name = $order_item['name'];
                 $sku = $order_item['id_product_attribute'];
+                $product_url = $link->getProductLink($productId);
+            }else{
+                $productId = $order_item['product_id'];
+                $Product = new Product($productId);
+                $discounts = $order_item['reduction_amount_tax_incl'];
+                $quantity = $order_item['product_quantity'];
+                $price = $order_item['unit_price_tax_incl'];
+                $description_short = strip_tags($order_item['description_short']);
+                $image_url = str_replace('http://', '', $link->getImageLink('product', $order_item['image']->id));
+                $name = $order_item['product_name'];
+                $sku = $order_item['product_attribute_id'];
                 $product_url = $link->getProductLink($productId);
             }
 
@@ -142,6 +166,7 @@ class Aplazame_Serializers
 
     protected function getRenderOrder(Order $order,$cart=false)
     {
+        $articles = $this->getArticles($order, $cart);
         if($cart){
             $id_order = $cart->id;
             $id_currency = $cart->id_currency;
@@ -152,7 +177,7 @@ class Aplazame_Serializers
             $id_order = $order->id_cart;
             $id_currency = $order->id_currency;
             $total_amount = $this->_orderTotal($order);
-            $tax_amount = $total_amount - $order->total_paid_tax_excl;
+            $tax_amount = $total_amount - ($order->total_paid_tax_excl - $this->to_refund_tax);
             $discounts = $order->total_discounts;
         }
         
@@ -161,7 +186,7 @@ class Aplazame_Serializers
         
         return array(
             "id"=>$id_order,
-            "articles"=>$this->getArticles($order, $cart),
+            "articles"=>$articles,
             "currency"=>$currency,
             "tax_amount"=>static::formatDecimals($tax_amount),
             "total_amount"=>static::formatDecimals($total_amount),

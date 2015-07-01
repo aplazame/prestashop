@@ -1,28 +1,4 @@
 <?php
-/**
-* 2007-2014 PrestaShop
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Academic Free License (AFL 3.0)
-* that is bundled with this package in the file LICENSE.txt.
-* It is also available through the world-wide-web at this URL:
-* http://opensource.org/licenses/afl-3.0.php
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to license@prestashop.com so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit or add to this file if you wish to upgrade PrestaShop to newer
-* versions in the future. If you wish to customize PrestaShop for your
-* needs please refer to http://www.prestashop.com for more information.
-*
-*  @author    PrestaShop SA <contact@prestashop.com>
-*  @copyright 2007-2014 PrestaShop SA
-*  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
-*  International Registered Trademark & Property of PrestaShop SA
-*/
 
 class AplazameRedirectModuleFrontController extends ModuleFrontController
 {
@@ -38,15 +14,34 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
 			return $this->displayError('An error occurred while trying to redirect the customer');
 		else
 		{
-			$this->context->smarty->assign(array(
-				'cart_id' => Context::getContext()->cart->id,
-				'secure_key' => Context::getContext()->customer->secure_key,
-                                'aplazame_order_json' => json_encode($this->module->getCheckoutSerializer(0,Context::getContext()->cart->id), 128),
-                                'aplazame_version' => ConfigurationCore::get('APLAZAME_API_VERSION', null),
-                                'aplazame_url' => Configuration::get('APLAZAME_API_URL', null),
-                                'aplazame_mode' => Configuration::get('APLAZAME_LIVE_MODE', null)?'false':'true',
-                        ));
-			return $this->setTemplate('redirect.tpl');
+                    //First solution to know if refreshed page: http://stackoverflow.com/a/6127748
+                    $refreshButtonPressed = isset($_SERVER['HTTP_CACHE_CONTROL']) && 
+                            $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0';
+                    
+                    $result = $this->module->callToRest('GET', '/orders?mid=' . Context::getContext()->cart->id, null, false);
+                    $result['response'] = json_decode($result['response'], true);
+                    if ($result['code'] == '200' && isset($result['response']['results'][0]['id']) && !$refreshButtonPressed) {
+                        //The cart exists on Aplazame, we try to send with another ID
+                        $oldCart = new Cart(Context::getContext()->cart->id);
+                        $data = $oldCart->duplicate();
+                        if($data['success']){
+                            $cart = $data['cart'];
+                            Context::getContext()->cart = $cart;
+                            CartRule::autoAddToCart(Context::getContext());
+                            Context::getContext()->cookie->id_cart = $cart->id;
+                        }else{
+                            $this->module->logError('Error: Cannot duplicate cart '.Context::getContext()->cart->id);
+                        }
+                    }
+                    $this->context->smarty->assign(array(
+                            'cart_id' => Context::getContext()->cart->id,
+                            'secure_key' => Context::getContext()->customer->secure_key,
+                            'aplazame_order_json' => json_encode($this->module->getCheckoutSerializer(0,Context::getContext()->cart->id), 128),
+                            'aplazame_version' => ConfigurationCore::get('APLAZAME_API_VERSION', null),
+                            'aplazame_url' => Configuration::get('APLAZAME_API_URL', null),
+                            'aplazame_mode' => Configuration::get('APLAZAME_LIVE_MODE', null)?'false':'true',
+                    ));
+                    return $this->setTemplate('redirect.tpl');
 		}
 	}
 

@@ -10,10 +10,12 @@
             <dd><span class="badge">{$aplazame_data.annual_equivalent} %</span></dd>
             <dt>{l s='Intereses' mod='aplazame'}</dt>
             <dd><span class="badge">{convertPrice price=$aplazame_data.total_interest_amount}</span></dd>
-			<dt>{l s='Total a pagar' mod='aplazame'}</dt>
+            <dt>{l s='Total a pagar' mod='aplazame'}</dt>
             <dd><span class="badge badge-success">{convertPrice price=$aplazame_data.total_to_pay}</span></dd>
-			<dt>{l s='Identificador Operación' mod='aplazame'}</dt>
+            <dt>{l s='Identificador Operación' mod='aplazame'}</dt>
             <dd>{$aplazame_data.uuid}</dd>
+            <dt>{l s='Identificador MID' mod='aplazame'}</dt>
+            <dd>{$aplazame_data.mid}</dd>
         </dl>
     </div>
 </div>
