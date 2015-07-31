@@ -207,7 +207,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                         'prefix' => '<i class="icon icon-key"></i>',
                         'name' => 'APLAZAME_SECRET_KEY',
                         'label' => $this->l('Secret API Key'),
-                        'desc' => $this->l('Enter the Aplazame Public Key'),
+                        'desc' => $this->l('Enter the Aplazame Secret Key'),
                     ),
                     array(
                         'col' => 4,
