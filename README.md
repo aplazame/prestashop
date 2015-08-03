@@ -30,5 +30,6 @@ Once the module is installed, we need to configure with our Aplazame credentials
 
 - **Secret API Key**: Here is the Secret Key provided by Aplazame. Be sure to write the correct key that is for Live or Sandbox. You cannot share this key with anyone!!!
 - **Public API Key**: Here is the Public Key provided by Aplazame. Be sure to write the correct key that is for Live or Sandbox. 
+- **Enable Cookies**: If you want to enable cookie tracking. Default Yes. 
 
 NOTE: Be sure that on all fields you don't keep any whitespace. Otherwise the module can generate unexpected results. 

@@ -13,10 +13,10 @@ class Aplazame_Serializers
     private static function _getMetadata()
     {
         return array(
-            "prestashop" => array(
+            "module" => array(
+                "name" => "aplazame:prestashop",
                 "version" => _PS_VERSION_
             ),
-            "client" => "aplazame:prestashop",
             "version" => Aplazame::_version
         );
     }

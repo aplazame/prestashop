@@ -9,7 +9,7 @@ class Aplazame extends PaymentModule {
 
     protected $config_form = false;
 
-    const _version = '1.0.0';
+    const _version = '1.0.1';
     const USER_AGENT = 'Aplazame/0.0.2';
     const API_CHECKOUT_PATH = '/orders';
 
@@ -59,7 +59,8 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         }
 
         Configuration::updateValue('APLAZAME_LIVE_MODE', false);
-
+        Configuration::updateValue('APLAZAME_ENABLE_COOKIES', true);
+        
         return parent::install() &&
                 $this->registerHook('payment') &&
                 $this->registerHook('paymentReturn') &&
@@ -217,6 +218,25 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                         'name' => 'APLAZAME_PUBLIC_KEY',
                         'label' => $this->l('Public API Key'),
                     ),
+                    array(
+                        'type' => (_PS_VERSION_ >= 1.6) ? 'switch' : 'radio',
+                        'label' => $this->l('Enable Cookies'),
+                        'name' => 'APLAZAME_ENABLE_COOKIES',
+                        'is_bool' => true,
+                        'desc' => $this->l('If you want to enable cookie tracking. Default Yes.'),
+                        'values' => array(
+                            array(
+                                'id' => 'active_on',
+                                'value' => true,
+                                'label' => $this->l('Enabled')
+                            ),
+                            array(
+                                'id' => 'active_off',
+                                'value' => false,
+                                'label' => $this->l('Disabled')
+                            )
+                        ),
+                    ),
                 ),
                 'submit' => array(
                     'title' => $this->l('Save'),
@@ -237,6 +257,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
             'APLAZAME_SECRET_KEY' => Configuration::get('APLAZAME_SECRET_KEY', null),
             'APLAZAME_PUBLIC_KEY' => Configuration::get('APLAZAME_PUBLIC_KEY', null),
             'APLAZAME_BUTTON_IMAGE' => Configuration::get('APLAZAME_BUTTON_IMAGE', null),
+            'APLAZAME_ENABLE_COOKIES' => Configuration::get('APLAZAME_ENABLE_COOKIES', null),
         );
     }
 
@@ -264,7 +285,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         $this->assignSmartyVars(array('module_dir'=> $this->_path));
 
         $this->assignSmartyVars(array(
-            'aplazame_enabled_cookies' => true,
+            'aplazame_enabled_cookies' => Configuration::get('APLAZAME_ENABLE_COOKIES', null),
             'aplazame_version' => ConfigurationCore::get('APLAZAME_API_VERSION', null),
             'aplazame_url' => Configuration::get('APLAZAME_API_URL', null),
             'aplazame_public_key' => Configuration::get('APLAZAME_PUBLIC_KEY', null),
@@ -410,7 +431,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
             return;
 
         $this->assignSmartyVars(array(
-            'aplazame_enabled_cookies' => true,
+            'aplazame_enabled_cookies' => Configuration::get('APLAZAME_ENABLE_COOKIES', null),
             'aplazame_version' => Configuration::get('APLAZAME_API_VERSION', null),
             'aplazame_url' => Configuration::get('APLAZAME_API_URL', null),
             'aplazame_public_key' => Configuration::get('APLAZAME_PUBLIC_KEY', null),
