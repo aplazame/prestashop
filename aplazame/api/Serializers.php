@@ -38,7 +38,7 @@ class Aplazame_Serializers
             "city" => $address->city,
             "state" => State::getNameById($address->id_state),
             "country" => CountryCore::getIsoById($address->id_country),
-            "zip" => $address->postcode);
+            "postcode" => $address->postcode);
     }
 
     protected function getCustomer(Customer $customer)
