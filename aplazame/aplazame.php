@@ -174,9 +174,9 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                         'col' => 4,
                         'type' => 'text',
                         'prefix' => '<i class="icon icon-link"></i>',
-                        'desc' => $this->l('Enter the Aplazame API URL'),
-                        'name' => 'APLAZAME_API_URL',
-                        'label' => $this->l('API URL'),
+                        'desc' => $this->l('Enter the Aplazame Host'),
+                        'name' => 'APLAZAME_HOST',
+                        'label' => $this->l('Host'),
                     ),
                     array(
                         'col' => 4,
@@ -251,7 +251,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
     protected function getConfigFormValues() {
         return array(
             'APLAZAME_LIVE_MODE' => Configuration::get('APLAZAME_LIVE_MODE', null),
-            'APLAZAME_API_URL' => Configuration::get('APLAZAME_API_URL', null),
+            'APLAZAME_HOST' => Configuration::get('APLAZAME_HOST', null),
             'APLAZAME_API_VERSION' => Configuration::get('APLAZAME_API_VERSION', null),
             'APLAZAME_BUTTON_ID' => Configuration::get('APLAZAME_BUTTON_ID', null),
             'APLAZAME_SECRET_KEY' => Configuration::get('APLAZAME_SECRET_KEY', null),
@@ -287,7 +287,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         $this->assignSmartyVars(array(
             'aplazame_enabled_cookies' => Configuration::get('APLAZAME_ENABLE_COOKIES', null),
             'aplazame_version' => ConfigurationCore::get('APLAZAME_API_VERSION', null),
-            'aplazame_url' => Configuration::get('APLAZAME_API_URL', null),
+            'aplazame_host' => Configuration::get('APLAZAME_HOST', null),
             'aplazame_public_key' => Configuration::get('APLAZAME_PUBLIC_KEY', null),
             'aplazame_button_id' => Configuration::get('APLAZAME_BUTTON_ID', null),
             'aplazame_mode' => Configuration::get('APLAZAME_LIVE_MODE', null) ? 'false' : 'true',
@@ -426,18 +426,18 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         return '';
     }
 
-    public function hookDisplayFooter() {
+    public function hookDisplayHeader() {
         if ($this->active == false)
             return;
 
         $this->assignSmartyVars(array(
             'aplazame_enabled_cookies' => Configuration::get('APLAZAME_ENABLE_COOKIES', null),
             'aplazame_version' => Configuration::get('APLAZAME_API_VERSION', null),
-            'aplazame_url' => Configuration::get('APLAZAME_API_URL', null),
+            'aplazame_host' => Configuration::get('APLAZAME_HOST', null),
             'aplazame_public_key' => Configuration::get('APLAZAME_PUBLIC_KEY', null),
             'aplazame_mode' => Configuration::get('APLAZAME_LIVE_MODE', null) ? 'false' : 'true',
         ));
-        return $this->display(__FILE__, 'views/templates/hook/footer.tpl');
+        return $this->display(__FILE__, 'views/templates/hook/header.tpl');
     }
 
     public function hookDisplayOrderConfirmation($params) {
@@ -496,7 +496,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
 
     public function callToRest($method, $url, $values, $to_json = true) {
 
-        $url = trim(Configuration::get('APLAZAME_API_URL', null), "/") . $url;
+        $url = trim(str_replace('://', '://api.', Configuration::get('APLAZAME_HOST', null)), "/") . $url;
 
         $headers = array();
         if (in_array($method, array(

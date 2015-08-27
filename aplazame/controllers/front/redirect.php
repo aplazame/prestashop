@@ -36,9 +36,10 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
                     $this->context->smarty->assign(array(
                             'cart_id' => Context::getContext()->cart->id,
                             'secure_key' => Context::getContext()->customer->secure_key,
+                            'aplazame_public_key' => Configuration::get('APLAZAME_PUBLIC_KEY', null),
                             'aplazame_order_json' => json_encode($this->module->getCheckoutSerializer(0,Context::getContext()->cart->id), 128),
                             'aplazame_version' => ConfigurationCore::get('APLAZAME_API_VERSION', null),
-                            'aplazame_url' => Configuration::get('APLAZAME_API_URL', null),
+                            'aplazame_host' => Configuration::get('APLAZAME_HOST', null),
                             'aplazame_mode' => Configuration::get('APLAZAME_LIVE_MODE', null)?'false':'true',
                     ));
                     return $this->setTemplate('redirect.tpl');

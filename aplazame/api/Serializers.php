@@ -252,14 +252,12 @@ class Aplazame_Serializers
         
         if(_PS_VERSION_ < 1.6){
             $merchant = array(
-            "public_api_key"=> Configuration::get('APLAZAME_PUBLIC_KEY', null),
             "confirmation_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'index.php?fc=module&module=aplazame&controller=validation',
             "cancel_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'index.php?fc=module&module=aplazame&controller=redirect&action=error',
             "checkout_url"=> _PS_BASE_URL_.__PS_BASE_URI__.'pedido-rapido',
             "success_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'index.php?fc=module&module=aplazame&controller=confirmation&cart_id='.$id_cart.'&secure_key='.$secure_key);
         }else{
             $merchant = array(
-            "public_api_key"=> Configuration::get('APLAZAME_PUBLIC_KEY', null),
             "confirmation_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'module/aplazame/validation',
             "cancel_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'module/aplazame/redirect?action=error',
             "checkout_url"=> _PS_BASE_URL_.__PS_BASE_URI__.'pedido-rapido',
