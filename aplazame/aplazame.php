@@ -71,7 +71,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                 $this->registerHook('actionPaymentConfirmation') &&
                 $this->registerHook('actionValidateOrder') &&
                 $this->registerHook('displayBeforePayment') &&
-                $this->registerHook('displayFooter') &&
+                $this->registerHook('displayHeader') &&
                 $this->registerHook('displayAdminOrder') &&
                 $this->registerHook('displayOrderConfirmation') &&
                 $this->registerHook('displayPayment') &&
