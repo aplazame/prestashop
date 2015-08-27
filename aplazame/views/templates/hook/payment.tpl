@@ -17,7 +17,7 @@
 
 <script>
 aplazame.button({
-  id: "{if $aplazame_button_id}{$aplazame_button_id}{else}aplazame_payment_button{/if}",
+  id: "{$aplazame_button_id}",
   amount: {$aplazame_cart_total},
   currency: "{$aplazame_currency_iso}"
 });
