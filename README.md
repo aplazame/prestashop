@@ -21,7 +21,7 @@ Once the module is installed, we need to configure with our Aplazame credentials
 [ ![Image](http://www.webimpacto.es/images/image_aplazame.jpg "Aplazame") ](https://aplazame.com "Aplazame")
 
 - **Live mode - Sandbox Mode**: If you choose "NO", you have your module running on SandBox Mode (No charges against cards). Otherwise will be Production Mode. Verify that the Public and Secret Keys corresponding to the environment for. If you have any question about your keys, contact with Aplazame Team.
-- **API URL**: Here you need to write the URL that is provided by Aplazame. Default value is: **https://api.aplazame.com**
+- **Host**: Here you need to write the URL that is provided by Aplazame. Default value is: **https://aplazame.com**
 - **API Version**: Here you need to write the VERSION that is provided by Aplazame. Default value is: **v1**
 - **Button**: This value is the DOM id for your payment method on the cart. Is needed to hide if Aplazame is not ready to place a order in the system. If you don't know what to write, write the following: **aplazame_payment_button**
 - **Button Image**: With this you can change the image that appear as payment method on you cart. Available at this moment:
