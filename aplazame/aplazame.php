@@ -357,7 +357,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                 $resultOrder['response'] = json_decode($resultOrder['response'], true);
                 if($resultOrder['response']['success'] != 'true'){
                     $this->logError('Error: Cannot update order mid #'.$params['order']->id_cart.' - ID AP: '.$result['response']['results'][0]['id'].' with_response: '.json_encode($resultOrder).' with data: '.json_encode($order_data));
-                }else{
+                } else {
                     $this->logError('Success on update order mid #'.$params['order']->id_cart.' - ID AP: '.$result['response']['results'][0]['id'].' with data: '.json_encode($order_data));
                 }
             }else{
@@ -517,7 +517,8 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         $version = Configuration::get('APLAZAME_API_VERSION', null);
 
         if ($version){
-            $version = explode(".", $version)[0];
+            $version = explode(".", $version);
+            $version = $version[0];
         }
 
         $headers[] = 'Accept: ' . 'application/vnd.aplazame.' .

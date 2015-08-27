@@ -35,4 +35,8 @@ Once the module is installed, we need to configure with our Aplazame credentials
 > NOTE: Be sure that on all fields you don't keep any whitespace. Otherwise the module can generate unexpected results. 
 
 ## Help
-For any support request please drop us an email at [soporte@aplazame.com](mailto:soporte@aplazame.com?subject=Help me).
+
+**Have a question about Aplazame?**
+
+Aplazame support team can help you get the answers you need about this plugin by email soporte@aplazame.com.
+
