@@ -63,6 +63,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         Configuration::updateValue('APLAZAME_HOST', 'https://aplazame.com');
         Configuration::updateValue('APLAZAME_API_VERSION', 'v1.2');
         Configuration::updateValue('APLAZAME_BUTTON_IMAGE', 'button1');
+        Configuration::updateValue('APLAZAME_BUTTON_ID', 'aplazame_payment_button');
 
         # modulos -> menu -> submenu -> posiciones de los modulos display Hedare -> trasladar modulo buscar aplazame
         return parent::install() &&
