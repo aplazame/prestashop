@@ -6,14 +6,6 @@
 <div>
   <h3>{l s='Redirect to aplazame' mod='aplazame'}:</h3>
 
-  <script
-    type="text/javascript"
-    src="{$aplazame_host}/static/aplazame.min.js"
-    data-aplazame="publicKey: {$aplazame_public_key}"
-    data-version="{$aplazame_version}"
-    data-sandbox="{$aplazame_mode}">
-  </script>
-
   <script>
     aplazame.checkout({$aplazame_order_json});
   </script>

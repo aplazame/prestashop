@@ -9,8 +9,8 @@ class Aplazame extends PaymentModule {
 
     protected $config_form = false;
 
-    const _version = '1.0.1';
-    const USER_AGENT = 'Aplazame/0.0.2';
+    const _version = '1.0.2';
+    const USER_AGENT = 'Aplazame/';
     const API_CHECKOUT_PATH = '/orders';
 
     public function __construct() {
@@ -60,7 +60,11 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
 
         Configuration::updateValue('APLAZAME_LIVE_MODE', false);
         Configuration::updateValue('APLAZAME_ENABLE_COOKIES', true);
-        
+        Configuration::updateValue('APLAZAME_HOST', 'https://aplazame.com');
+        Configuration::updateValue('APLAZAME_API_VERSION', 'v1.2');
+        Configuration::updateValue('APLAZAME_BUTTON_IMAGE', 'button1');
+
+        # modulos -> menu -> submenu -> posiciones de los modulos display Hedare -> trasladar modulo buscar aplazame
         return parent::install() &&
                 $this->registerHook('payment') &&
                 $this->registerHook('paymentReturn') &&
@@ -507,11 +511,16 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         $headers[] = 'Authorization: Bearer ' .
                 Configuration::get('APLAZAME_SECRET_KEY', null);
 
-        $headers[] = 'User-Agent: ' . self::USER_AGENT;
+        $headers[] = 'User-Agent: ' . self::USER_AGENT . self::_version;
 
-        $headers[] = 'Accept: ' . 'application/vnd.aplazame' .
-                (Configuration::get('APLAZAME_LIVE_MODE', null) ? '-' : '.sandbox-') .
-                Configuration::get('APLAZAME_API_VERSION', null) . '+json';
+        $version = Configuration::get('APLAZAME_API_VERSION', null);
+
+        if ($version){
+            $version = explode(".", $version)[0];
+        }
+
+        $headers[] = 'Accept: ' . 'application/vnd.aplazame.' .
+                (Configuration::get('APLAZAME_LIVE_MODE', null) ? '' : 'sandbox.') . $version . '+json';
 
         if (extension_loaded('curl') == false || $method == 'PUT') {
             if($to_json && $values){

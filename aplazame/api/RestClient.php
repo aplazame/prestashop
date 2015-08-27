@@ -27,7 +27,7 @@ class RestClient {
         curl_setopt($this->curl, CURLOPT_ENCODING, "" );
         curl_setopt($this->curl,CURLOPT_RETURNTRANSFER,true);
         curl_setopt($this->curl,CURLOPT_AUTOREFERER,true); // This make sure will follow redirects
-        if($followLocation){
+        if ($followLocation) {
             curl_setopt($this->curl,CURLOPT_FOLLOWLOCATION,true); // This too
         }
         curl_setopt($this->curl,CURLOPT_HEADER,true); // THis verbose option for extracting the headers
@@ -38,13 +38,13 @@ class RestClient {
       * @return RestClient
       */ 
      public function execute() {
-         if($this->method === "POST") {
+         if ($this->method === "POST") {
              curl_setopt($this->curl,CURLOPT_POST,true);
              curl_setopt($this->curl,CURLOPT_POSTFIELDS,$this->params);
-         } else if($this->method == "GET"){
+         } else if ($this->method == "GET") {
              curl_setopt($this->curl,CURLOPT_HTTPGET,true);
              $this->treatURL();
-         } else if($this->method === "PUT") {
+         } else if ($this->method === "PUT") {
              curl_setopt($this->curl,CURLOPT_PUT,true);
              $this->treatURL();
              $this->file = tmpFile();
@@ -55,25 +55,25 @@ class RestClient {
          } else {
              curl_setopt($this->curl,CURLOPT_CUSTOMREQUEST,$this->method);
          }
-         if($this->contentType != null) {
+         if ($this->contentType != null) {
              curl_setopt($this->curl,CURLOPT_HTTPHEADER,array("Content-Type: ".$this->contentType));
          }
-         if($this->httpHeaders != null){
+         if ($this->httpHeaders != null) {
              curl_setopt($this->curl,CURLOPT_HTTPHEADER,$this->httpHeaders);
          }
          curl_setopt($this->curl,CURLOPT_URL,$this->url);
          $r = curl_exec($this->curl);
          $this->originalResponse = $r;
          $this->treatResponse($r); // Extract the headers and response
-         return $this ;
+         return $this;
      }
 
      /**
       * Treats URL
       */
-     private function treatURL(){
-         if(is_array($this->params) && count($this->params) >= 1) { // Transform parameters in key/value pars in URL
-             if(!strpos($this->url,'?'))
+     private function treatURL() {
+         if (is_array($this->params) && count($this->params) >= 1) { // Transform parameters in key/value pars in URL
+             if (!strpos($this->url,'?'))
                  $this->url .= '?' ;
              foreach($this->params as $k=>$v) {
                  $this->url .= "&".urlencode($k)."=".urlencode($v);
@@ -86,7 +86,7 @@ class RestClient {
       * Treats the Response for extracting the Headers and Response
       */ 
      private function treatResponse($r) {
-        if($r == null or strlen($r) < 1) {
+        if ($r == null or strlen($r) < 1) {
             return;
         }
         $parts  = explode("\n\r",$r); // HTTP packets define that Headers end in a blank line (\n\r) where starts the body
@@ -104,7 +104,7 @@ class RestClient {
         $this->headers['message'] = $reg[2];
         $this->response = "";
         for($i=1;$i<count($parts);$i++) {//This make sure that exploded response get back togheter
-            if($i > 1) {
+            if ($i > 1) {
                 $this->response .= "\n\r";
             }
             $this->response .= $parts[$i];
@@ -173,7 +173,7 @@ class RestClient {
      public function close() {
          curl_close($this->curl);
          $this->curl = null ;
-         if($this->file !=null) {
+         if ($this->file !=null) {
              fclose($this->file);
          }
          return $this ;
@@ -216,7 +216,7 @@ class RestClient {
       * @return RestClient
       */
      public function setCredentials($user,$pass) {
-         if($user != null) {
+         if ($user != null) {
              curl_setopt($this->curl,CURLOPT_HTTPAUTH,CURLAUTH_BASIC);
              curl_setopt($this->curl,CURLOPT_USERPWD,"{$user}:{$pass}");
          }
@@ -254,7 +254,7 @@ class RestClient {
       */
      public static function createClient($url=null) {
          $client = new RestClient(false) ;
-         if($url != null) {
+         if ($url != null) {
              $client->setUrl($url);
          }
          return $client;

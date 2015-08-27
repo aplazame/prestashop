@@ -69,13 +69,13 @@ class Aplazame_Serializers
     protected function getShipping(Order $order,$cart = false)
     {
         
-        if($cart){
+        if ($cart) {
             $id_address_delivery = $cart->id_address_delivery;
             $carrier = new Carrier($cart->id_carrier);
             $carrierName = $carrier->name;
             $shippingCost = $cart->getOrderTotal(true,Cart::ONLY_SHIPPING);
             $shippingTaxAmount = $cart->getOrderTotal(false,Cart::ONLY_SHIPPING) - $cart->getOrderTotal(true,Cart::ONLY_SHIPPING);
-        }else{
+        } else {
             $id_address_delivery = $order->id_address_delivery;
             $carrier = $order->getShipping();
             $carrierName = $carrier['0']['carrier_name'];
@@ -83,7 +83,7 @@ class Aplazame_Serializers
             $shippingCost = $order->total_shipping_tax_incl;
         }
         
-        if(empty($carrierName)){
+        if (empty($carrierName)) {
             $carrierName = 'Unknowed';
         }
         $shipping = null;
@@ -104,27 +104,28 @@ class Aplazame_Serializers
     {
         $this->to_refund = 0;
         $this->to_refund_tax = 0;
-        if($cart){
+
+        if ($cart) {
             $products = $cart->getProducts();
-        }else{
+        } else {
             $products = $order->getProducts();
-            foreach($products as $key => &$order_item){
+            foreach($products as $key => &$order_item) {
                 $order_item['product_quantity'] -= $order_item['product_quantity_refunded'];
                 $this->to_refund += ($order_item['product_quantity_refunded'] * $order_item['unit_price_tax_incl']);
                 $this->to_refund_tax += ($order_item['product_quantity_refunded'] * $order_item['unit_price_tax_excl']);
-                if((int)$order_item['product_quantity'] <= 0 ){
+                if ((int)$order_item['product_quantity'] <= 0 ) {
                     unset($products[$key]);
                 }
             }
         }
-		
-		
+        
+        
         $articles = array();
         $link = new Link();
+
         foreach($products as $order_item)
         {
-            if($cart){
-                
+            if ($cart) {
                 $productId = $order_item['id_product'];
                 $Product = new Product($productId);
                 $discounts = $order_item['reduction_applies'];
@@ -135,7 +136,7 @@ class Aplazame_Serializers
                 $name = $order_item['name'];
                 $sku = $order_item['id_product_attribute'];
                 $product_url = $link->getProductLink($productId);
-            }else{
+            } else {
                 $productId = $order_item['product_id'];
                 $Product = new Product($productId);
                 $discounts = $order_item['reduction_amount_tax_incl'];
@@ -167,13 +168,14 @@ class Aplazame_Serializers
     protected function getRenderOrder(Order $order,$cart=false)
     {
         $articles = $this->getArticles($order, $cart);
-        if($cart){
+
+        if ($cart) {
             $id_order = $cart->id;
             $id_currency = $cart->id_currency;
             $total_amount = $cart->getOrderTotal(true);
             $tax_amount = $total_amount - $cart->getOrderTotal(false);
             $discounts = $cart->getOrderTotal(true, Cart::ONLY_DISCOUNTS);
-        }else{
+        } else {
             $id_order = $order->id_cart;
             $id_currency = $order->id_currency;
             $total_amount = $this->_orderTotal($order);
@@ -200,7 +202,8 @@ class Aplazame_Serializers
                 . ' ORDER BY id_order DESC LIMIT '.$limit);
 
         $history = array();
-        foreach($history_collection as $order_history){
+
+        foreach($history_collection as $order_history) {
             $Order = new Order($order_history['id_order']);
             $Currency = new Currency($Order->id_currency);
             $currency = $Currency->iso_code;
@@ -235,12 +238,12 @@ class Aplazame_Serializers
     public function getCheckout(Order $order,$cart = false)
     {
         
-        if($cart){
+        if ($cart) {
             $id_customer = $cart->id_customer;
             $id_billing_address = $cart->id_address_invoice;
             $id_cart = $cart->id;
             $secure_key = $cart->secure_key;
-        }else{
+        } else {
             $id_customer = $order->id_customer;
             $id_billing_address = $order->id_address_invoice;
             $id_cart = $order->id;
@@ -250,20 +253,19 @@ class Aplazame_Serializers
         $Customer = new Customer($id_customer);
         $BillingAddress = new Address($id_billing_address);
         
-        if(_PS_VERSION_ < 1.6){
+        if (_PS_VERSION_ < 1.6) {
             $merchant = array(
             "confirmation_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'index.php?fc=module&module=aplazame&controller=validation',
             "cancel_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'index.php?fc=module&module=aplazame&controller=redirect&action=error',
-            "checkout_url"=> _PS_BASE_URL_.__PS_BASE_URI__.'pedido-rapido',
+            "checkout_url"=> _PS_BASE_URL_.__PS_BASE_URI__.'index.php?controller=order-opc',
             "success_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'index.php?fc=module&module=aplazame&controller=confirmation&cart_id='.$id_cart.'&secure_key='.$secure_key);
-        }else{
+        } else {
             $merchant = array(
             "confirmation_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'module/aplazame/validation',
             "cancel_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'module/aplazame/redirect?action=error',
-            "checkout_url"=> _PS_BASE_URL_.__PS_BASE_URI__.'pedido-rapido',
+            "checkout_url"=> _PS_BASE_URL_.__PS_BASE_URI__.'index.php?controller=order-opc',
             "success_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'module/aplazame/confirmation?cart_id='.$id_cart.'&secure_key='.$secure_key);
         }
-        
 
         return array(
             "toc"=>True,

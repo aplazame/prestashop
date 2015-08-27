@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-xs-12 col-md-6">
+  <div class="col-xs-12 col-md-12">
     <p class="payment_module" id="aplazame_payment_button">
       <a href="{$link->getModuleLink('aplazame', 'redirect', array(), true)|escape:'htmlall':'UTF-8'}" title="{l s='Pay with my payment module' mod='aplazame'}">
         <img src="https://aplazame.com/static/img/buttons/{$aplazame_button_image|escape:'htmlall':'UTF-8'}.png" alt="{l s='Pay with my payment module' mod='aplazame'}" />
@@ -15,18 +15,10 @@
   }
 </style>
 
-<script
-  type="text/javascript"
-  src="{$aplazame_host}/static/aplazame.min.js"
-  data-aplazame="publicKey: {$aplazame_public_key}"
-  data-version="{$aplazame_version}"
-  data-sandbox="{$aplazame_mode}">
-</script>
-
 <script>
 aplazame.button({
-  id: "{$aplazame_button_id}",
-  amount: "{$aplazame_cart_total}",
+  id: "{if $aplazame_button_id}{$aplazame_button_id}{else}aplazame_payment_button{/if}",
+  amount: {$aplazame_cart_total},
   currency: "{$aplazame_currency_iso}"
 });
 </script>
