@@ -197,7 +197,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                         'prefix' => '<i class="icon icon-code"></i>',
                         'desc' => $this->l('Enter the Aplazame Button ID'),
                         'name' => 'APLAZAME_BUTTON_ID',
-                        'label' => $this->l('Button'),
+                        'label' => $this->l('Button ID'),
                     ),
                     array(
                         'col' => 4,
