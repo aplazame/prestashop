@@ -1,4 +1,4 @@
-[ ![Image](https://aplazame.com/static/img/banners/banner-728-white-restashop.png "Aplazame") ](https://aplazame.com "Aplazame")
+[ ![Image](https://aplazame.com/static/img/banners/banner-728-white-prestashop.png "Aplazame") ](https://aplazame.com "Aplazame")
 
 [![Build Status](http://drone.aplazame.com/api/badge/github.com/aplazame/prestashop/status.svg?branch=master)](http://drone.aplazame.com/github.com/aplazame/prestashop)
 
