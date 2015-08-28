@@ -43,7 +43,7 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
                     'aplazame_order_json' => json_encode($this->module->getCheckoutSerializer(0,Context::getContext()->cart->id), 128),
                     'aplazame_version' => ConfigurationCore::get('APLAZAME_API_VERSION', null),
                     'aplazame_host' => Configuration::get('APLAZAME_HOST', null),
-                    'aplazame_mode' => Configuration::get('APLAZAME_LIVE_MODE', null)?'false':'true',
+                    'aplazame_is_sandbox' => Configuration::get('APLAZAME_SANDBOX', null)?'true':'false',
             ));
             return $this->setTemplate('redirect.tpl');
         }

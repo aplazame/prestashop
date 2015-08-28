@@ -58,7 +58,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
             return false;
         }
 
-        Configuration::updateValue('APLAZAME_LIVE_MODE', false);
+        Configuration::updateValue('APLAZAME_SANDBOX', true);
         Configuration::updateValue('APLAZAME_ENABLE_COOKIES', true);
         Configuration::updateValue('APLAZAME_HOST', 'https://aplazame.com');
         Configuration::updateValue('APLAZAME_API_VERSION', 'v1.2');
@@ -84,7 +84,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
     }
 
     public function uninstall() {
-        Configuration::deleteByName('APLAZAME_LIVE_MODE');
+        Configuration::deleteByName('APLAZAME_SANDBOX');
 
 
         return parent::uninstall();
@@ -158,20 +158,20 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                 'input' => array(
                     array(
                         'type' => (_PS_VERSION_ >= 1.6) ? 'switch' : 'radio',
-                        'label' => $this->l('Live mode - Sandbox Mode'),
-                        'name' => 'APLAZAME_LIVE_MODE',
+                        'label' => $this->l('Sandbox'),
+                        'name' => 'APLAZAME_SANDBOX',
                         'is_bool' => true,
-                        'desc' => $this->l('Use this module in live mode (Off equals to Sandbox Mode)'),
+                        'desc' => $this->l('Determines if the module is on Sandbox mode'),
                         'values' => array(
                             array(
                                 'id' => 'active_on',
                                 'value' => true,
-                                'label' => $this->l('Enabled')
+                                'label' => $this->l('Yes')
                             ),
                             array(
                                 'id' => 'active_off',
                                 'value' => false,
-                                'label' => $this->l('Disabled')
+                                'label' => $this->l('No')
                             )
                         ),
                     ),
@@ -255,7 +255,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
      */
     protected function getConfigFormValues() {
         return array(
-            'APLAZAME_LIVE_MODE' => Configuration::get('APLAZAME_LIVE_MODE', null),
+            'APLAZAME_SANDBOX' => Configuration::get('APLAZAME_SANDBOX', null),
             'APLAZAME_HOST' => Configuration::get('APLAZAME_HOST', null),
             'APLAZAME_API_VERSION' => Configuration::get('APLAZAME_API_VERSION', null),
             'APLAZAME_BUTTON_ID' => Configuration::get('APLAZAME_BUTTON_ID', null),
@@ -295,7 +295,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
             'aplazame_host' => Configuration::get('APLAZAME_HOST', null),
             'aplazame_public_key' => Configuration::get('APLAZAME_PUBLIC_KEY', null),
             'aplazame_button_id' => Configuration::get('APLAZAME_BUTTON_ID', null),
-            'aplazame_mode' => Configuration::get('APLAZAME_LIVE_MODE', null) ? 'false' : 'true',
+            'aplazame_is_sandbox' => Configuration::get('APLAZAME_SANDBOX', null) ? 'true' : 'false',
             'aplazame_currency_iso' => $currency->iso_code,
             'aplazame_cart_total' => self::formatDecimals($params['cart']->getOrderTotal()),
             'aplazame_button_image' => Configuration::get('APLAZAME_BUTTON_IMAGE', null),
@@ -440,7 +440,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
             'aplazame_version' => Configuration::get('APLAZAME_API_VERSION', null),
             'aplazame_host' => Configuration::get('APLAZAME_HOST', null),
             'aplazame_public_key' => Configuration::get('APLAZAME_PUBLIC_KEY', null),
-            'aplazame_mode' => Configuration::get('APLAZAME_LIVE_MODE', null) ? 'false' : 'true',
+            'aplazame_is_sandbox' => Configuration::get('APLAZAME_SANDBOX', null) ? 'true' : 'false',
         ));
         return $this->display(__FILE__, 'views/templates/hook/header.tpl');
     }
@@ -522,7 +522,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         }
 
         $headers[] = 'Accept: ' . 'application/vnd.aplazame.' .
-                (Configuration::get('APLAZAME_LIVE_MODE', null) ? '' : 'sandbox.') . $version . '+json';
+                (Configuration::get('APLAZAME_SANDBOX', null) ? 'sandbox.' : '') . $version . '+json';
 
         if (extension_loaded('curl') == false || $method == 'PUT') {
             if($to_json && $values){
