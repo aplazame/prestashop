@@ -22,7 +22,7 @@ publish:
     access_key: $$S3_ACCESS_KEY
     secret_key: $$S3_SECRET_KEY
     source: latest.zip
-    target: /modules/prestahop/latest.zip
+    target: /modules/prestashop/latest.zip
     recursive: false
     when:
       branch: master
