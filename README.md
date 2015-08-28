@@ -4,10 +4,9 @@
 
 ### Install
 
-1. Download the latest release from [amazon S3](https://s3.eu-central-1.amazonaws.com/aplazame/modules/prestashop/latest.zip).
+1. Download the latest stable [here](https://s3.eu-central-1.amazonaws.com/aplazame/modules/prestashop/latest.zip).
 2. Go to the PrestaShop administration page, **Modules** > **Modules**.
-3. **Add new module** and point the latest release zip package
-4. Load the plugin
+3. **Add new module** using zip package.
 
 ### Configure 
 
@@ -44,7 +43,7 @@ It is easy to deploy Prestashop with [Ansible](http://www.ansible.com/home)!
 
 #### Release history
 
-For new features check [this](History.md).
+For new features check [this](HISTORY.md).
 
 
 #### Help
