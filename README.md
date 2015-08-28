@@ -4,19 +4,12 @@
 
 ### Install
 
-To install the plugin, copy folders from the repository and activate the plugin on the administration page:
+1. Download the latest release from [amazon S3](https://s3.eu-central-1.amazonaws.com/aplazame/modules/prestashop/latest.zip).
+2. Go to the PrestaShop administration page, **Modules** > **Modules**.
+3. **Add new module** and point the latest release zip package
+4. Load the plugin
 
-1. Download plugin from [the plugin repository](https://github.com/aplazame/prestashop/archive/master.zip).
-2. Unzip locally downloaded file
-3. **Create zip archive of aplazame directory**
-4. Go to the PrestaShop administration page.
-5. Go to **Modules** > **Modules**.
-6. **Add new module** and point archive contained plugin (created at point 3)
-7. Load the plugin
-
-### Configure
-
-Once the module is installed, we need to configure with our Aplazame credentials provided by Aplazame Team. 
+### Configure 
 
 ![config](docs/config.png)
 
