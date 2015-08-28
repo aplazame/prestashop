@@ -7,6 +7,7 @@
 * aplazame-js
 * user-agent version
 * confirmation info
+* ci strategy
 
 
 #### [1.0.1](https://github.com/aplazame/prestashop/tree/v1.0.1) (2015-08-03)
