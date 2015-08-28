@@ -1,5 +1,7 @@
 [ ![Image](https://aplazame.com/static/img/banners/banner-728-white.png "Aplazame") ](https://aplazame.com "Aplazame")
 
+[![Build Status](http://drone.aplazame.com/api/badge/github.com/aplazame/prestashop/status.svg?branch=master)](http://drone.aplazame.com/github.com/aplazame/prestashop)
+
 ### Install
 
 To install the plugin, copy folders from the repository and activate the plugin on the administration page:

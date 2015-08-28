@@ -1,0 +1,41 @@
+image: python
+
+branches:
+  - master
+
+script:
+  - chmod +x ./.drone/*.sh
+  - ./.drone/build.sh
+
+deploy:
+  bash:
+    script:
+      - ./.drone/deploy.sh
+    when:
+      branch: master
+
+publish:
+  s3:
+    acl: public-read
+    region: "us-east-1"
+    bucket: "aplazame.s3-website-us-east-1.amazonaws.com"
+    access_key: $$S3_ACCESS_KEY
+    secret_key: $$S3_SECRET_KEY
+    source: latest.zip
+    target: /modules/prestahop
+    recursive: false
+    when:
+      branch: master
+
+notify:
+  slack:
+    webhook_url: $$SLACK_WEBHOOK_URL
+    username: 'prestashop'
+    on_success: change
+    on_failure: true
+
+  email:
+    recipients:
+      - dev@aplazame.com
+    on_success: change
+    on_failure: true
