@@ -1,8 +1,6 @@
 [ ![Image](https://aplazame.com/static/img/banners/banner-728-white.png "Aplazame") ](https://aplazame.com "Aplazame")
 
-# Prestashop module
-
-## Installation
+### Install
 
 To install the plugin, copy folders from the repository and activate the plugin on the administration page:
 
@@ -14,7 +12,7 @@ To install the plugin, copy folders from the repository and activate the plugin 
 6. **Add new module** and point archive contained plugin (created at point 3)
 7. Load the plugin
 
-## Configuration
+### Configure
 
 Once the module is installed, we need to configure with our Aplazame credentials provided by Aplazame Team. 
 
@@ -34,9 +32,28 @@ Once the module is installed, we need to configure with our Aplazame credentials
 
 > NOTE: Be sure that on all fields you don't keep any whitespace. Otherwise the module can generate unexpected results. 
 
-## Help
+
+#### Live demo
+
+This is the online demo for uses to test Aplazame and its features. 
+
+[http://prestashop.aplazame.com](http://prestashop.aplazame.com)
+
+
+#### Install Prestashop
+
+It is easy to deploy Prestashop with [Ansible](http://www.ansible.com/home)!
+
+[https://github.com/aplazame/ansible-prestashop](https://github.com/aplazame/ansible-prestashop)
+
+
+#### Release history
+
+For new features check [this](History.md).
+
+
+#### Help
 
 **Have a question about Aplazame?**
 
-Aplazame support team can help you get the answers you need about this plugin by email soporte@aplazame.com.
-
+For any support request please drop us an email at email soporte@aplazame.com.
