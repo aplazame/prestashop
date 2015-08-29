@@ -1,6 +1,6 @@
 [ ![Image](https://aplazame.com/static/img/banners/banner-728-white-prestashop.png "Aplazame") ](https://aplazame.com "Aplazame")
 
-[![Package version](https://img.shields.io/packagist/v/aplazame/prestashop.svg)](http://drone.aplazame.com/github.com/aplazame/prestashop) [![Build Status](http://drone.aplazame.com/api/badge/github.com/aplazame/prestashop/status.svg?branch=master)](http://drone.aplazame.com/github.com/aplazame/prestashop)
+[![Package version](https://img.shields.io/packagist/v/aplazame/prestashop.svg)](https://packagist.org/packages/aplazame/prestashop) [![Build Status](http://drone.aplazame.com/api/badge/github.com/aplazame/prestashop/status.svg?branch=master)](http://drone.aplazame.com/github.com/aplazame/prestashop)
 
 ### Install
 
@@ -15,7 +15,7 @@
 - **Sandbox**: Determines if the module is on Sandbox mode.
 - **Host**: Aplazame host `https://aplazame.com`
 - **API Version**: The latest version is `v1.2`
-- **Button ID**: The DOM ID for your payment method on the cart. Is needed to hide if Aplazame is not ready to place a order. The default value is `aplazame_payment_button`
+- **Button ID**: The DOM ID for your payment method on the cart. The default value is `aplazame_payment_button`
 - **Button Image**: Select he image that appear as payment method on you cart. Available at this moment:
     - `button1`:  [ ![Image](https://aplazame.com/static/img/buttons/button1.png "Aplazame") ](https://aplazame.com "Aplazame")
 
