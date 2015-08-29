@@ -4,23 +4,23 @@
 
 ### Install
 
-1. Download the latest stable [here](https://s3.eu-central-1.amazonaws.com/aplazame/modules/prestashop/latest.zip).
-2. Go to the PrestaShop administration page, **Modules** > **Modules**.
-3. **Add new module** using zip package.
+1. Download the latest plugin from [here](https://s3.eu-central-1.amazonaws.com/aplazame/modules/prestashop/aplazame.latest.zip) to local directory as `aplazame.latest.zip`.
+2. Go to the PrestaShop administration page, and then go to **Modules** > **Modules**.
+3. **Add new module** and select the `aplazame.latest.zip` file from your computer.
 
-### Configure 
+### Configure
 
 ![config](docs/config.png)
 
 - **Sandbox**: Determines if the module is on Sandbox mode.
-- **Host**: Aplazame host **https://aplazame.com**
-- **API Version**: The latest version is: **v1.2**
-- **Button ID**: This value is the DOM id for your payment method on the cart. Is needed to hide if Aplazame is not ready to place a order in the system. The default value is **aplazame_payment_button**
-- **Button Image**: With this you can change the image that appear as payment method on you cart. Available at this moment:
-    - **button1**:  [ ![Image](https://aplazame.com/static/img/buttons/button1.png "Aplazame") ](https://aplazame.com "Aplazame")
+- **Host**: Aplazame host `https://aplazame.com`
+- **API Version**: The latest version is `v1.2`
+- **Button ID**: The DOM ID for your payment method on the cart. Is needed to hide if Aplazame is not ready to place a order. The default value is `aplazame_payment_button`
+- **Button Image**: Select he image that appear as payment method on you cart. Available at this moment:
+    - `button1`:  [ ![Image](https://aplazame.com/static/img/buttons/button1.png "Aplazame") ](https://aplazame.com "Aplazame")
 
-- **Secret API Key**: Here is the Secret Key provided by Aplazame. You cannot share this key with anyone!!!
-- **Public API Key**: Here is the Public Key provided by Aplazame. 
+- **Secret API Key**: The Secret Key provided by Aplazame. You cannot share this key with anyone!!!
+- **Public API Key**: The Public Key provided by Aplazame. 
 - **Enable Cookies**: If you want to enable cookie tracking for better interests. 
 
 > NOTE: Be sure that on all fields you don't keep any whitespace. Otherwise the module can generate unexpected results.
