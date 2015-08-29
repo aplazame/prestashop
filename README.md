@@ -1,10 +1,10 @@
 [ ![Image](https://aplazame.com/static/img/banners/banner-728-white-prestashop.png "Aplazame") ](https://aplazame.com "Aplazame")
 
-[![Build Status](http://drone.aplazame.com/api/badge/github.com/aplazame/prestashop/status.svg?branch=master)](http://drone.aplazame.com/github.com/aplazame/prestashop)
+[![Package version](https://img.shields.io/packagist/v/aplazame/prestashop.svg)](http://drone.aplazame.com/github.com/aplazame/prestashop) [![Build Status](http://drone.aplazame.com/api/badge/github.com/aplazame/prestashop/status.svg?branch=master)](http://drone.aplazame.com/github.com/aplazame/prestashop)
 
 ### Install
 
-1. Download the latest plugin from [here](https://s3.eu-central-1.amazonaws.com/aplazame/modules/prestashop/aplazame.latest.zip) to local directory as `aplazame.latest.zip`.
+1. **Download** the latest plugin from [here](https://s3.eu-central-1.amazonaws.com/aplazame/modules/prestashop/aplazame.latest.zip) to local directory as `aplazame.latest.zip`.
 2. Go to the PrestaShop administration page, and then go to **Modules** > **Modules**.
 3. **Add new module** and select the `aplazame.latest.zip` file from your computer.
 
