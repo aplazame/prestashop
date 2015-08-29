@@ -1,0 +1,28 @@
+{
+  "name": "aplazame/prestashop",
+  "description": "Aplazame Prestashop module",
+  "keywords": [
+    "aplazame",
+    "api",
+    "rest",
+    "prestashop",
+    "ecommerce",
+    "payment",
+    "checkout",
+    "credit"
+  ],
+  "homepage": "https://aplazame.com/",
+  "authors": [
+    {
+      "name": "Aplazame Developers",
+      "homepage": "https://aplazame.com/"
+    }
+  ],
+  "require": {
+    "php": ">=5.2"
+  },
+  "require-dev": {
+    "zendframework/zendframework1": "1.12.15",
+    "simpletest/simpletest": "1.1.*"
+  }
+}
