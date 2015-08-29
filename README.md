@@ -19,7 +19,7 @@
 - **Button Image**: Select he image that appear as payment method on you cart. Available at this moment:
     - `button1`:  [ ![Image](https://aplazame.com/static/img/buttons/button1.png "Aplazame") ](https://aplazame.com "Aplazame")
 
-- **Secret API Key**: The Secret Key provided by Aplazame. You cannot share this key with anyone!!!
+- **Secret API Key**: The Secret Key provided by Aplazame. You cannot share this key with anyone.
 - **Public API Key**: The Public Key provided by Aplazame. 
 - **Enable Cookies**: If you want to enable cookie tracking for better interests. 
 
