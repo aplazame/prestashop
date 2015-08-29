@@ -23,7 +23,7 @@
 - **Public API Key**: The Public Key provided by Aplazame. 
 - **Enable Cookies**: If you want to enable cookie tracking for better interests. 
 
-> NOTE: Be sure that on all fields you don't keep any whitespace. Otherwise the module can generate unexpected results.
+> Be sure that on all fields you don't keep any whitespace. Otherwise the module can generate unexpected results.
 
 #### Live demo
 
