@@ -13,11 +13,11 @@ class RestClient {
      private $headers = array();
      private $originalResponse = "";
 
-     private $method="GET";
-     private $params=null;
+     private $method = "GET";
+     private $params = null;
      private $contentType = null;
      private $httpHeaders = null;
-     private $file =null;
+     private $file = null;
 
      /**
       * Private Constructor, sets default options
