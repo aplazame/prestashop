@@ -1,4 +1,4 @@
-image: python
+image: bradrydzewski/php:5.5
 
 branches:
   - master

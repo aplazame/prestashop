@@ -1,8 +1,10 @@
+errors = $(shell find . -type f -name "*.php" -exec php -l "{}" \;| grep "Errors parsing ";)
+
 test:
 	@php ./test/Aplazame.php
 
 syntax.checker:
-	@find . -type f -name "*.php" -exec php -l "{}" \;
+	@if [ "$(errors)" ];then exit 2;fi
 
 zip:
 	@zip -r latest.zip aplazame
