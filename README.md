@@ -1,6 +1,6 @@
 [ ![Image](https://aplazame.com/static/img/banners/banner-728-white-prestashop.png "Aplazame") ](https://aplazame.com "Aplazame")
 
-[![Package version](https://img.shields.io/packagist/v/aplazame/prestashop.svg)](https://packagist.org/packages/aplazame/prestashop) [![Build Status](http://drone.aplazame.com/api/badge/github.com/aplazame/prestashop/status.svg?branch=master)](http://drone.aplazame.com/github.com/aplazame/prestashop)
+[![Package version](https://img.shields.io/packagist/v/aplazame/prestashop.svg)](https://packagist.org/packages/aplazame/prestashop) [![Build Status](http://drone.aplazame.com/api/badge/github.com/aplazame/prestashop/status.svg?branch=master)](http://drone.aplazame.com/github.com/aplazame/prestashop) [![Dependencies](https://www.versioneye.com/php/aplazame:prestashop/badge.svg)](https://www.versioneye.com/php/aplazame:prestashop) 
 
 ### Install
 
