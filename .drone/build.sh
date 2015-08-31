@@ -2,15 +2,21 @@
 
 set -e 
 
-# tests
+# Dependencies
+sudo apt-get update
+sudo apt-get install php5-cli
+
+# Tests and syntax checker
 # make test
+make syntax.checker
+
 
 case $DRONE_BRANCH in
     master)
-        # install zip package
+        # Install zip package
         sudo apt-get install zip
 
-        # create zip package
+        # Create zip package
         make zip
         ;;
 
