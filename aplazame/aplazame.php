@@ -80,6 +80,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                 $this->registerHook('displayAdminOrder') &&
                 $this->registerHook('displayOrderConfirmation') &&
                 $this->registerHook('displayPayment') &&
+                $this->registerHook('displayProductButtons') &&
                 $this->registerHook('displayPaymentReturn');
     }
 
@@ -449,6 +450,23 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         return $this->hookPaymentReturn($params);
     }
 
+    public function hookDisplayProductButtons($params) {
+        $product = $params['product'];
+        self::formatDecimals();
+    
+        $this->assignSmartyVars(array(
+            'data_type' => 'widget',
+            'data_skin' => 'select',
+            'product_price' => self::formatDecimals($product->getPrice(true, NULL, 2)),
+            'currency_iso' => 'EUR',
+            'country_iso' => 'ES',
+            'data_locale' => 'ES_cat',
+            'quantity_wanted' => 'quantity_wanted',
+            'minus_button' => '.product_quantity_down',
+            'plus_button' => '.product_quantity_up',
+        ));
+        return $this->display(__FILE__, 'views/templates/hook/product.tpl');
+    }
     public function hookDisplayPayment($params) {
         return $this->hookPayment($params);
     }

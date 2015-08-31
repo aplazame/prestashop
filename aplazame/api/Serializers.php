@@ -15,9 +15,9 @@ class Aplazame_Serializers
         return array(
             "module" => array(
                 "name" => "aplazame:prestashop",
-                "version" => _PS_VERSION_
+                "version" => Aplazame::_version
             ),
-            "version" => Aplazame::_version
+            "version" => _PS_VERSION_
         );
     }
 
@@ -37,7 +37,7 @@ class Aplazame_Serializers
             "address_addition" => $address->address2,
             "city" => $address->city,
             "state" => State::getNameById($address->id_state),
-            "country" => CountryCore::getIsoById($address->id_country),
+            "country" => Country::getIsoById($address->id_country),
             "postcode" => $address->postcode);
     }
 
@@ -130,7 +130,7 @@ class Aplazame_Serializers
                 $Product = new Product($productId);
                 $discounts = $order_item['reduction_applies'];
                 $quantity = $order_item['cart_quantity'];
-                $price = $order_item['price_wt'];
+                $price = $order_item['price'];
                 $description_short = strip_tags($order_item['description_short']);
                 $image_url = str_replace('http://', '', $link->getImageLink('product', $order_item['id_image']));
                 $name = $order_item['name'];
@@ -141,7 +141,7 @@ class Aplazame_Serializers
                 $Product = new Product($productId);
                 $discounts = $order_item['reduction_amount_tax_incl'];
                 $quantity = $order_item['product_quantity'];
-                $price = $order_item['unit_price_tax_incl'];
+                $price = $order_item['unit_price_tax_excl'];
                 $description_short = strip_tags($order_item['description_short']);
                 $image_url = str_replace('http://', '', $link->getImageLink('product', $order_item['image']->id));
                 $name = $order_item['product_name'];
