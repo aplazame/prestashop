@@ -15,7 +15,6 @@ class Aplazame extends PaymentModule {
 
     public function __construct() {
         $this->name = 'aplazame';
-		$this->a
         if(!isset($this->local_path) || empty($this->local_path)){
             $this->local_path = _PS_MODULE_DIR_.$this->name.'/';
         }
