@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e 
+set -e
 
 # Tests and syntax checker
 # make test
@@ -8,7 +8,7 @@ make syntax.checker
 
 
 case $DRONE_BRANCH in
-    master)
+    release)
         # Install zip package
         sudo apt-get install zip
 
