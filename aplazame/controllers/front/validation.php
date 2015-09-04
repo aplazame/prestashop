@@ -7,7 +7,7 @@ class AplazameValidationModuleFrontController extends ModuleFrontController {
         if ($this->module->active == false)
             die;
 
-        if ($this->module->validateController(Tools::getValue('order_id'))){
+        if ($this->module->validateController(Tools::getValue('checkout_token'))){
             exit('success');
         } else {
             throw new Exception('Error processing order. We cannot validate the order.', 500);

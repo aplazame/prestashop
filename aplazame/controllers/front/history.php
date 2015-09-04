@@ -25,7 +25,13 @@ class AplazameHistoryModuleFrontController extends ModuleFrontController
                 $this->apiResponse(array('error'=>'mid is not from an Aplazame order'));
             }
         } else {
-            $this->apiResponse(array('error'=>'no order exists with this mid'));
+            $Cart = new Cart (Tools::getValue('checkout_token'));
+            if(Validate::isLoadedObject($Cart) && isset($Cart->id_customer) && !empty($Cart->id_customer) && $Cart->id_customer){
+                $Customer = new Customer($Cart->id_customer);
+                $this->apiResponse($this->module->getCustomerHistory($Customer,$this->limit_orders));
+            }else{
+                $this->apiResponse(array('error'=>'mid not found'));
+            }
         }
     }
         

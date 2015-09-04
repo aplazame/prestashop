@@ -73,14 +73,14 @@ class Aplazame_Serializers
             $id_address_delivery = $cart->id_address_delivery;
             $carrier = new Carrier($cart->id_carrier);
             $carrierName = $carrier->name;
-            $shippingCost = $cart->getOrderTotal(true,Cart::ONLY_SHIPPING);
+            $shippingCost = $cart->getOrderTotal(false,Cart::ONLY_SHIPPING);
             $shippingTaxAmount = $cart->getOrderTotal(false,Cart::ONLY_SHIPPING) - $cart->getOrderTotal(true,Cart::ONLY_SHIPPING);
         } else {
             $id_address_delivery = $order->id_address_delivery;
             $carrier = $order->getShipping();
             $carrierName = $carrier['0']['carrier_name'];
             $shippingTaxAmount = $order->total_shipping_tax_incl - $order->total_shipping_tax_excl;
-            $shippingCost = $order->total_shipping_tax_incl;
+            $shippingCost = $order->total_shipping_tax_excl;
         }
         
         if (empty($carrierName)) {
@@ -190,7 +190,6 @@ class Aplazame_Serializers
             "id"=>$id_order,
             "articles"=>$articles,
             "currency"=>$currency,
-            "tax_amount"=>static::formatDecimals($tax_amount),
             "total_amount"=>static::formatDecimals($total_amount),
             "discount"=>static::formatDecimals($discounts));
     }
