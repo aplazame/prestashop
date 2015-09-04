@@ -1,7 +1,8 @@
-image: python
+image: bradrydzewski/php:5.5
 
 branches:
   - master
+  - release
 
 script:
   - chmod +x ./.drone/*.sh
@@ -11,8 +12,6 @@ deploy:
   bash:
     script:
       - ./.drone/deploy.sh
-    when:
-      branch: master
 
 publish:
   s3:
@@ -25,7 +24,7 @@ publish:
     target: /modules/prestashop/aplazame.latest.zip
     recursive: false
     when:
-      branch: master
+      branch: release
 
 notify:
   slack:

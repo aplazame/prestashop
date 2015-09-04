@@ -1,10 +1,6 @@
 #!/bin/bash
 
-set -e 
-
-# Dependencies
-sudo apt-get update
-sudo apt-get install php5-cli
+set -e
 
 # Tests and syntax checker
 # make test
@@ -12,7 +8,7 @@ make syntax.checker
 
 
 case $DRONE_BRANCH in
-    master)
+    release)
         # Install zip package
         sudo apt-get install zip
 
