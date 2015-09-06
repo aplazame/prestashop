@@ -4,8 +4,9 @@ class AplazameConfirmationModuleFrontController extends ModuleFrontController
 {
     public function postProcess()
     {
-        if ((Tools::isSubmit('cart_id') == false) || (Tools::isSubmit('secure_key') == false))
+        if ((Tools::isSubmit('cart_id') == false) || (Tools::isSubmit('secure_key') == false)) {
             return false;
+        }
 
         $cart_id = Tools::getValue('cart_id');
         $secure_key = Tools::getValue('secure_key');
@@ -21,22 +22,19 @@ class AplazameConfirmationModuleFrontController extends ModuleFrontController
 
         $order_id = Order::getOrderByCartId((int)$cart->id);
 
-        if ($order_id && ($secure_key == $customer->secure_key))
-        {
+        if ($order_id && ($secure_key == $customer->secure_key)) {
             $module_id = $this->module->id;
             Tools::redirect('index.php?controller=order-confirmation&id_cart='.$cart_id.'&id_module='.$module_id.'&id_order='.$order_id.'&key='.$secure_key);
-        }
-        else
-        {
+        } else {
             if ($order_id) {
                 $this->errors[] = $this->module->l('An error occured but don\'t worry. Your order has been placed before. Please contact the merchant to have more informations or visit "My Account" to see your order history');
-            } elseif($cart_id) {
+            } elseif ($cart_id) {
                 //We will try a last client side validation
                 $result = $this->module->callToRest('POST', Aplazame::API_CHECKOUT_PATH . '/' . $cart_id . '/authorize', null, false);
                 $result['response'] = json_decode($result['response'], true);
 
                 if ($result['code'] == '200') {
-                    if($this->module->validateController(Tools::getValue('cart_id'))){
+                    if ($this->module->validateController(Tools::getValue('cart_id'))) {
                         $order_id = Order::getOrderByCartId((int)$cart->id);
                         $module_id = $this->module->id;
                         Tools::redirect('index.php?controller=order-confirmation&id_cart='.$cart_id.'&id_module='.$module_id.'&id_order='.$order_id.'&key='.$secure_key);
@@ -47,7 +45,7 @@ class AplazameConfirmationModuleFrontController extends ModuleFrontController
             } else {
                 $this->errors[] = $this->module->l('An error occured. Please contact the merchant to have more information.');
             }
-    
+
             return $this->setTemplate('error.tpl');
         }
     }

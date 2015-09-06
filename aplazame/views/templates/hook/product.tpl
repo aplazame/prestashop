@@ -1,11 +1,6 @@
-<!--<div class="widget-data-aplazame" data-type="{$data_type}"
-    data-skin="{$data_skin}"
-    data-amount="{$product_price}"
-    data-currency="{$currency_iso}"
-    data-country="{$country_iso}"
-    data-locale="{$data_locale}">
-</div>-->
+<div data-aplazame-simulator="" data-amount="{$product_price}"> </div>
 <script type="text/javascript">
+    /*
     function changeAplazameWidgetPrice(quantity){
         finalPrice = productPrice.toFixed(2).replace('.','');
         finalPrice *= quantity;
@@ -28,5 +23,5 @@
     
     plus_button.onclick = function() {
         console.log(select_element.value);
-    };
+    };*/
 </script>

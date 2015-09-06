@@ -23,6 +23,7 @@
   },
   "require-dev": {
     "zendframework/zendframework1": "1.12.15",
-    "simpletest/simpletest": "1.1.*"
+    "simpletest/simpletest": "1.1.*",
+    "fabpot/php-cs-fixer": "^1.10"
   }
 }

@@ -10,14 +10,13 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
         /**
          * Oops, an error occured.
          */
-        if (Tools::getValue('action') == 'error')
+        if (Tools::getValue('action') == 'error') {
             return $this->displayError('An error occurred while trying to redirect the customer');
-        else
-        {
+        } else {
             //First solution to know if refreshed page: http://stackoverflow.com/a/6127748
-            $refreshButtonPressed = isset($_SERVER['HTTP_CACHE_CONTROL']) && 
+            $refreshButtonPressed = isset($_SERVER['HTTP_CACHE_CONTROL']) &&
                     $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0';
-            
+
             $result = $this->module->callToRest('GET', '/orders?mid=' . Context::getContext()->cart->id, null, false);
             $result['response'] = json_decode($result['response'], true);
 
@@ -26,12 +25,11 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
                 $oldCart = new Cart(Context::getContext()->cart->id);
                 $data = $oldCart->duplicate();
 
-                if($data['success']) {
+                if ($data['success']) {
                     $cart = $data['cart'];
                     Context::getContext()->cart = $cart;
                     CartRule::autoAddToCart(Context::getContext());
                     Context::getContext()->cookie->id_cart = $cart->id;
-
                 } else {
                     $this->module->logError('Error: Cannot duplicate cart '.Context::getContext()->cart->id);
                 }
@@ -40,7 +38,7 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
                     'cart_id' => Context::getContext()->cart->id,
                     'secure_key' => Context::getContext()->customer->secure_key,
                     'aplazame_public_key' => Configuration::get('APLAZAME_PUBLIC_KEY', null),
-                    'aplazame_order_json' => json_encode($this->module->getCheckoutSerializer(0,Context::getContext()->cart->id), 128),
+                    'aplazame_order_json' => json_encode($this->module->getCheckoutSerializer(0, Context::getContext()->cart->id), 128),
                     'aplazame_version' => ConfigurationCore::get('APLAZAME_API_VERSION', null),
                     'aplazame_host' => Configuration::get('APLAZAME_HOST', null),
                     'aplazame_is_sandbox' => Configuration::get('APLAZAME_SANDBOX', null)?'true':'false',
@@ -65,5 +63,4 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
 
         return $this->setTemplate('error.tpl');
     }
-
 }
