@@ -64,9 +64,8 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         Configuration::updateValue('APLAZAME_HOST', 'https://aplazame.com');
         Configuration::updateValue('APLAZAME_API_VERSION', 'v1.2');
         Configuration::updateValue('APLAZAME_BUTTON_IMAGE', 'white-148x46');
-        Configuration::updateValue('APLAZAME_BUTTON_ID', 'aplazame_payment_button');
+        Configuration::updateValue('APLAZAME_BUTTON', '#aplazame_payment_button');
 
-        # modulos -> menu -> submenu -> posiciones de los modulos display Hedare -> trasladar modulo buscar aplazame
         return parent::install() &&
                 $this->registerHook('payment') &&
                 $this->registerHook('paymentReturn') &&
@@ -185,7 +184,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                         'col' => 4,
                         'type' => 'text',
                         'prefix' => '<i class="icon icon-link"></i>',
-                        'desc' => $this->l('Enter the Aplazame Host'),
+                        'desc' => $this->l('Aplazame Host'),
                         'name' => 'APLAZAME_HOST',
                         'label' => $this->l('Host'),
                     ),
@@ -193,7 +192,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                         'col' => 4,
                         'type' => 'text',
                         'prefix' => '<i class="icon icon-external-link"></i>',
-                        'desc' => $this->l('Enter the Aplazame API Version'),
+                        'desc' => $this->l('Aplazame API Version'),
                         'name' => 'APLAZAME_API_VERSION',
                         'label' => $this->l('API Version'),
                     ),
@@ -201,15 +200,15 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                         'col' => 4,
                         'type' => 'text',
                         'prefix' => '<i class="icon icon-code"></i>',
-                        'desc' => $this->l('Enter the Aplazame Button ID'),
-                        'name' => 'APLAZAME_BUTTON_ID',
-                        'label' => $this->l('Button ID'),
+                        'desc' => $this->l('Aplazame Button CSS Selector'),
+                        'name' => 'APLAZAME_BUTTON',
+                        'label' => $this->l('Button'),
                     ),
                     array(
                         'col' => 4,
                         'type' => 'text',
                         'prefix' => '<i class="icon icon-code"></i>',
-                        'desc' => $this->l('Enter the Aplazame Button Image that you want to show'),
+                        'desc' => $this->l('Aplazame Button Image that you want to show'),
                         'name' => 'APLAZAME_BUTTON_IMAGE',
                         'label' => $this->l('Button Image'),
                     ),
@@ -219,13 +218,13 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                         'prefix' => '<i class="icon icon-key"></i>',
                         'name' => 'APLAZAME_SECRET_KEY',
                         'label' => $this->l('Secret API Key'),
-                        'desc' => $this->l('Enter the Aplazame Secret Key'),
+                        'desc' => $this->l('Aplazame Secret Key'),
                     ),
                     array(
                         'col' => 4,
                         'type' => 'text',
                         'prefix' => '<i class="icon icon-key"></i>',
-                        'desc' => $this->l('Enter the Aplazame Public Key'),
+                        'desc' => $this->l('Aplazame Public Key'),
                         'name' => 'APLAZAME_PUBLIC_KEY',
                         'label' => $this->l('Public API Key'),
                     ),
@@ -265,7 +264,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
             'APLAZAME_SANDBOX' => Configuration::get('APLAZAME_SANDBOX', null),
             'APLAZAME_HOST' => Configuration::get('APLAZAME_HOST', null),
             'APLAZAME_API_VERSION' => Configuration::get('APLAZAME_API_VERSION', null),
-            'APLAZAME_BUTTON_ID' => Configuration::get('APLAZAME_BUTTON_ID', null),
+            'APLAZAME_BUTTON' => Configuration::get('APLAZAME_BUTTON', null),
             'APLAZAME_SECRET_KEY' => Configuration::get('APLAZAME_SECRET_KEY', null),
             'APLAZAME_PUBLIC_KEY' => Configuration::get('APLAZAME_PUBLIC_KEY', null),
             'APLAZAME_BUTTON_IMAGE' => Configuration::get('APLAZAME_BUTTON_IMAGE', null),
@@ -305,7 +304,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
             'aplazame_version' => ConfigurationCore::get('APLAZAME_API_VERSION', null),
             'aplazame_host' => Configuration::get('APLAZAME_HOST', null),
             'aplazame_public_key' => Configuration::get('APLAZAME_PUBLIC_KEY', null),
-            'aplazame_button_id' => Configuration::get('APLAZAME_BUTTON_ID', null),
+            'aplazame_button' => Configuration::get('APLAZAME_BUTTON', null),
             'aplazame_is_sandbox' => Configuration::get('APLAZAME_SANDBOX', null) ? 'true' : 'false',
             'aplazame_currency_iso' => $currency->iso_code,
             'aplazame_cart_total' => self::formatDecimals($params['cart']->getOrderTotal()),
@@ -473,15 +472,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         self::formatDecimals();
 
         $this->assignSmartyVars(array(
-            'data_type' => 'widget',
-            'data_skin' => 'select',
-            'product_price' => self::formatDecimals($product->getPrice(true, null, 2)),
-            'currency_iso' => 'EUR',
-            'country_iso' => 'ES',
-            'data_locale' => 'ES_cat',
-            'quantity_wanted' => 'quantity_wanted',
-            'minus_button' => '.product_quantity_down',
-            'plus_button' => '.product_quantity_up',
+            'product_price' => self::formatDecimals($product->getPrice(true, null, 2))
         ));
         return $this->display(__FILE__, 'views/templates/hook/product.tpl');
     }

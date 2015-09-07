@@ -8,6 +8,11 @@
 2. Go to the PrestaShop administration page, and then go to **Modules** > **Modules**.
 3. **Add new module** and select the `aplazame.latest.zip` file from your computer.
 
+### Update
+
+1. **Install**
+2. **Reset** the module.
+
 ### Configure
 
 ![config](docs/config.png)
@@ -15,7 +20,7 @@
 * **Sandbox**: Determines if the module is on Sandbox mode.
 * **Host**: Aplazame host `https://aplazame.com`
 * **API Version**: The latest version is `v1.2`
-* **Button ID**: The DOM ID for your payment method on the cart. The default ID is `aplazame_payment_button`
+* **Button**: The CSS Selector for Aplazame payment. The default selector is `#aplazame_payment_button`
 * **Button Image**: [Select the image](http://docs.aplazame.com/#buttons) that appear as payment method on you cart. The default image is `white-148x46`.
 * **Secret API Key**: The Secret Key provided by Aplazame. You cannot share this key with anyone!!
 * **Public API Key**: The Public Key provided by Aplazame. 
