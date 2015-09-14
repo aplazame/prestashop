@@ -22,7 +22,7 @@ class aplazame extends PaymentModule
         }
         $this->tab = 'payments_gateways';
         $this->version = self::_version;
-        $this->author = 'WebImpacto';
+        $this->author = 'Aplazame';
         $this->need_instance = 0;
         $this->bootstrap = true;
 

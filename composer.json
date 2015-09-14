@@ -1,35 +1,43 @@
-{
-  "name": "aplazame/prestashop",
-  "description": "Aplazame Prestashop module",
-  "keywords": [
-    "aplazame",
-    "api",
-    "rest",
-    "prestashop",
-    "ecommerce",
-    "payment",
-    "checkout",
-    "credit",
-    "aplazar",
-    "financiar",
-    "financiera",
-    "financiación",
-    "pago aplazado",
-    "método de pago"
-  ],
-  "homepage": "https://aplazame.com/",
-  "authors": [
-    {
-      "name": "Aplazame Developers",
-      "homepage": "https://aplazame.com/"
-    }
-  ],
-  "require": {
-    "php": ">=5.2"
-  },
-  "require-dev": {
-    "zendframework/zendframework1": "1.12.15",
-    "simpletest/simpletest": "1.1.*",
-    "fabpot/php-cs-fixer": "^1.10"
-  }
+{  
+    "name": "aplazame/prestashop",
+    "description": "Aplazame Prestashop module",
+    "keywords": [  
+        "aplazame",
+        "api",
+        "rest",
+        "prestashop",
+        "ecommerce",
+        "payment",
+        "checkout",
+        "credit",
+        "aplazar",
+        "financiar",
+        "financiera",
+        "financiación",
+        "pago aplazado",
+        "método de pago"
+    ],
+    "homepage": "https://aplazame.com/",
+    "license": "GPL-3.0",
+    "authors": [
+        {  
+            "name": "Dani M.",
+            "email": "dmartin@webimpacto.es",
+            "homepage": "http://webimpacto.es"
+        },
+        {  
+            "name": "Dani M.",
+            "email": "dani@aplazame.com",
+            "homepage": "https://aplazame.com"
+        }
+    ],
+    "require": {  
+        "php": ">=5.2"
+    },
+    "require-dev": {  
+        "simpletest/simpletest": "1.1.*",
+        "fabpot/php-cs-fixer": "^1.10",
+        "smarty-gettext/smarty-gettext": "1.2.0"
+    },
+    "minimum-stability": "stable"
 }
