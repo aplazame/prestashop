@@ -6,6 +6,7 @@
 
 * License
 * composer.json
+* Fix Prestashop move JS
 * ?
 
 #### [v1.0.2](https://github.com/aplazame/prestashop/tree/v1.0.2) (2015-09-07)
