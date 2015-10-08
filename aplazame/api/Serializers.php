@@ -1,10 +1,10 @@
 <?php
 
-class Aplazame_Serializers 
+class Aplazame_Serializers
 {
-    var $to_refund = 0;
-    var $to_refund_tax = 0;
-        
+    public $to_refund = 0;
+    public $to_refund_tax = 0;
+
     private static function formatDecimals($price)
     {
         return Aplazame::formatDecimals($price);
@@ -43,7 +43,6 @@ class Aplazame_Serializers
 
     protected function getCustomer(Customer $customer)
     {
-        
         $customer_serializer = array("gender"=>0);
 
         if (Validate::isLoadedObject($customer)) {
@@ -66,15 +65,14 @@ class Aplazame_Serializers
         return $customer_serializer;
     }
 
-    protected function getShipping(Order $order,$cart = false)
+    protected function getShipping(Order $order, $cart=false)
     {
-        
         if ($cart) {
             $id_address_delivery = $cart->id_address_delivery;
             $carrier = new Carrier($cart->id_carrier);
             $carrierName = $carrier->name;
-            $shippingCost = $cart->getOrderTotal(false,Cart::ONLY_SHIPPING);
-            $shippingTaxAmount = $cart->getOrderTotal(false,Cart::ONLY_SHIPPING) - $cart->getOrderTotal(true,Cart::ONLY_SHIPPING);
+            $shippingCost = $cart->getOrderTotal(false, Cart::ONLY_SHIPPING);
+            $shippingTaxAmount = $cart->getOrderTotal(false, Cart::ONLY_SHIPPING) - $cart->getOrderTotal(true, Cart::ONLY_SHIPPING);
         } else {
             $id_address_delivery = $order->id_address_delivery;
             $carrier = $order->getShipping();
@@ -82,15 +80,14 @@ class Aplazame_Serializers
             $shippingTaxAmount = $order->total_shipping_tax_incl - $order->total_shipping_tax_excl;
             $shippingCost = $order->total_shipping_tax_excl;
         }
-        
+
         if (empty($carrierName)) {
             $carrierName = 'Unknowed';
         }
         $shipping = null;
         $shipping_address = new Address($id_address_delivery);
-        
-        if ($shipping_address)
-        {
+
+        if ($shipping_address) {
             $shipping = array_merge($this->_getAddr($shipping_address), array(
                 "price"=> static::formatDecimals($shippingCost),
                 "name"=> $carrierName
@@ -100,7 +97,7 @@ class Aplazame_Serializers
         return $shipping;
     }
 
-    protected function getArticles(Order $order,$cart=false)
+    protected function getArticles(Order $order, $cart=false)
     {
         $this->to_refund = 0;
         $this->to_refund_tax = 0;
@@ -109,22 +106,20 @@ class Aplazame_Serializers
             $products = $cart->getProducts();
         } else {
             $products = $order->getProducts();
-            foreach($products as $key => &$order_item) {
+            foreach ($products as $key => &$order_item) {
                 $order_item['product_quantity'] -= $order_item['product_quantity_refunded'];
                 $this->to_refund += ($order_item['product_quantity_refunded'] * $order_item['unit_price_tax_incl']);
                 $this->to_refund_tax += ($order_item['product_quantity_refunded'] * $order_item['unit_price_tax_excl']);
-                if ((int)$order_item['product_quantity'] <= 0 ) {
+                if ((int)$order_item['product_quantity'] <= 0) {
                     unset($products[$key]);
                 }
             }
         }
-        
-        
+
         $articles = array();
         $link = new Link();
 
-        foreach($products as $order_item)
-        {
+        foreach ($products as $order_item) {
             if ($cart) {
                 $productId = $order_item['id_product'];
                 $Product = new Product($productId);
@@ -161,11 +156,10 @@ class Aplazame_Serializers
                 "tax_rate" => static::formatDecimals($Product->getTaxesRate()),
                 "discount" => static::formatDecimals($discounts));
         }
-
         return $articles;
     }
 
-    protected function getRenderOrder(Order $order,$cart=false)
+    protected function getRenderOrder(Order $order, $cart=false)
     {
         $articles = $this->getArticles($order, $cart);
 
@@ -182,10 +176,10 @@ class Aplazame_Serializers
             $tax_amount = $total_amount - ($order->total_paid_tax_excl - $this->to_refund_tax);
             $discounts = $order->total_discounts;
         }
-        
+
         $Currency = new Currency($id_currency);
         $currency = $Currency->iso_code;
-        
+
         return array(
             "id"=>$id_order,
             "articles"=>$articles,
@@ -194,7 +188,7 @@ class Aplazame_Serializers
             "discount"=>static::formatDecimals($discounts));
     }
 
-    public function getHistory(Customer $customer,$limit)
+    public function getHistory(Customer $customer, $limit)
     {
         $history_collection = Db::getInstance()->executeS('SELECT * FROM '._DB_PREFIX_.'orders '
                 . ' WHERE id_customer = '.$customer->id.' '
@@ -202,7 +196,7 @@ class Aplazame_Serializers
 
         $history = array();
 
-        foreach($history_collection as $order_history) {
+        foreach ($history_collection as $order_history) {
             $Order = new Order($order_history['id_order']);
             $Currency = new Currency($Order->id_currency);
             $currency = $Currency->iso_code;
@@ -234,9 +228,8 @@ class Aplazame_Serializers
             "meta"=>static::_getMetadata());
     }*/
 
-    public function getCheckout(Order $order,$cart = false)
+    public function getCheckout(Order $order, $cart=false)
     {
-        
         if ($cart) {
             $id_customer = $cart->id_customer;
             $id_billing_address = $cart->id_address_invoice;
@@ -248,10 +241,10 @@ class Aplazame_Serializers
             $id_cart = $order->id;
             $secure_key = $order->secure_key;
         }
-        
+
         $Customer = new Customer($id_customer);
         $BillingAddress = new Address($id_billing_address);
-        
+
         if (_PS_VERSION_ < 1.6) {
             $merchant = array(
             "confirmation_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'index.php?fc=module&module=aplazame&controller=validation',
@@ -267,14 +260,12 @@ class Aplazame_Serializers
         }
 
         return array(
-            "toc"=>True,
+            "toc"=>true,
             "merchant"=>$merchant,
             "customer"=>$this->getCustomer($Customer),
-            "order"=>$this->getRenderOrder($order,$cart),
+            "order"=>$this->getRenderOrder($order, $cart),
             "billing"=>$this->_getAddr($BillingAddress),
-            "shipping"=>$this->getShipping($order,$cart),
+            "shipping"=>$this->getShipping($order, $cart),
             "meta"=>static::_getMetadata());
-
     }
 }
-

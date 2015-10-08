@@ -1,25 +1,26 @@
 <?php
 
-class AplazameValidationModuleFrontController extends ModuleFrontController {
-
-    public function postProcess() {
-
-        if ($this->module->active == false)
+class AplazameValidationModuleFrontController extends ModuleFrontController
+{
+    public function postProcess()
+    {
+        if ($this->module->active == false) {
             die;
+        }
 
-        if ($this->module->validateController(Tools::getValue('checkout_token'))){
+        if ($this->module->validateController(Tools::getValue('checkout_token'))) {
             exit('success');
         } else {
             throw new Exception('Error processing order. We cannot validate the order.', 500);
         }
     }
 
-    protected function isValidOrder($code) {
+    protected function isValidOrder($code)
+    {
         if ($code == '200') {
             return true;
         } else {
             return false;
         }
     }
-
 }

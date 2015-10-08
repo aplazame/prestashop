@@ -1,26 +1,28 @@
 <?php
-if (!defined('_PS_VERSION_'))
+if (!defined('_PS_VERSION_')) {
     exit;
+}
 
 include_once(_PS_MODULE_DIR_ . '/aplazame/api/Serializers.php');
 require_once(dirname(__FILE__) . '/api/RestClient.php');
 
-class Aplazame extends PaymentModule {
-
+class aplazame extends PaymentModule
+{
     protected $config_form = false;
 
     const _version = '1.0.3';
     const USER_AGENT = 'Aplazame/';
     const API_CHECKOUT_PATH = '/orders';
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->name = 'aplazame';
-        if(!isset($this->local_path) || empty($this->local_path)){
+        if (!isset($this->local_path) || empty($this->local_path)) {
             $this->local_path = _PS_MODULE_DIR_.$this->name.'/';
         }
         $this->tab = 'payments_gateways';
         $this->version = self::_version;
-        $this->author = 'WebImpacto';
+        $this->author = 'Aplazame';
         $this->need_instance = 0;
         $this->bootstrap = true;
 
@@ -40,12 +42,11 @@ class Aplazame extends PaymentModule {
 Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, cómoda y segura.';
         $this->additional_description = "";
         $this->img = $this->_path . '/img/logo.png';
-        $this->url = 'http://www.aplazame.com';
+        $this->url = 'https://aplazame.com';
     }
 
-    public function install() {
-
-
+    public function install()
+    {
         if (extension_loaded('curl') == false) {
             $this->_errors[] = $this->l('You have to enable the cURL extension on your server to install this module');
             return false;
@@ -63,9 +64,8 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         Configuration::updateValue('APLAZAME_HOST', 'https://aplazame.com');
         Configuration::updateValue('APLAZAME_API_VERSION', 'v1.2');
         Configuration::updateValue('APLAZAME_BUTTON_IMAGE', 'white-148x46');
-        Configuration::updateValue('APLAZAME_BUTTON_ID', 'aplazame_payment_button');
+        Configuration::updateValue('APLAZAME_BUTTON', '#aplazame_payment_button');
 
-        # modulos -> menu -> submenu -> posiciones de los modulos display Hedare -> trasladar modulo buscar aplazame
         return parent::install() &&
                 $this->registerHook('payment') &&
                 $this->registerHook('paymentReturn') &&
@@ -84,7 +84,8 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                 $this->registerHook('displayPaymentReturn');
     }
 
-    public function uninstall() {
+    public function uninstall()
+    {
         Configuration::deleteByName('APLAZAME_SANDBOX');
 
 
@@ -94,7 +95,8 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
     /**
      * Load the configuration form
      */
-    public function getContent() {
+    public function getContent()
+    {
         /**
          * If values have been submitted in the form, process.
          */
@@ -103,7 +105,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                     float: none
                 }
                 </style>';
-        
+
         if (((bool) Tools::isSubmit('submitAplazameModule')) == true) {
             $this->_postProcess();
         }
@@ -111,18 +113,19 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         $this->context->smarty->assign('module_dir', $this->_path);
 
         $output = $this->context->smarty->fetch($this->local_path . 'views/templates/admin/configure.tpl');
-        
+
         if (_PS_VERSION_ < 1.6) {
             $output .= $style15;
         }
-        
+
         return $output . $this->renderForm();
     }
 
     /**
      * Create the form that will be displayed in the configuration of your module.
      */
-    protected function renderForm() {
+    protected function renderForm()
+    {
         $helper = new HelperForm();
 
         $helper->show_toolbar = false;
@@ -149,7 +152,8 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
     /**
      * Create the structure of your form.
      */
-    protected function getConfigForm() {
+    protected function getConfigForm()
+    {
         return array(
             'form' => array(
                 'legend' => array(
@@ -180,7 +184,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                         'col' => 4,
                         'type' => 'text',
                         'prefix' => '<i class="icon icon-link"></i>',
-                        'desc' => $this->l('Enter the Aplazame Host'),
+                        'desc' => $this->l('Aplazame Host'),
                         'name' => 'APLAZAME_HOST',
                         'label' => $this->l('Host'),
                     ),
@@ -188,7 +192,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                         'col' => 4,
                         'type' => 'text',
                         'prefix' => '<i class="icon icon-external-link"></i>',
-                        'desc' => $this->l('Enter the Aplazame API Version'),
+                        'desc' => $this->l('Aplazame API Version'),
                         'name' => 'APLAZAME_API_VERSION',
                         'label' => $this->l('API Version'),
                     ),
@@ -196,15 +200,15 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                         'col' => 4,
                         'type' => 'text',
                         'prefix' => '<i class="icon icon-code"></i>',
-                        'desc' => $this->l('Enter the Aplazame Button ID'),
-                        'name' => 'APLAZAME_BUTTON_ID',
-                        'label' => $this->l('Button ID'),
+                        'desc' => $this->l('Aplazame Button CSS Selector'),
+                        'name' => 'APLAZAME_BUTTON',
+                        'label' => $this->l('Button'),
                     ),
                     array(
                         'col' => 4,
                         'type' => 'text',
                         'prefix' => '<i class="icon icon-code"></i>',
-                        'desc' => $this->l('Enter the Aplazame Button Image that you want to show'),
+                        'desc' => $this->l('Aplazame Button Image that you want to show'),
                         'name' => 'APLAZAME_BUTTON_IMAGE',
                         'label' => $this->l('Button Image'),
                     ),
@@ -214,13 +218,13 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                         'prefix' => '<i class="icon icon-key"></i>',
                         'name' => 'APLAZAME_SECRET_KEY',
                         'label' => $this->l('Secret API Key'),
-                        'desc' => $this->l('Enter the Aplazame Secret Key'),
+                        'desc' => $this->l('Aplazame Secret Key'),
                     ),
                     array(
                         'col' => 4,
                         'type' => 'text',
                         'prefix' => '<i class="icon icon-key"></i>',
-                        'desc' => $this->l('Enter the Aplazame Public Key'),
+                        'desc' => $this->l('Aplazame Public Key'),
                         'name' => 'APLAZAME_PUBLIC_KEY',
                         'label' => $this->l('Public API Key'),
                     ),
@@ -254,12 +258,13 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
     /**
      * Set values for the inputs.
      */
-    protected function getConfigFormValues() {
+    protected function getConfigFormValues()
+    {
         return array(
             'APLAZAME_SANDBOX' => Configuration::get('APLAZAME_SANDBOX', null),
             'APLAZAME_HOST' => Configuration::get('APLAZAME_HOST', null),
             'APLAZAME_API_VERSION' => Configuration::get('APLAZAME_API_VERSION', null),
-            'APLAZAME_BUTTON_ID' => Configuration::get('APLAZAME_BUTTON_ID', null),
+            'APLAZAME_BUTTON' => Configuration::get('APLAZAME_BUTTON', null),
             'APLAZAME_SECRET_KEY' => Configuration::get('APLAZAME_SECRET_KEY', null),
             'APLAZAME_PUBLIC_KEY' => Configuration::get('APLAZAME_PUBLIC_KEY', null),
             'APLAZAME_BUTTON_IMAGE' => Configuration::get('APLAZAME_BUTTON_IMAGE', null),
@@ -270,23 +275,27 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
     /**
      * Save form data.
      */
-    protected function _postProcess() {
+    protected function _postProcess()
+    {
         $form_values = $this->getConfigFormValues();
 
-        foreach (array_keys($form_values) as $key)
+        foreach (array_keys($form_values) as $key) {
             Configuration::updateValue($key, Tools::getValue($key));
+        }
     }
 
     /**
      * This method is used to render the payment button,
      * Take care if the button should be displayed or not.
      */
-    public function hookPayment($params) {
+    public function hookPayment($params)
+    {
         $currency_id = $params['cart']->id_currency;
         $currency = new Currency((int) $currency_id);
 
-        if (in_array($currency->iso_code, $this->limited_currencies) == false)
+        if (in_array($currency->iso_code, $this->limited_currencies) == false) {
             return false;
+        }
 
         $this->assignSmartyVars(array('module_dir'=> $this->_path));
 
@@ -295,7 +304,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
             'aplazame_version' => ConfigurationCore::get('APLAZAME_API_VERSION', null),
             'aplazame_host' => Configuration::get('APLAZAME_HOST', null),
             'aplazame_public_key' => Configuration::get('APLAZAME_PUBLIC_KEY', null),
-            'aplazame_button_id' => Configuration::get('APLAZAME_BUTTON_ID', null),
+            'aplazame_button' => Configuration::get('APLAZAME_BUTTON', null),
             'aplazame_is_sandbox' => Configuration::get('APLAZAME_SANDBOX', null) ? 'true' : 'false',
             'aplazame_currency_iso' => $currency->iso_code,
             'aplazame_cart_total' => self::formatDecimals($params['cart']->getOrderTotal()),
@@ -307,14 +316,17 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
     /**
      * This hook is used to display the order confirmation page.
      */
-    public function hookPaymentReturn($params) {
-        if ($this->active == false)
+    public function hookPaymentReturn($params)
+    {
+        if ($this->active == false) {
             return;
+        }
 
         $order = $params['objOrder'];
 
-        if ($order->getCurrentOrderState()->id != Configuration::get('PS_OS_ERROR'))
+        if ($order->getCurrentOrderState()->id != Configuration::get('PS_OS_ERROR')) {
             $this->assignSmartyVars(array('status'=> 'ok'));
+        }
 
 
 
@@ -329,25 +341,27 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         return $this->display(__FILE__, 'views/templates/hook/confirmation.tpl');
     }
 
-    public function hookActionOrderDetail() {
-        
+    public function hookActionOrderDetail()
+    {
     }
 
-    public function refundAmount($Order,$amount){
+    public function refundAmount($Order, $amount)
+    {
         $price_refund = $this->formatDecimals($amount);
         $result = $this->callToRest('GET', self::API_CHECKOUT_PATH . '?mid=' . $Order->id_cart, null, false);
         $result['response'] = json_decode($result['response'], true);
         if ($result['code'] == '200' && isset($result['response']['results'][0]['id'])) {
             $resultOrder = $this->callToRest('POST', self::API_CHECKOUT_PATH . '/' . $result['response']['results'][0]['mid'].'/refund', array('amount'=>$price_refund), true);
-            if($resultOrder['code'] != '200'){
-                    $this->logError('Error: Cannot refund order #'.$Order->id_cart.' - ID AP: '.$result['response']['results'][0]['id']);
+            if ($resultOrder['code'] != '200') {
+                $this->logError('Error: Cannot refund order #'.$Order->id_cart.' - ID AP: '.$result['response']['results'][0]['id']);
             }
-        }else{
+        } else {
             $this->logError('Error: Cannot refund order mid #'.$Order->id_cart.' not exists on Aplazame');
         }
     }
-    public function hookActionProductCancel($params){
-        if (!Tools::isSubmit('generateDiscount') && !Tools::isSubmit('generateCreditSlip') ){                      
+    public function hookActionProductCancel($params)
+    {
+        if (!Tools::isSubmit('generateDiscount') && !Tools::isSubmit('generateCreditSlip')) {
             $result = $this->callToRest('GET', self::API_CHECKOUT_PATH . '?mid=' . $params['order']->id_cart, null, false);
             $result['response'] = json_decode($result['response'], true);
             if ($result['code'] == '200' && isset($result['response']['results'][0]['id'])) {
@@ -356,37 +370,36 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                 $order_data['order']['shipping'] = $checkout_data['shipping'];
                 $resultOrder = $this->callToRest('PUT', self::API_CHECKOUT_PATH . '/' . $result['response']['results'][0]['mid'], $order_data, true);
                 $resultOrder['response'] = json_decode($resultOrder['response'], true);
-                if($resultOrder['response']['success'] != 'true'){
+                if ($resultOrder['response']['success'] != 'true') {
                     $this->logError('Error: Cannot update order mid #'.$params['order']->id_cart.' - ID AP: '.$result['response']['results'][0]['id'].' with_response: '.json_encode($resultOrder).' with data: '.json_encode($order_data));
                 } else {
                     $this->logError('Success on update order mid #'.$params['order']->id_cart.' - ID AP: '.$result['response']['results'][0]['id'].' with data: '.json_encode($order_data));
                 }
-            }else{
+            } else {
                 $this->logError('Error: Cannot update order mid #'.$params['order']->id_cart.' not exists on Aplazame');
             }
-        } 
+        }
     }
-    
-    public function hookActionOrderStatusPostUpdate($params) {
+
+    public function hookActionOrderStatusPostUpdate($params)
+    {
         $id_order = $params['id_order'];
         $statusObject = $params['newOrderStatus'];
         $Order = new Order($id_order);
-        
-        if ($statusObject->id == _PS_OS_CANCELED_)
-        {
+
+        if ($statusObject->id == _PS_OS_CANCELED_) {
             $result = $this->callToRest('GET', self::API_CHECKOUT_PATH . '?mid=' . $Order->id_cart, null, false);
             $result['response'] = json_decode($result['response'], true);
             if ($result['code'] == '200' && isset($result['response']['results'][0]['id'])) {
                 $result = $this->callToRest('POST', self::API_CHECKOUT_PATH . '/' . $result['response']['results'][0]['mid'].'/cancel', null, false);
                 $result['response'] = json_decode($result['response'], true);
-                if($result['response']['success'] != 'true'){
+                if ($result['response']['success'] != 'true') {
                     $this->logError('Error: Cannot cancel order mid #'.$Order->id_cart.' - ID AP: '.$result['response']['results'][0]['id']);
                 }
-            }else{
+            } else {
                 $this->logError('Error: Cannot cancel order mid #'.$Order->id_cart.' not exists on Aplazame');
             }
         }
-        
     }
 
     public function hookDisplayAdminOrder($params) {
@@ -396,14 +409,13 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         $Order = new Order($id_order);
 
         if ($Order->module == $this->name) {
-
             $result = $this->callToRest('GET', self::API_CHECKOUT_PATH . '?mid=' . $Order->id_cart, null, false);
             $result['response'] = json_decode($result['response'], true);
             if ($result['code'] == '200' && isset($result['response']['results'][0]['id'])) {
                 $result = $this->callToRest('GET', self::API_CHECKOUT_PATH . '/' . $result['response']['results'][0]['id'], null, false);
                 $result['response'] = json_decode($result['response'], true);
-                
-                if($result['code'] == '200'){
+
+                if ($result['code'] == '200') {
                     $dataAplazame = array(
                         'instalments' => $result['response']['instalment_plan']['num_instalments'],
                         'annual_equivalent' => $result['response']['instalment_plan']['annual_equivalent'] / 100,
@@ -422,20 +434,22 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                     ));
 
                     return $this->display(__FILE__, 'views/templates/admin/order_16.tpl');
-                }else{
-                    $this->logError('Error: @2 #'.$id_order.' not exists on Aplazame #'.$result['code'] .'# '.var_export($result['response'],true));
-                    return '<div class="error_aplazame" code="'.$result['code'] .'" style="display:none">'.var_export($result['response'],true).'</div>';
+                } else {
+                    $this->logError('Error: @2 #'.$id_order.' not exists on Aplazame #'.$result['code'] .'# '.var_export($result['response'], true));
+                    return '<div class="error_aplazame" code="'.$result['code'] .'" style="display:none">'.var_export($result['response'], true).'</div>';
                 }
-            }else{
-                $this->logError('Error: @1  #'.$id_order.' not exists on Aplazame #'.$result['code'] .'# '.var_export($result['response'],true));
+            } else {
+                $this->logError('Error: @1  #'.$id_order.' not exists on Aplazame #'.$result['code'] .'# '.var_export($result['response'], true));
             }
         }
         return '';
     }
 
-    public function hookDisplayHeader() {
-        if ($this->active == false)
+    public function hookDisplayHeader()
+    {
+        if ($this->active == false) {
             return;
+        }
 
         $this->assignSmartyVars(array(
             'aplazame_enabled_cookies' => Configuration::get('APLAZAME_ENABLE_COOKIES', null),
@@ -447,38 +461,35 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         return $this->display(__FILE__, 'views/templates/hook/header.tpl');
     }
 
-    public function hookDisplayOrderConfirmation($params) {
+    public function hookDisplayOrderConfirmation($params)
+    {
         return $this->hookPaymentReturn($params);
     }
 
-    public function hookDisplayProductButtons($params) {
+    public function hookDisplayProductButtons($params)
+    {
         $product = $params['product'];
         self::formatDecimals();
-    
+
         $this->assignSmartyVars(array(
-            'data_type' => 'widget',
-            'data_skin' => 'select',
-            'product_price' => self::formatDecimals($product->getPrice(true, NULL, 2)),
-            'currency_iso' => 'EUR',
-            'country_iso' => 'ES',
-            'data_locale' => 'ES_cat',
-            'quantity_wanted' => 'quantity_wanted',
-            'minus_button' => '.product_quantity_down',
-            'plus_button' => '.product_quantity_up',
+            'product_price' => self::formatDecimals($product->getPrice(true, null, 2))
         ));
         return $this->display(__FILE__, 'views/templates/hook/product.tpl');
     }
-    public function hookDisplayPayment($params) {
+    public function hookDisplayPayment($params)
+    {
         return $this->hookPayment($params);
     }
 
-    public function hookDisplayPaymentReturn($params) {
+    public function hookDisplayPaymentReturn($params)
+    {
         //PrestaShop hook duplication problem. We keep this if we show a error on a client
         return false;
         //return $this->hookPaymentReturn($params);
     }
 
-    public static function formatDecimals($amount = 0) {
+    public static function formatDecimals($amount = 0)
+    {
         $negative = false;
         $str = sprintf("%.2f", $amount);
         if (strcmp($str[0], "-") === 0) {
@@ -503,23 +514,25 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         return intval($retVal);
     }
 
-    public function getCheckoutSerializer($id_order = 0, $id_cart = 0) {
+    public function getCheckoutSerializer($id_order = 0, $id_cart = 0)
+    {
         $serializer = new Aplazame_Serializers();
         $Order = new Order($id_order);
         $Cart = false;
-        if($id_cart){
+        if ($id_cart) {
             $Cart = new Cart($id_cart);
         }
         return $serializer->getCheckout($Order, $Cart);
     }
-    
-    public function getCustomerHistory(Customer $customer,$limit){
+
+    public function getCustomerHistory(Customer $customer, $limit)
+    {
         $serializer = new Aplazame_Serializers();
         return $serializer->getHistory($customer, $limit);
     }
 
-    public function callToRest($method, $url, $values, $to_json = true) {
-
+    public function callToRest($method, $url, $values, $to_json = true)
+    {
         $url = trim(str_replace('://', '://api.', Configuration::get('APLAZAME_HOST', null)), "/") . $url;
 
         $headers = array();
@@ -535,7 +548,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
 
         $version = Configuration::get('APLAZAME_API_VERSION', null);
 
-        if ($version){
+        if ($version) {
             $version = explode(".", $version);
             $version = $version[0];
         }
@@ -544,22 +557,22 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                 (Configuration::get('APLAZAME_SANDBOX', null) ? 'sandbox.' : '') . $version . '+json';
 
         if (extension_loaded('curl') == false || $method == 'PUT') {
-            if($to_json && $values){
+            if ($to_json && $values) {
                 $postdata = json_encode($values);
-            }elseif($values){
+            } elseif ($values) {
                 $postdata = http_build_query(
                     $values
                 );
             }
-            
+
             $opts = array('http' =>
                 array(
                     'method' => $method,
                     'header' => $headers,
-                    
+
                 )
             );
-            if(isset($postdata)){
+            if (isset($postdata)) {
                 $opts['http']['content'] = $postdata;
             }
 
@@ -573,8 +586,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                 $this->logError($e->getMessage());
             }
         } else {
-            $response = RestClient::$method($url, ($to_json) ? json_encode($values) : $values
-                            , null, null, null, $headers);
+            $response = RestClient::$method($url, ($to_json) ? json_encode($values) : $values, null, null, null, $headers);
 
             $result['response'] = $response->getResponse();
             $result['code'] = $response->getResponseCode();
@@ -583,22 +595,25 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         return $result;
     }
 
-    function parseHeaders($headers) {
+    public function parseHeaders($headers)
+    {
         $head = array();
         foreach ($headers as $k => $v) {
             $t = explode(':', $v, 2);
-            if (isset($t[1]))
+            if (isset($t[1])) {
                 $head[trim($t[0])] = trim($t[1]);
-            else {
+            } else {
                 $head[] = $v;
-                if (preg_match("#HTTP/[0-9\.]+\s+([0-9]+)#", $v, $out))
+                if (preg_match("#HTTP/[0-9\.]+\s+([0-9]+)#", $v, $out)) {
                     $head['reponse_code'] = intval($out[1]);
+                }
             }
         }
         return $head;
     }
 
-    function getErrorMessage($error_code) {
+    public function getErrorMessage($error_code)
+    {
         $error = "An error occurred while processing payment";
         switch ($error_code) {
             case "400": $error = "Bad Request - The data have not been correctly validated";
@@ -623,7 +638,8 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         return $error;
     }
 
-    function logError($message) {
+    public function logError($message)
+    {
         file_put_contents(dirname(__FILE__) . '/logs/exception_log', PHP_EOL.date(DATE_ISO8601) . ' ' . $message . '\r\n', FILE_APPEND);
     }
     
@@ -647,7 +663,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         Context::getContext()->customer = new Customer((int) $customer_id);
         Context::getContext()->currency = new Currency((int) Context::getContext()->cart->id_currency);
         Context::getContext()->language = new Language((int) Context::getContext()->cart->id_lang);
-        
+
         $secure_key = Context::getContext()->customer->secure_key;
         $module_name = $this->displayName;
         if ($this->isValidOrder($result['code']) === true && !$cancel_order) {
@@ -674,39 +690,23 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
             }
             return false;
         }
-
-        
     }
-    
-    function assignSmartyVars($array){
-        if(_PS_VERSION_ >= 1.6 || isset($this->smarty)){
+
+    public function assignSmartyVars($array)
+    {
+        if (_PS_VERSION_ >= 1.6 || isset($this->smarty)) {
             $this->smarty->assign($array);
-        }else{
+        } else {
             $this->context->smarty->assign($array);
         }
     }
-    
-    protected function isValidOrder($code) {
+
+    protected function isValidOrder($code)
+    {
         if ($code == '200') {
             return true;
         } else {
             return false;
         }
     }
-    
-    function duplicateCart($id_cart=false){
-        $oldCart = new Cart(($id_cart)?$id_cart:Context::getContext()->cart->id);
-        $data = $oldCart->duplicate();
-
-        if($data['success']) {
-            $cart = $data['cart'];
-            Context::getContext()->cart = $cart;
-            CartRule::autoAddToCart(Context::getContext());
-            Context::getContext()->cookie->id_cart = $cart->id;
-        } else {
-            $this->logError('Error: Cannot duplicate cart '.Context::getContext()->cart->id);
-        }
-        
-    }
-
 }

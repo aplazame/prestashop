@@ -4,8 +4,9 @@ class AplazameConfirmationModuleFrontController extends ModuleFrontController
 {
     public function postProcess()
     {
-        if ((Tools::isSubmit('cart_id') == false) || (Tools::isSubmit('secure_key') == false))
+        if ((Tools::isSubmit('cart_id') == false) || (Tools::isSubmit('secure_key') == false)) {
             return false;
+        }
 
         $cart_id = Tools::getValue('cart_id');
         $secure_key = Tools::getValue('secure_key');
