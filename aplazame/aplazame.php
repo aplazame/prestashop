@@ -709,4 +709,19 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
             return false;
         }
     }
+    
+    function duplicateCart($id_cart=false){
+        $oldCart = new Cart(($id_cart)?$id_cart:Context::getContext()->cart->id);
+        $data = $oldCart->duplicate();
+
+        if($data['success']) {
+            $cart = $data['cart'];
+            Context::getContext()->cart = $cart;
+            CartRule::autoAddToCart(Context::getContext());
+            Context::getContext()->cookie->id_cart = $cart->id;
+        } else {
+            $this->logError('Error: Cannot duplicate cart '.Context::getContext()->cart->id);
+        }
+        
+    }
 }
