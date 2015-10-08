@@ -23,32 +23,34 @@ class AplazameConfirmationModuleFrontController extends ModuleFrontController
 
         if ($order_id && ($secure_key == $customer->secure_key))
         {
-            $module_id = $this->module->id;
-            Tools::redirect('index.php?controller=order-confirmation&id_cart='.$cart_id.'&id_module='.$module_id.'&id_order='.$order_id.'&key='.$secure_key);
+            $Order = new Order($order_id);
+            if($Order->current_state == Configuration::get('PS_OS_ERROR') || $Order->current_state == Configuration::get('PS_OS_CANCELED')){
+                 $this->errors[] = $this->module->l('An error occurred. Your order has not been confirmed by Aplazame or is canceled. Please contact the merchant to have more information.');
+            }else{
+                $module_id = $this->module->id;
+                Tools::redirect('index.php?controller=order-confirmation&id_cart='.$cart_id.'&id_module='.$module_id.'&id_order='.$order_id.'&key='.$secure_key);
+            }
         }
         else
         {
             if ($order_id) {
-                $this->errors[] = $this->module->l('An error occured but don\'t worry. Your order has been placed before. Please contact the merchant to have more informations or visit "My Account" to see your order history');
+                $this->errors[] = $this->module->l('An error occurred but don\'t worry. Your order has been placed before. Please contact the merchant to have more informations or visit "My Account" to see your order history');
             } elseif($cart_id) {
                 //We will try a last client side validation
-                $result = $this->module->callToRest('POST', Aplazame::API_CHECKOUT_PATH . '/' . $cart_id . '/authorize', null, false);
-                $result['response'] = json_decode($result['response'], true);
-
-                if ($result['code'] == '200') {
-                    if($this->module->validateController(Tools::getValue('cart_id'))){
-                        $order_id = Order::getOrderByCartId((int)$cart->id);
-                        $module_id = $this->module->id;
-                        Tools::redirect('index.php?controller=order-confirmation&id_cart='.$cart_id.'&id_module='.$module_id.'&id_order='.$order_id.'&key='.$secure_key);
-                    }
+                if($this->module->validateController($cart_id)){
+                    $order_id = Order::getOrderByCartId((int)$cart->id);
+                    $module_id = $this->module->id;
+                    Tools::redirect('index.php?controller=order-confirmation&id_cart='.$cart_id.'&id_module='.$module_id.'&id_order='.$order_id.'&key='.$secure_key);
                 } else {
-                    $this->errors[] = $this->module->l('An error occured. Your order has not been confirmed by Aplazame. Please contact the merchant to have more information.');
+                    $this->module->duplicateCart($cart_id);
+                    $this->errors[] = $this->module->l('An error occurred. Your order has not been confirmed by Aplazame. Please contact the merchant to have more information.');
                 }
             } else {
-                $this->errors[] = $this->module->l('An error occured. Please contact the merchant to have more information.');
+                $this->errors[] = $this->module->l('An error occurred. Please contact the merchant to have more information.');
             }
     
-            return $this->setTemplate('error.tpl');
+            
         }
+        return $this->setTemplate('error.tpl');
     }
 }
