@@ -248,13 +248,13 @@ class Aplazame_Serializers
         if (_PS_VERSION_ < 1.6) {
             $merchant = array(
             "confirmation_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'index.php?fc=module&module=aplazame&controller=validation',
-            "cancel_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'index.php?fc=module&module=aplazame&controller=redirect&action=error',
+            "cancel_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'index.php?fc=module&module=aplazame&controller=redirect&action=error&cart_id='.$id_cart,
             "checkout_url"=> _PS_BASE_URL_.__PS_BASE_URI__.'index.php?controller=order-opc',
             "success_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'index.php?fc=module&module=aplazame&controller=confirmation&cart_id='.$id_cart.'&secure_key='.$secure_key);
         } else {
             $merchant = array(
             "confirmation_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'module/aplazame/validation',
-            "cancel_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'module/aplazame/redirect?action=error',
+            "cancel_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'module/aplazame/redirect?action=error&cart_id='.$id_cart,
             "checkout_url"=> _PS_BASE_URL_.__PS_BASE_URI__.'index.php?controller=order-opc',
             "success_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'module/aplazame/confirmation?cart_id='.$id_cart.'&secure_key='.$secure_key);
         }

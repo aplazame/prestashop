@@ -10,7 +10,7 @@ class aplazame extends PaymentModule
 {
     protected $config_form = false;
 
-    const _version = '1.0.2';
+    const _version = '1.0.3';
     const USER_AGENT = 'Aplazame/';
     const API_CHECKOUT_PATH = '/orders';
 
@@ -402,9 +402,9 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         }
     }
 
-    public function hookDisplayAdminOrder($params)
-    {
-        //if (_PS_VERSION_ < 1.6){
+    public function hookDisplayAdminOrder($params) {
+        //if (_PS_VERSION_ < 1.6) {
+        return ''; //DISABLED SHOW INFO ON ADMIN ORDER
         $id_order = $params['id_order'];
         $Order = new Order($id_order);
 
@@ -642,15 +642,19 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
     {
         file_put_contents(dirname(__FILE__) . '/logs/exception_log', PHP_EOL.date(DATE_ISO8601) . ' ' . $message . '\r\n', FILE_APPEND);
     }
-
-    public function validateController($id_order)
-    {
-        $result = $this->callToRest('POST', self::API_CHECKOUT_PATH . '/' . $id_order . '/authorize', null, false);
-        $result['response'] = json_decode($result['response'], true);
-
-
-        $cart_id = $result['response']['id'];
-        $amount = $result['response']['amount'] / 100;
+    
+    function validateController($id_order,$cancel_order=false,$custom_message=false){
+        if($cancel_order){
+            $result['code'] = '403';
+            $cart = new Cart((int) $id_order);
+            $cart_id = $id_order;
+            $amount = $cart->getOrderTotal();
+        }else{
+            $result = $this->callToRest('POST', self::API_CHECKOUT_PATH . '/' . $id_order . '/authorize', null, false);
+            $result['response'] = json_decode($result['response'], true);
+            $cart_id = $result['response']['id'];
+            $amount = $result['response']['amount'] / 100;
+        }
 
         Context::getContext()->cart = new Cart((int) $cart_id);
 
@@ -661,20 +665,29 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         Context::getContext()->language = new Language((int) Context::getContext()->cart->id_lang);
 
         $secure_key = Context::getContext()->customer->secure_key;
-
-        if ($this->isValidOrder($result['code']) === true) {
+        $module_name = $this->displayName;
+        if ($this->isValidOrder($result['code']) === true && !$cancel_order) {
             $payment_status = Configuration::get('PS_OS_PAYMENT');
             $message = null;
-            $module_name = $this->displayName;
+            
             $currency_id = (int) Context::getContext()->currency->id;
 
             return $this->validateOrder($cart_id, $payment_status, $amount, $module_name, $message, array(), $currency_id, false, $secure_key);
         } else {
             $payment_status = Configuration::get('PS_OS_ERROR');
-
             $error = $this->getErrorMessage($result['code']);
+            if($custom_message){
+                $error = $custom_message;
+            }
+            if($cancel_order){
+                $payment_status = Configuration::get('PS_OS_CANCELED');
+            }
             $message = $this->l($error);
             $this->logError($message);
+            $this->validateOrder($cart_id, $payment_status, $amount, $module_name, $message, array(), $currency_id, false, $secure_key);
+            if($cancel_order){
+                return true;
+            }
             return false;
         }
     }
