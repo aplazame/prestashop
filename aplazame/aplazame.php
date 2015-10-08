@@ -404,7 +404,6 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
 
     public function hookDisplayAdminOrder($params) {
         //if (_PS_VERSION_ < 1.6) {
-        return ''; //DISABLED SHOW INFO ON ADMIN ORDER
         $id_order = $params['id_order'];
         $Order = new Order($id_order);
 
@@ -417,14 +416,9 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
 
                 if ($result['code'] == '200') {
                     $dataAplazame = array(
-                        'instalments' => $result['response']['instalment_plan']['num_instalments'],
-                        'annual_equivalent' => $result['response']['instalment_plan']['annual_equivalent'] / 100,
-                        'total_interest_amount' => $result['response']['instalment_plan']['total_interest_amount'] / 100,
-                        'total_to_pay' => ($result['response']['total_amount'] / 100) + ($result['response']['instalment_plan']['total_interest_amount'] / 100),
                         'uuid' => $result['response']['id'],
                         'mid' => $Order->id_cart
                     );
-                    $dataAplazame['total_month'] = number_format((float) ($dataAplazame['total_to_pay'] / $dataAplazame['instalments']), 2, '.', '');
 
                     $this->assignSmartyVars(array(
                         'id_order' => $Order->id,
@@ -708,5 +702,20 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         } else {
             return false;
         }
+    }
+    
+    function duplicateCart($id_cart=false){
+        $oldCart = new Cart(($id_cart)?$id_cart:Context::getContext()->cart->id);
+        $data = $oldCart->duplicate();
+
+        if($data['success']) {
+            $cart = $data['cart'];
+            Context::getContext()->cart = $cart;
+            CartRule::autoAddToCart(Context::getContext());
+            Context::getContext()->cookie->id_cart = $cart->id;
+        } else {
+            $this->logError('Error: Cannot duplicate cart '.Context::getContext()->cart->id);
+        }
+        
     }
 }
