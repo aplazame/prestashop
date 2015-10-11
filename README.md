@@ -30,6 +30,8 @@
 
 #### One Step Checkout button
 
+If you have this module set this value in the **Button** field.
+
 * [One Page Checkout PS](http://www.presteamshop.com/modulos-prestashop/one-page-checkout-prestashop.html): `table#table_payment tr:has(input[value='aplazame'])`
 
 > It's important to use simple quotation marks for button CSS Selector.
