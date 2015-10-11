@@ -8,11 +8,21 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
     public function postProcess()
     {
         /**
-         * Oops, an error occured.
+         * Oops, an error occurred.
          */
-        if (Tools::getValue('action') == 'error') {
+        if (Tools::getValue('action') == 'error'){
+            
+            if($cart_id = Tools::getValue('cart_id',false)){
+                
+                if($this->module->validateController($cart_id,true,'Order cancelled by cancel_url')){
+                    $this->module->duplicateCart($cart_id);
+                    return $this->displayError('The order was cancelled before completed. Please contact with the merchant if you think is an error.');
+                }  
+            }
             return $this->displayError('An error occurred while trying to redirect the customer');
-        } else {
+        }
+        else
+        {
             //First solution to know if refreshed page: http://stackoverflow.com/a/6127748
             $refreshButtonPressed = isset($_SERVER['HTTP_CACHE_CONTROL']) &&
                     $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0';
@@ -22,17 +32,7 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
 
             if ($result['code'] == '200' && isset($result['response']['results'][0]['id']) && !$refreshButtonPressed) {
                 //The cart exists on Aplazame, we try to send with another ID
-                $oldCart = new Cart(Context::getContext()->cart->id);
-                $data = $oldCart->duplicate();
-
-                if ($data['success']) {
-                    $cart = $data['cart'];
-                    Context::getContext()->cart = $cart;
-                    CartRule::autoAddToCart(Context::getContext());
-                    Context::getContext()->cookie->id_cart = $cart->id;
-                } else {
-                    $this->module->logError('Error: Cannot duplicate cart '.Context::getContext()->cart->id);
-                }
+                $this->module->duplicateCart();
             }
             $this->context->smarty->assign(array(
                     'cart_id' => Context::getContext()->cart->id,
