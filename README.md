@@ -7,9 +7,6 @@
 1. **Download** the latest plugin from [here](https://s3.eu-central-1.amazonaws.com/aplazame/modules/prestashop/aplazame.latest.zip) to local directory as `aplazame.latest.zip`.
 2. Go to the PrestaShop administration page, and then go to **Modules** > **Modules**.
 3. **Add new module** and select the `aplazame.latest.zip` file from your computer.
-4. Go to **Advanced params** > **Performance** and be sure that this option is disabled.
-
-![config](docs/movejs.png)
 
 ### Update
 
