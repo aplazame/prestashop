@@ -245,7 +245,13 @@ class Aplazame_Serializers
         $Customer = new Customer($id_customer);
         $BillingAddress = new Address($id_billing_address);
 
-        if (_PS_VERSION_ < 1.6) {
+        $PS_ROUTE_module = Configuration::get('PS_ROUTE_module', null);
+        $check_route_module = 'module/{module}{/:controller}';
+        if(empty($PS_ROUTE_module)){
+            $PS_ROUTE_module = $check_route_module;
+        }
+        
+        if (_PS_VERSION_ < 1.6 || $PS_ROUTE_module!=$check_route_module) {
             $merchant = array(
             "confirmation_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'index.php?fc=module&module=aplazame&controller=validation',
             "cancel_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'index.php?fc=module&module=aplazame&controller=redirect&action=error&cart_id='.$id_cart,
