@@ -12,11 +12,12 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
          */
         if (Tools::getValue('action') == 'error'){
             
-            if($cart_id = Tools::getValue('cart_id',false)){
+            if($cart_id = Tools::getValue('order_id',false)){
                 
                 if($this->module->validateController($cart_id,true,'Order cancelled by cancel_url')){
                     $this->module->duplicateCart($cart_id);
-                    return $this->displayError('The order was cancelled before completed. Please contact with the merchant if you think is an error.');
+                    //It's an ajax call maded by aplazame JS, not return nothing
+                    exit();
                 }  
             }
             return $this->displayError('An error occurred while trying to redirect the customer');
