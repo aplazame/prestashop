@@ -27,6 +27,7 @@ class AplazameConfirmationModuleFrontController extends ModuleFrontController
             $Order = new Order($order_id);
             if($Order->current_state == Configuration::get('PS_OS_ERROR') || $Order->current_state == Configuration::get('PS_OS_CANCELED')){
                  $this->errors[] = $this->module->l('An error occurred. Your order has not been confirmed by Aplazame or is canceled. Please contact the merchant to have more information.');
+                 $this->module->duplicateCart($cart_id);  
             }else{
                 $module_id = $this->module->id;
                 Tools::redirect('index.php?controller=order-confirmation&id_cart='.$cart_id.'&id_module='.$module_id.'&id_order='.$order_id.'&key='.$secure_key);
