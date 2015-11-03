@@ -1,13 +1,14 @@
 ## Change Log
 
-#### [v1.0.3](https://github.com/aplazame/prestashop/tree/v1.0.3) (2015-??-??)
+#### [v1.0.3](https://github.com/aplazame/prestashop/tree/v1.0.3) (2015-11-03)
 
 [Full Changelog v1.0.3](https://github.com/aplazame/prestashop/compare/v1.0.2...v1.0.3)
 
 * License
 * composer.json
 * Fix Prestashop move JS
-* ?
+* Create order cancelled on KO
+* Fix friendly urls
 
 #### [v1.0.2](https://github.com/aplazame/prestashop/tree/v1.0.2) (2015-09-07)
 
