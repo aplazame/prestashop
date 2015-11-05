@@ -1,5 +1,12 @@
 ## Change Log
 
+#### [v1.0.4](https://github.com/aplazame/prestashop/tree/v1.0.4) (2015-??-??)
+
+[Full Changelog v1.0.4](https://github.com/aplazame/prestashop/compare/v1.0.3...v1.0.4)
+
+* Relative urls
+* ?
+
 #### [v1.0.3](https://github.com/aplazame/prestashop/tree/v1.0.3) (2015-11-03)
 
 [Full Changelog v1.0.3](https://github.com/aplazame/prestashop/compare/v1.0.2...v1.0.3)
