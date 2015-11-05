@@ -247,10 +247,10 @@ class Aplazame_Serializers
 
         $merchant = array(
             "public_api_key"=> Configuration::get('APLAZAME_PUBLIC_KEY', null),
-            "confirmation_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'index.php?fc=module&module=aplazame&controller=validation',
-            "cancel_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'index.php?fc=module&module=aplazame&controller=redirect&action=error',
-            "checkout_url"=> _PS_BASE_URL_.__PS_BASE_URI__.'index.php?controller=order-opc',
-            "success_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'index.php?fc=module&module=aplazame&controller=confirmation&cart_id='.$id_cart.'&secure_key='.$secure_key);
+            "confirmation_url"=>__PS_BASE_URI__.'index.php?fc=module&module=aplazame&controller=validation',
+            "cancel_url"=>__PS_BASE_URI__.'index.php?fc=module&module=aplazame&controller=redirect&action=error',
+            "checkout_url"=> __PS_BASE_URI__.'index.php?controller=order-opc',
+            "success_url"=>__PS_BASE_URI__.'index.php?fc=module&module=aplazame&controller=confirmation&cart_id='.$id_cart.'&secure_key='.$secure_key);
 
         return array(
             "toc"=>true,
