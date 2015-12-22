@@ -245,28 +245,13 @@ class Aplazame_Serializers
         $Customer = new Customer($id_customer);
         $BillingAddress = new Address($id_billing_address);
 
-        $PS_ROUTE_module = Configuration::get('PS_ROUTE_module', null);
-        $check_route_module = 'module/{module}{/:controller}';
-        if(empty($PS_ROUTE_module)){
-            $PS_ROUTE_module = $check_route_module;
-        }
-        
-        if (_PS_VERSION_ < 1.6 || $PS_ROUTE_module!=$check_route_module) {
-            $merchant = array(
+        $merchant = array(
             "public_api_key"=> Configuration::get('APLAZAME_PUBLIC_KEY', null),
-            "confirmation_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'index.php?fc=module&module=aplazame&controller=validation',
-            "cancel_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'index.php?fc=module&module=aplazame&controller=redirect&action=error',
-            "checkout_url"=> _PS_BASE_URL_.__PS_BASE_URI__.'index.php?controller=order-opc',
-            "success_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'index.php?fc=module&module=aplazame&controller=confirmation&cart_id='.$id_cart.'&secure_key='.$secure_key);
-        }else{
-            $merchant = array(
-            "public_api_key"=> Configuration::get('APLAZAME_PUBLIC_KEY', null),
-            "confirmation_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'module/aplazame/validation',
-            "cancel_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'module/aplazame/redirect?action=error',
-            "checkout_url"=> _PS_BASE_URL_.__PS_BASE_URI__.'index.php?controller=order-opc',
-            "success_url"=>_PS_BASE_URL_.__PS_BASE_URI__.'module/aplazame/confirmation?cart_id='.$id_cart.'&secure_key='.$secure_key);
-        }
-        
+            "confirmation_url"=>__PS_BASE_URI__.'index.php?fc=module&module=aplazame&controller=validation',
+            "cancel_url"=>__PS_BASE_URI__.'index.php?fc=module&module=aplazame&controller=redirect&action=error',
+            "checkout_url"=> __PS_BASE_URI__.'index.php?controller=order-opc',
+            "success_url"=>__PS_BASE_URI__.'index.php?fc=module&module=aplazame&controller=confirmation&cart_id='.$id_cart.'&secure_key='.$secure_key);
+
         return array(
             "toc"=>true,
             "merchant"=>$merchant,
