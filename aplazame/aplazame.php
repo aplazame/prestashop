@@ -462,7 +462,14 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
 
     public function hookDisplayProductButtons($params)
     {
-        $product = $params['product'];
+        if(isset($params['product'])){
+            $product = $params['product'];
+        }elseif(Tools::getValue('controller')=='product' && Tools::getValue('id_product')){
+            $product = new Product(Tools::getValue('id_product'));
+        }else{
+            return false;
+        }
+        
         self::formatDecimals();
 
         $this->assignSmartyVars(array(
