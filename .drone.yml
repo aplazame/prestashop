@@ -7,7 +7,7 @@ build:
   commands:
     - 'make syntax.checker'
     # Build release
-    - 'sudo apt-get install zip'
+    - 'apt-get install zip'
     - 'make zip'
 
 deploy:
