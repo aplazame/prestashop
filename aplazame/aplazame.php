@@ -59,7 +59,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
             return false;
         }
 
-        Configuration::updateValue('APLAZAME_SANDBOX', true);
+        Configuration::updateValue('APLAZAME_SANDBOX', false);
         Configuration::updateValue('APLAZAME_ENABLE_COOKIES', true);
         Configuration::updateValue('APLAZAME_HOST', 'https://aplazame.com');
         Configuration::updateValue('APLAZAME_API_VERSION', 'v1.2');
