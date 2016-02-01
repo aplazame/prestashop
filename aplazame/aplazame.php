@@ -81,6 +81,8 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                 $this->registerHook('displayOrderConfirmation') &&
                 $this->registerHook('displayPayment') &&
                 $this->registerHook('displayProductButtons') &&
+                $this->registerHook('displayShoppingCart') &&
+                //$this->registerHook('displayAdminProductsExtra') &&
                 $this->registerHook('displayPaymentReturn');
     }
 
@@ -724,5 +726,29 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
             $this->logError('Error: Cannot duplicate cart '.Context::getContext()->cart->id);
         }
         
+    }
+    
+    public function hookDisplayShoppingCart($params){
+        // $params contiene realmente $this->context->cart->getSummaryDetails(null, true); 
+        $this->assignSmartyVars(
+            array(
+                'total_price' => self::formatDecimals($params['total_price']),
+            )
+        );
+        return $this->display(__FILE__, 'views/templates/hook/shoppingcart.tpl');
+    }
+    
+    public function hookDisplayAdminProductsExtra($params)
+    {
+        return false;
+        /*$id_product = Tools::getValue('id_product');
+        $price_override = Db::getInstance()->getValue('SELECT price_override FROM '
+                . ''._DB_PREFIX_.'testpriceoverride WHERE id_product = '.pSQL($id_product));
+        
+        $this->context->smarty->assign(array(
+            'price_override' => $price_override
+        ));*/
+        
+        return $this->display(__FILE__, 'views/templates/admin/product.tpl');
     }
 }
