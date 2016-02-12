@@ -1,5 +1,12 @@
 ## Change Log
 
+#### [v1.0.5](https://github.com/aplazame/prestashop/tree/v1.0.5) (2016-02-12)
+
+[Full Changelog v1.0.5](https://github.com/aplazame/prestashop/compare/v1.0.4...v1.0.5)
+
+* Widget hook configurable
+* Display widget when a product is available 
+
 #### [v1.0.4](https://github.com/aplazame/prestashop/tree/v1.0.4) (2015-12-23)
 
 [Full Changelog v1.0.4](https://github.com/aplazame/prestashop/compare/v1.0.3...v1.0.4)
