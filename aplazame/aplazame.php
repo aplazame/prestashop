@@ -10,7 +10,7 @@ class aplazame extends PaymentModule
 {
     protected $config_form = false;
 
-    const _version = '1.0.4';
+    const _version = '1.0.5';
     const USER_AGENT = 'Aplazame/';
     const API_CHECKOUT_PATH = '/orders';
 
@@ -65,7 +65,8 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         Configuration::updateValue('APLAZAME_API_VERSION', 'v1.2');
         Configuration::updateValue('APLAZAME_BUTTON_IMAGE', 'white-148x46');
         Configuration::updateValue('APLAZAME_BUTTON', '#aplazame_payment_button');
-
+        Configuration::updateValue('APLAZAME_WIDGET_PROD', "0");
+        
         return parent::install() &&
                 $this->registerHook('payment') &&
                 $this->registerHook('paymentReturn') &&
@@ -82,6 +83,8 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                 $this->registerHook('displayPayment') &&
                 $this->registerHook('displayProductButtons') &&
                 $this->registerHook('displayShoppingCart') &&
+                $this->registerHook('displayRightColumnProduct') &&
+                $this->registerHook('displayRightColumn') &&
                 //$this->registerHook('displayAdminProductsExtra') &&
                 $this->registerHook('displayPaymentReturn');
     }
@@ -249,6 +252,30 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                             )
                         ),
                     ),
+                    array(
+                        'type' => 'select',
+                        'label' => $this->l('Hook Product Widget'),
+                        'desc' => $this->l('Select the hook where you want to display the product widget'),
+                        'name' => 'APLAZAME_WIDGET_PROD',
+                        'options' => array(
+                            'query' => array(
+                                array(
+                                    'id_option' => 0,
+                                    'name' => $this->l('displayProductButtons')
+                                ),
+                                array(
+                                    'id_option' => 1,
+                                    'name' => $this->l('displayRightColumnProduct')
+                                ),
+                                array(
+                                    'id_option' => 2,
+                                    'name' => $this->l('displayRightColumn')
+                                ),
+                            ),
+                            'id' => 'id_option',
+                            'name' => 'name'
+                        )
+                    ),
                 ),
                 'submit' => array(
                     'title' => $this->l('Save'),
@@ -271,6 +298,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
             'APLAZAME_PUBLIC_KEY' => Configuration::get('APLAZAME_PUBLIC_KEY', null),
             'APLAZAME_BUTTON_IMAGE' => Configuration::get('APLAZAME_BUTTON_IMAGE', null),
             'APLAZAME_ENABLE_COOKIES' => Configuration::get('APLAZAME_ENABLE_COOKIES', null),
+            'APLAZAME_WIDGET_PROD' => Configuration::get('APLAZAME_WIDGET_PROD', null),
         );
     }
 
@@ -464,11 +492,45 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
 
     public function hookDisplayProductButtons($params)
     {
+        $display_widget = (int)Configuration::get('APLAZAME_WIDGET_PROD', null);
+        if($display_widget == 0 || empty($display_widget)){
+            return $this->getProductWidget($params);
+        }
+        return false;
+    }
+    
+    public function hookDisplayRightColumnProduct($params){
+        $display_widget = (int)Configuration::get('APLAZAME_WIDGET_PROD', null);
+        if($display_widget == 1){
+            return $this->getProductWidget($params);
+        }
+        return false;
+    }
+    
+    public function hookDisplayRightColumn($params){
+        if (isset($this->context->controller->php_self) && $this->context->controller->php_self == 'product'){
+            $display_widget = (int)Configuration::get('APLAZAME_WIDGET_PROD', null);
+            if($display_widget == 2){
+                return $this->getProductWidget($params);
+            }
+        }
+        return false;
+    }
+    
+    public function getProductWidget($params){
         if(isset($params['product'])){
             $product = $params['product'];
         }elseif(Tools::getValue('controller')=='product' && Tools::getValue('id_product')){
             $product = new Product(Tools::getValue('id_product'));
         }else{
+            if (method_exists($this->context->controller, 'getProduct')){
+                $product = $this->context->controller->getProduct();
+            }
+        }
+        
+        if (!isset($product) || !Validate::isLoadedObject($product)){
+            return false; 
+        }elseif(!$product->show_price || !$product->available_for_order){
             return false;
         }
         
@@ -479,6 +541,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         ));
         return $this->display(__FILE__, 'views/templates/hook/product.tpl');
     }
+    
     public function hookDisplayPayment($params)
     {
         return $this->hookPayment($params);
