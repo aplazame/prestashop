@@ -730,6 +730,12 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
             $result['response'] = json_decode($result['response'], true);
             $cart_id = $result['response']['id'];
             $amount = $result['response']['amount'] / 100;
+            $cart = new Cart((int) $cart_id);
+            if(!Validate::isLoadedObject($cart)){
+                //throw new Exception('Error processing order. KO - Cart not loaded. This symptom is maybe of WAF webservice protection. Please contact your server provider to take action.', 400);
+                header('HTTP/1.1 400 Bad Request', true, 400);
+                exit('Error processing order. KO - Cart not loaded. This symptom is maybe of WAF webservice protection. Please contact your server provider to take action '.  var_export($result,true));
+            }
         }
 
         Context::getContext()->cart = new Cart((int) $cart_id);
