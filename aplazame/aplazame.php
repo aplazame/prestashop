@@ -828,7 +828,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
             $selected = $selected_campaigns[$id_product];
         }
         
-        $this->context->smarty->assign(array(
+        $this->assignSmartyVars(array(
             'aplazame_campaigns' => $campaigns,
             'selected_aplazame_campaign' => $selected,
         ));
@@ -860,13 +860,17 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
             if (Tools::getIsset('cancel')){
                 return false;
             }
-
+            $old_presta = false;
+            if (_PS_VERSION_ < 1.6) {
+                $old_presta = true;    
+            }
             $campaigns = $this->getCampaigns();
-            $this->context->smarty->assign(array(
+            $this->assignSmartyVars(array(
                 'updateAplazameCampaign_mode' => true,
                 'aplazame_campaigns' => $campaigns,
                 'REQUEST_URI' => $_SERVER['REQUEST_URI'],
-                'POST' => $_POST));
+                'POST' => $_POST,
+                'old_presta'=> $old_presta));
             return $this->display(__FILE__, 'views/templates/admin/product_list.tpl');
         }
         return false;        
