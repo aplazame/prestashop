@@ -261,4 +261,26 @@ class Aplazame_Serializers
             "shipping"=>$this->getShipping($order, $cart),
             "meta"=>static::_getMetadata());
     }
+    
+    public function getArticleCampaign(Link $link, $id_product,$id_lang){
+        $cover = Product::getCover($id_product);
+        $Product = new Product($id_product,false,$id_lang);
+        $image_url = str_replace(array('http://','https://'), '', $link->getImageLink('product', $cover['id_image']));
+                
+        return array(
+                "id" => $id_product,
+                "name" => $Product->name,
+                "description" => substr(strip_tags($Product->description_short), 0, 255),
+                "url" => $link->getProductLink($id_product),
+                "image_url" => 'http://'.$image_url );
+    }
+    
+    public function getArticlesCampaign($ids_product,$id_lang){
+        $link = new Link();
+        $articles = array();
+        foreach($ids_product as $id_product){
+            $articles[] = $this->getArticleCampaign($link, $id_product,$id_lang);
+        }
+        return $articles;
+    }
 }
