@@ -330,9 +330,9 @@ class RestClient
       * @param string $password=null [optional]
       * @return RestClient
       */
-     public static function delete($url, array $params=null, $user=null, $pwd=null)
+     public static function delete($url, array $params=null, $user=null, $pwd=null,$contentType="multipart/form-data", $httpHeaders=null)
      {
-         return self::call("DELETE", $url, $params, $user, $pwd);
+         return self::call("DELETE", $url, $params, $user, $pwd, $contentType, $httpHeaders);
      }
 
      /**

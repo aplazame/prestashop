@@ -10,9 +10,10 @@ class aplazame extends PaymentModule
 {
     protected $config_form = false;
 
-    const _version = '1.0.5';
+    const _version = '1.0.6';
     const USER_AGENT = 'Aplazame/';
     const API_CHECKOUT_PATH = '/orders';
+    const API_CAMPAIGN_PATH = '/me/campaigns';
 
     public function __construct()
     {
@@ -85,7 +86,9 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                 $this->registerHook('displayShoppingCart') &&
                 $this->registerHook('displayRightColumnProduct') &&
                 $this->registerHook('displayRightColumn') &&
-                //$this->registerHook('displayAdminProductsExtra') &&
+                $this->registerHook('displayAdminProductsExtra') &&
+                $this->registerHook('actionProductUpdate') &&
+                $this->registerHook('displayAdminProductsListBefore') &&
                 $this->registerHook('displayPaymentReturn');
     }
 
@@ -603,7 +606,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
 
         $headers = array();
         if (in_array($method, array(
-                    'POST', 'PUT', 'PATCH')) && $values) {
+                    'POST', 'PUT', 'PATCH', 'DELETE')) && $values) {
             $headers[] = 'Content-type: application/json';
         }
 
@@ -652,8 +655,11 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                 $this->logError($e->getMessage());
             }
         } else {
-            $response = RestClient::$method($url, ($to_json) ? json_encode($values) : $values, null, null, null, $headers);
-
+            try {
+                $response = RestClient::$method($url, ($to_json) ? json_encode($values) : $values, null, null, null, $headers);
+            } catch (Exception $e) {
+                $this->logError($e->getMessage());
+            }
             $result['response'] = $response->getResponse();
             $result['code'] = $response->getResponseCode();
         }
@@ -710,6 +716,10 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
     }
     
     function validateController($id_order,$cancel_order=false,$custom_message=false){
+        if(empty($id_order)){
+            return false;
+        }
+        
         if($cancel_order){
             $result['code'] = '403';
             $cart = new Cart((int) $id_order);
@@ -720,6 +730,12 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
             $result['response'] = json_decode($result['response'], true);
             $cart_id = $result['response']['id'];
             $amount = $result['response']['amount'] / 100;
+            $cart = new Cart((int) $cart_id);
+            if(!Validate::isLoadedObject($cart)){
+                //throw new Exception('Error processing order. KO - Cart not loaded. This symptom is maybe of WAF webservice protection. Please contact your server provider to take action.', 400);
+                header('HTTP/1.1 400 Bad Request', true, 400);
+                exit('Error processing order. KO - Cart not loaded. This symptom is maybe of WAF webservice protection. Please contact your server provider to take action '.  var_export($result,true));
+            }
         }
 
         Context::getContext()->cart = new Cart((int) $cart_id);
@@ -732,6 +748,12 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
 
         $secure_key = Context::getContext()->customer->secure_key;
         $module_name = $this->displayName;
+        
+        $order_id = Order::getOrderByCartId((int)$cart_id);
+        if(!empty($order_id)){
+            return false;
+        }
+        
         if ($this->isValidOrder($result['code']) === true && !$cancel_order) {
             $payment_status = Configuration::get('PS_OS_PAYMENT');
             $message = null;
@@ -803,15 +825,93 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
     
     public function hookDisplayAdminProductsExtra($params)
     {
-        return false;
-        /*$id_product = Tools::getValue('id_product');
-        $price_override = Db::getInstance()->getValue('SELECT price_override FROM '
-                . ''._DB_PREFIX_.'testpriceoverride WHERE id_product = '.pSQL($id_product));
+        $id_product = Tools::getValue('id_product');
+        $campaigns = $this->getCampaigns();
         
-        $this->context->smarty->assign(array(
-            'price_override' => $price_override
-        ));*/
+        $selected_campaigns = Configuration::get('APLAZAME_SEL_CAMP', null);
+        $selected_campaigns = json_decode($selected_campaigns,true);
+        if(isset($selected_campaigns[$id_product])){
+            $selected = $selected_campaigns[$id_product];
+        }
+        
+        $this->assignSmartyVars(array(
+            'aplazame_campaigns' => $campaigns,
+            'selected_aplazame_campaign' => $selected,
+        ));
         
         return $this->display(__FILE__, 'views/templates/admin/product.tpl');
+    }
+    
+    public function hookActionProductUpdate($params) {
+        $id_product = (int) Tools::getValue('id_product');
+        $selected_campaigns = Configuration::get('APLAZAME_SEL_CAMP', null);
+        $selected_campaigns = json_decode($selected_campaigns,true);
+        if(isset($selected_campaigns[$id_product])){
+            $selected = $selected_campaigns[$id_product];
+            $this->deleteCampaignProduct($id_product, $selected);
+        }
+        $campaign = Tools::getValue('APLAZAME_PRODUCT_CAMPAIGN',0);
+        if($campaign && $campaign != '-1'){
+            $ids_products = array();
+            $ids_products[] = $id_product;
+            $this->assignCampaignProducts($ids_products, $campaign);
+        }
+        $selected_campaigns[$id_product] = $campaign;
+        Configuration::updateValue('APLAZAME_SEL_CAMP', json_encode($selected_campaigns));
+    }
+    
+    public function hookDisplayAdminProductsListBefore($params){
+        if (Tools::isSubmit('submitBulkupdateAplazameCampaignproduct'))
+        {
+            if (Tools::getIsset('cancel')){
+                return false;
+            }
+            $old_presta = false;
+            if (_PS_VERSION_ < 1.6) {
+                $old_presta = true;    
+            }
+            $campaigns = $this->getCampaigns();
+            $this->assignSmartyVars(array(
+                'updateAplazameCampaign_mode' => true,
+                'aplazame_campaigns' => $campaigns,
+                'REQUEST_URI' => $_SERVER['REQUEST_URI'],
+                'POST' => $_POST,
+                'old_presta'=> $old_presta));
+            return $this->display(__FILE__, 'views/templates/admin/product_list.tpl');
+        }
+        return false;        
+    }
+    
+    public function getCampaigns(){
+        $result = $this->callToRest('GET', self::API_CAMPAIGN_PATH, null, false);
+        $result['response'] = json_decode($result['response'], true);
+        if(isset($result['response']['results']) && count($result['response']['results'])){
+            return $result['response']['results'];
+        }
+        return false;
+    }
+    
+    public function deleteCampaignProduct($id_product,$id_campaign){
+        $result = $this->callToRest('DELETE', self::API_CAMPAIGN_PATH.'/'.$id_campaign.'/articles/'.$id_product, null, false);
+    }
+    
+    public function assignCampaignProducts($ids_products,$id_campaign){
+        $serializer = new Aplazame_Serializers();
+        $articles = $serializer->getArticlesCampaign($ids_products,$this->context->language->id);
+        $result = $this->callToRest('POST', self::API_CAMPAIGN_PATH.'/'.$id_campaign.'/articles', $articles, true);
+    }
+    
+    public function getMerchant($only_id=false){
+        $result = $this->callToRest('GET', '/merchants', null, false);
+        $result['response'] = json_decode($result['response'], true);
+        if(isset($result['response']['results'][0]['id']) && !empty($result['response']['results'][0]['id'])){
+            $merchant = $result['response']['results'][0];
+            if($only_id){
+                return $merchant['id'];
+            }
+            return $merchant;
+        }
+        return false;
+        
     }
 }
