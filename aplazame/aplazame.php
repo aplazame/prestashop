@@ -892,13 +892,17 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
     }
     
     public function deleteCampaignProduct($id_product,$id_campaign){
-        $result = $this->callToRest('DELETE', self::API_CAMPAIGN_PATH.'/'.$id_campaign.'/articles/'.$id_product, null, false);
+        if((int)$id_campaign>0){
+            $result = $this->callToRest('DELETE', self::API_CAMPAIGN_PATH.'/'.$id_campaign.'/articles/'.$id_product, null, false);
+        }
     }
     
     public function assignCampaignProducts($ids_products,$id_campaign){
-        $serializer = new Aplazame_Serializers();
-        $articles = $serializer->getArticlesCampaign($ids_products,$this->context->language->id);
-        $result = $this->callToRest('POST', self::API_CAMPAIGN_PATH.'/'.$id_campaign.'/articles', $articles, true);
+        if((int)$id_campaign>0){
+            $serializer = new Aplazame_Serializers();
+            $articles = $serializer->getArticlesCampaign($ids_products,$this->context->language->id);
+            $result = $this->callToRest('POST', self::API_CAMPAIGN_PATH.'/'.$id_campaign.'/articles', $articles, true);
+        }
     }
     
     public function getMerchant($only_id=false){
