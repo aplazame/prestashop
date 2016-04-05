@@ -1,1 +1,1 @@
-<div data-aplazame-simulator="" data-amount="{$product_price}"> </div>
+<div data-aplazame-simulator="" data-view="product" data-amount="{$product_price}"></div>
