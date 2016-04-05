@@ -538,11 +538,9 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         }elseif(!$product->show_price || !$product->available_for_order){
             return false;
         }
-        
-        self::formatDecimals();
 
         $this->assignSmartyVars(array(
-            'product_price' => self::formatDecimals($product->getPrice(true, null, 2))
+            'product_aplazame_price' => self::formatDecimals($product->getPrice(true, null, 2))
         ));
         return $this->display(__FILE__, 'views/templates/hook/product.tpl');
     }
@@ -819,7 +817,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         // $params contiene realmente $this->context->cart->getSummaryDetails(null, true); 
         $this->assignSmartyVars(
             array(
-                'total_price' => self::formatDecimals($params['total_price']),
+                'total_aplazame_price' => self::formatDecimals($params['total_price']),
             )
         );
         return $this->display(__FILE__, 'views/templates/hook/shoppingcart.tpl');
