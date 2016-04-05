@@ -6,7 +6,7 @@ if (!defined('_PS_VERSION_')) {
 include_once(_PS_MODULE_DIR_ . '/aplazame/api/Serializers.php');
 require_once(dirname(__FILE__) . '/api/RestClient.php');
 
-class aplazame extends PaymentModule
+class Aplazame extends PaymentModule
 {
     protected $config_form = false;
 
@@ -33,10 +33,12 @@ class aplazame extends PaymentModule
         $this->description = $this->l('Financiamos las compras a clientes y aumentamos un 18% las ventas en tu ecommerce.');
 
         $this->confirmUninstall = $this->l('¿Estás seguro de desinstalar el módulo?');
-
-        $this->limited_countries = array('ES');
-
-        $this->limited_currencies = array('EUR');
+		
+        #Fix for PrestaShop bug on 1.5.4.X that not appear the payment method
+        if (_PS_VERSION_ > 1.5) {
+                $this->limited_countries = array('ES');
+                $this->limited_currencies = array('EUR');
+        }
         $this->type = 'addonsPartner';
         $this->description_full = 'PAGA COMO QUIERAS<br/>
 

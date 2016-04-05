@@ -89,7 +89,7 @@ class Aplazame_Serializers
 
         if ($shipping_address) {
             $shipping = array_merge($this->_getAddr($shipping_address), array(
-                "price"=> static::formatDecimals($shippingCost),
+                "price"=> self::formatDecimals($shippingCost),
                 "name"=> $carrierName
             ));
         }
@@ -152,9 +152,9 @@ class Aplazame_Serializers
                 "url" =>$product_url,
                 "image_url" => 'http://'.$image_url,
                 "quantity" => intval($quantity),
-                "price" => static::formatDecimals($price),
-                "tax_rate" => static::formatDecimals($Product->getTaxesRate()),
-                "discount" => static::formatDecimals($discounts));
+                "price" => self::formatDecimals($price),
+                "tax_rate" => self::formatDecimals($Product->getTaxesRate()),
+                "discount" => self::formatDecimals($discounts));
         }
         return $articles;
     }
@@ -184,8 +184,8 @@ class Aplazame_Serializers
             "id"=>$id_order,
             "articles"=>$articles,
             "currency"=>$currency,
-            "total_amount"=>static::formatDecimals($total_amount),
-            "discount"=>static::formatDecimals($discounts));
+            "total_amount"=>self::formatDecimals($total_amount),
+            "discount"=>self::formatDecimals($discounts));
     }
 
     public function getHistory(Customer $customer, $limit)
@@ -204,8 +204,8 @@ class Aplazame_Serializers
             $status = $Order->getCurrentStateFull(Context::getContext()->language->id);
             $history[] = array(
                 "id"=>$Order->id_cart,
-                "amount"=>static::formatDecimals($this->_orderTotal($Order)),
-                "due"=> static::formatDecimals($this->_orderTotal($Order)),
+                "amount"=>self::formatDecimals($this->_orderTotal($Order)),
+                "due"=> self::formatDecimals($this->_orderTotal($Order)),
                 "status"=>$status['name'],
                 "type"=>$Order->module,
                 "order_date"=>date(DATE_ISO8601, strtotime($Order->date_add)),
@@ -225,7 +225,7 @@ class Aplazame_Serializers
             "order"=>$this->getRenderOrder(),
             "billing"=>$this->_getAddr($order->getBillingAddress()),
             "shipping"=>$this->getShipping($order),
-            "meta"=>static::_getMetadata());
+            "meta"=>self::_getMetadata());
     }*/
 
     public function getCheckout(Order $order, $cart=false)
@@ -259,7 +259,7 @@ class Aplazame_Serializers
             "order"=>$this->getRenderOrder($order, $cart),
             "billing"=>$this->_getAddr($BillingAddress),
             "shipping"=>$this->getShipping($order, $cart),
-            "meta"=>static::_getMetadata());
+            "meta"=> self::_getMetadata());
     }
     
     public function getArticleCampaign(Link $link, $id_product,$id_lang){
