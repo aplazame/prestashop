@@ -1,6 +1,6 @@
 ## Change Log
 
-#### [v1.0.7](https://github.com/aplazame/prestashop/tree/v1.0.7) (2016-03-16)
+#### [v1.0.7](https://github.com/aplazame/prestashop/tree/v1.0.7) (2016-04-07)
 
 [Full Changelog vº](https://github.com/aplazame/prestashop/compare/v1.0.6...v1.0.7)
 
