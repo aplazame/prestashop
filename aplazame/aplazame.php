@@ -353,18 +353,16 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
      */
     public function hookPaymentReturn($params)
     {
-        if ($this->active == false) {
+        //Add conditionals for a bad ERP Connector that calls to this method without parameters
+        if ($this->active == false || !isset($params['objOrder']) || !Validate::isLoadedObject($params['objOrder'])) {
             return;
         }
 
         $order = $params['objOrder'];
-
+        
         if ($order->getCurrentOrderState()->id != Configuration::get('PS_OS_ERROR')) {
             $this->assignSmartyVars(array('status'=> 'ok'));
         }
-
-
-
 
         $this->assignSmartyVars(array(
             'id_order' => $order->id,
