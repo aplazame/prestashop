@@ -1,5 +1,20 @@
 ## Change Log
 
+#### [v1.0.7](https://github.com/aplazame/prestashop/tree/v1.0.7) (2016-04-07)
+
+[Full Changelog vº](https://github.com/aplazame/prestashop/compare/v1.0.6...v1.0.7)
+
+* Php < 5.3 compatibility, static methods.
+* Product price context var.
+
+#### [v1.0.6](https://github.com/aplazame/prestashop/tree/v1.0.6) (2016-03-16)
+
+[Full Changelog v1.0.6](https://github.com/aplazame/prestashop/compare/v1.0.5...v1.0.6)
+
+* Campaigns
+* 400 status code when order is invalid
+* Widget data view 
+
 #### [v1.0.5](https://github.com/aplazame/prestashop/tree/v1.0.5) (2016-02-12)
 
 [Full Changelog v1.0.5](https://github.com/aplazame/prestashop/compare/v1.0.4...v1.0.5)
