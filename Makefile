@@ -1,4 +1,5 @@
 errors = $(shell find . -type f -name "*.php" -exec php -l "{}" \;| grep "Errors parsing ";)
+branch_name = $(shell git symbolic-ref --short HEAD)
 
 test:
 	@php ./test/Aplazame.php
@@ -20,7 +21,7 @@ release: init.master
 	@git checkout release
 	@git merge master
 	@git push origin release
-	@git checkout -b $(branch)
+	@git checkout -b $(branch_name)
 
 branch: init.master
-	@git checkout -b $(branch)
+	@git checkout -b $(branch_name)
