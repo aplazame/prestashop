@@ -536,10 +536,17 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         }elseif(!$product->show_price || !$product->available_for_order){
             return false;
         }
-
+        
+        $defaultLocate = setlocale(LC_ALL,"0");
+        if($defaultLocate != 'C'){
+                setlocale(LC_NUMERIC, 'en_US');
+        }
         $this->assignSmartyVars(array(
             'product_aplazame_price' => self::formatDecimals($product->getPrice(true, null, 2))
         ));
+        if($defaultLocate != 'C'){
+                setlocale(LC_ALL, $defaultLocate);
+        }
         return $this->display(__FILE__, 'views/templates/hook/product.tpl');
     }
     
