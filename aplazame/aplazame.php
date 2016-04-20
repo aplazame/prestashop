@@ -537,6 +537,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
             return false;
         }
         
+        //Workaround for DevOps that change server locale
         $defaultLocate = setlocale(LC_ALL,"0");
         if($defaultLocate != 'C'){
                 setlocale(LC_NUMERIC, 'en_US');
