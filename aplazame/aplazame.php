@@ -10,7 +10,7 @@ class Aplazame extends PaymentModule
 {
     protected $config_form = false;
 
-    const _version = '1.0.7';
+    const _version = '1.0.11';
     const USER_AGENT = 'Aplazame/';
     const API_CHECKOUT_PATH = '/orders';
     const API_CAMPAIGN_PATH = '/me/campaigns';
