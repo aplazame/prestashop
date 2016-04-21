@@ -1,5 +1,17 @@
 ## Change Log
 
+#### [v1.0.10](https://github.com/aplazame/prestashop/tree/v1.0.10) (2016-04-21)
+
+* Adding locale workaround (ortopedialowcost.com)
+
+#### [v1.0.9](https://github.com/aplazame/prestashop/tree/v1.0.9) (2016-04-11)
+
+* json_encode compatibility with php 5.2 ( $options not allowed )
+
+#### [v1.0.8](https://github.com/aplazame/prestashop/tree/v1.0.8) (2016-04-11)
+
+* Fix for tirasdeledbaratas.com
+
 #### [v1.0.7](https://github.com/aplazame/prestashop/tree/v1.0.7) (2016-04-07)
 
 [Full Changelog vº](https://github.com/aplazame/prestashop/compare/v1.0.6...v1.0.7)
