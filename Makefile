@@ -21,7 +21,7 @@ release: init.master
 	@git checkout release
 	@git merge master
 	@git push origin release
-	@git checkout -b $(branch_name)
+	@git checkout $(branch_name)
 
 branch: init.master
 	@git checkout -b $(branch_name)
