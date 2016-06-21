@@ -1,14 +1,3 @@
-*.*~
-*.pyc
-*.log
-*.pyc
-*.DS_Store
-*.directory
-*.sql
-*.xls
-*.p12
-*.cer
-*.pem
-
-secrets.yml
-sftp-config.json
+/vendor/
+composer.lock
+latest.zip
