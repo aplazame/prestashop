@@ -23,7 +23,6 @@
 * **Button Image**: [Select the image](http://docs.aplazame.com/#buttons) that appear as payment method on you cart. The default image is `white-148x46`.
 * **Secret API Key**: The Secret Key provided by Aplazame. You cannot share this key with anyone!!
 * **Public API Key**: The Public Key provided by Aplazame.
-* **Enable Cookies**: If you want to enable cookie tracking for better interests.
 
 > Be sure that on all fields you don't keep any whitespace. Otherwise the module can generate unexpected results.
 
