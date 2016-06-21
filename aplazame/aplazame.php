@@ -334,12 +334,8 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         $this->assignSmartyVars(array('module_dir'=> $this->_path));
 
         $this->assignSmartyVars(array(
-            'aplazame_enabled_cookies' => Configuration::get('APLAZAME_ENABLE_COOKIES', null),
-            'aplazame_version' => ConfigurationCore::get('APLAZAME_API_VERSION', null),
             'aplazame_host' => Configuration::get('APLAZAME_HOST', null),
-            'aplazame_public_key' => Configuration::get('APLAZAME_PUBLIC_KEY', null),
             'aplazame_button' => Configuration::get('APLAZAME_BUTTON', null),
-            'aplazame_is_sandbox' => Configuration::get('APLAZAME_SANDBOX', null) ? 'true' : 'false',
             'aplazame_currency_iso' => $currency->iso_code,
             'aplazame_cart_total' => self::formatDecimals($params['cart']->getOrderTotal()),
             'aplazame_button_image' => Configuration::get('APLAZAME_BUTTON_IMAGE', null),
@@ -364,10 +360,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         }
 
         $this->assignSmartyVars(array(
-            'id_order' => $order->id,
             'reference' => $order->reference,
-            'params' => $params,
-            'total' => Tools::displayPrice($params['total_to_pay'], $params['currencyObj'], false),
         ));
 
         return $this->display(__FILE__, 'views/templates/hook/confirmation.tpl');
@@ -453,8 +446,6 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                     );
 
                     $this->assignSmartyVars(array(
-                        'id_order' => $Order->id,
-                        'reference' => $Order->reference,
                         'aplazame_data' => $dataAplazame,
                         'logo' => $this->img,
                     ));

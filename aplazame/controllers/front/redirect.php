@@ -36,13 +36,7 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
                 $this->module->duplicateCart();
             }
             $this->context->smarty->assign(array(
-                    'cart_id' => Context::getContext()->cart->id,
-                    'secure_key' => Context::getContext()->customer->secure_key,
-                    'aplazame_public_key' => Configuration::get('APLAZAME_PUBLIC_KEY', null),
                     'aplazame_order_json' => json_encode($this->module->getCheckoutSerializer(0, Context::getContext()->cart->id)),
-                    'aplazame_version' => ConfigurationCore::get('APLAZAME_API_VERSION', null),
-                    'aplazame_host' => Configuration::get('APLAZAME_HOST', null),
-                    'aplazame_is_sandbox' => Configuration::get('APLAZAME_SANDBOX', null)?'true':'false',
             ));
             return $this->setTemplate('redirect.tpl');
         }
