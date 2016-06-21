@@ -11,7 +11,6 @@ class Aplazame extends PaymentModule
     protected $config_form = false;
 
     const _version = '1.0.11';
-    const USER_AGENT = 'Aplazame/';
     const API_CHECKOUT_PATH = '/orders';
     const API_CAMPAIGN_PATH = '/me/campaigns';
 
@@ -608,6 +607,12 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
 
     public function callToRest($method, $url, $values, $to_json = true)
     {
+        $versions = array(
+            'PHP/' . PHP_VERSION,
+            'Prestashop/' . _PS_VERSION_,
+            'AplazamePrestashop/' . self::_version,
+        );
+
         $url = trim(str_replace('://', '://api.', Configuration::get('APLAZAME_HOST', null)), "/") . $url;
 
         $headers = array();
@@ -619,7 +624,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         $headers[] = 'Authorization: Bearer ' .
                 Configuration::get('APLAZAME_SECRET_KEY', null);
 
-        $headers[] = 'User-Agent: ' . self::USER_AGENT . self::_version;
+        $headers[] = 'User-Agent: ' . implode(', ', $versions);
 
         $version = Configuration::get('APLAZAME_API_VERSION', null);
 
