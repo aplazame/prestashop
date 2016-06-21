@@ -19,7 +19,6 @@
 
 * **Sandbox**: Determines if the module is on Sandbox mode.
 * **Host**: Aplazame host `https://aplazame.com`
-* **API Version**: The latest version is `v1.2`
 * **Button**: The CSS Selector for Aplazame payment method. The default selector is `#aplazame_payment_button`. [See bellow](#one-step-checkout-button) to configure button with One Step Checkout modules.
 * **Button Image**: [Select the image](http://docs.aplazame.com/#buttons) that appear as payment method on you cart. The default image is `white-148x46`.
 * **Secret API Key**: The Secret Key provided by Aplazame. You cannot share this key with anyone!!

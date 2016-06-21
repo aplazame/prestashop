@@ -3,7 +3,6 @@
 <script>
 aplazame.init({
     publicKey: "{$aplazame_public_key}",
-    version: "{$aplazame_version}",
     sandbox: "{$aplazame_is_sandbox}",
     analytics: "{if $aplazame_enabled_cookies eq 1}true{else}false{/if}"
 });
