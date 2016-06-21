@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v1.0.11](https://github.com/aplazame/prestashop/tree/v1.0.11) (2016-04-21)
+
+* Update changelog entries in HISTORY.md
+
 #### [v1.0.10](https://github.com/aplazame/prestashop/tree/v1.0.10) (2016-04-21)
 
 * Adding locale workaround (ortopedialowcost.com)
