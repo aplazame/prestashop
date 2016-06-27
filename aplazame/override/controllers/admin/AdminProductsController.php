@@ -12,6 +12,7 @@ class AdminProductsController extends AdminProductsControllerCore
     protected function processBulkUpdateAplazameCampaign()
     {
         if(Module::isInstalled('aplazame') && Module::isEnabled('aplazame')){
+            /** @var Aplazame $aplazame */
             $aplazame = Module::getInstanceByName('aplazame');
             $campaign = Tools::getValue('APLAZAME_PRODUCT_CAMPAIGN','-1');
             if (Tools::isSubmit('submitUpdateAplazameCampaign')) {

@@ -49,6 +49,7 @@ class AdminOrdersController extends AdminOrdersControllerCore
 
                                 if ($amount > 0) {
                                     if (!Tools::isSubmit('generateDiscountRefund') && $order->module == 'aplazame') {
+                                        /** @var Aplazame $aplazame */
                                         $aplazame = ModuleCore::getInstanceByName('aplazame');
                                         $aplazame->refundAmount($order, $amount);
                                     }
