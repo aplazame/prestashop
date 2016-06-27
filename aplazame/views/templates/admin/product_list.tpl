@@ -30,7 +30,7 @@
             <select name="APLAZAME_PRODUCT_CAMPAIGN" id="APLAZAME_PRODUCT_CAMPAIGN">
                 <option value="-1">{l s='None campaign'}</option>
                 {foreach key=key item=item from=$aplazame_campaigns}
-                    <option value="{$item.id}" {if $item.id == $selected_aplazame_campaign}selected="selected"{/if} >{$item.name}</option>    
+                    <option value="{$item.id}">{$item.name}</option>
                 {/foreach}
             </select>
             {foreach $POST as $key => $value}
