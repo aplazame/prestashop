@@ -6,6 +6,11 @@ class AdminProductsController extends AdminProductsControllerCore
     public function __construct()
     {
         parent::__construct();
+
+        if (!Module::isInstalled('aplazame') || !Module::isEnabled('aplazame')) {
+            return;
+        }
+
         $this->bulk_actions['updateAplazameCampaign'] = array('text' => $this->l('Change products associated with Aplazame Campaign'), 'icon' => 'icon-refresh');
     }
 
