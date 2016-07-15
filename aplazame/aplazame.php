@@ -373,10 +373,10 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
     public function refundAmount($Order, $amount)
     {
         $price_refund = $this->formatDecimals($amount);
-        $result = $this->callToRest('GET', self::API_CHECKOUT_PATH . '?mid=' . $Order->id_cart, null, false);
+        $result = $this->callToRest('GET', self::API_CHECKOUT_PATH . '?mid=' . $Order->id_cart);
         $result['response'] = json_decode($result['response'], true);
         if ($result['code'] == '200' && isset($result['response']['results'][0]['id'])) {
-            $resultOrder = $this->callToRest('POST', self::API_CHECKOUT_PATH . '/' . $result['response']['results'][0]['mid'].'/refund', array('amount'=>$price_refund), true);
+            $resultOrder = $this->callToRest('POST', self::API_CHECKOUT_PATH . '/' . $result['response']['results'][0]['mid'] . '/refund', array('amount' => $price_refund));
             if ($resultOrder['code'] != '200') {
                 $this->logError('Error: Cannot refund order #'.$Order->id_cart.' - ID AP: '.$result['response']['results'][0]['id']);
             }
@@ -387,13 +387,13 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
     public function hookActionProductCancel($params)
     {
         if (!Tools::isSubmit('generateDiscount') && !Tools::isSubmit('generateCreditSlip')) {
-            $result = $this->callToRest('GET', self::API_CHECKOUT_PATH . '?mid=' . $params['order']->id_cart, null, false);
+            $result = $this->callToRest('GET', self::API_CHECKOUT_PATH . '?mid=' . $params['order']->id_cart);
             $result['response'] = json_decode($result['response'], true);
             if ($result['code'] == '200' && isset($result['response']['results'][0]['id'])) {
                 $checkout_data = $this->getCheckoutSerializer($params['order']->id, false);
                 $order_data = array('order'=>$checkout_data['order']);
                 $order_data['order']['shipping'] = $checkout_data['shipping'];
-                $resultOrder = $this->callToRest('PUT', self::API_CHECKOUT_PATH . '/' . $result['response']['results'][0]['mid'], $order_data, true);
+                $resultOrder = $this->callToRest('PUT', self::API_CHECKOUT_PATH . '/' . $result['response']['results'][0]['mid'], $order_data);
                 $resultOrder['response'] = json_decode($resultOrder['response'], true);
                 if ($resultOrder['response']['success'] != 'true') {
                     $this->logError('Error: Cannot update order mid #'.$params['order']->id_cart.' - ID AP: '.$result['response']['results'][0]['id'].' with_response: '.json_encode($resultOrder).' with data: '.json_encode($order_data));
@@ -413,10 +413,10 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         $Order = new Order($id_order);
 
         if ($statusObject->id == _PS_OS_CANCELED_) {
-            $result = $this->callToRest('GET', self::API_CHECKOUT_PATH . '?mid=' . $Order->id_cart, null, false);
+            $result = $this->callToRest('GET', self::API_CHECKOUT_PATH . '?mid=' . $Order->id_cart);
             $result['response'] = json_decode($result['response'], true);
             if ($result['code'] == '200' && isset($result['response']['results'][0]['id'])) {
-                $result = $this->callToRest('POST', self::API_CHECKOUT_PATH . '/' . $result['response']['results'][0]['mid'].'/cancel', null, false);
+                $result = $this->callToRest('POST', self::API_CHECKOUT_PATH . '/' . $result['response']['results'][0]['mid'] . '/cancel');
                 $result['response'] = json_decode($result['response'], true);
                 if ($result['response']['success'] != 'true') {
                     $this->logError('Error: Cannot cancel order mid #'.$Order->id_cart.' - ID AP: '.$result['response']['results'][0]['id']);
@@ -433,10 +433,10 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         $Order = new Order($id_order);
 
         if ($Order->module == $this->name) {
-            $result = $this->callToRest('GET', self::API_CHECKOUT_PATH . '?mid=' . $Order->id_cart, null, false);
+            $result = $this->callToRest('GET', self::API_CHECKOUT_PATH . '?mid=' . $Order->id_cart);
             $result['response'] = json_decode($result['response'], true);
             if ($result['code'] == '200' && isset($result['response']['results'][0]['id'])) {
-                $result = $this->callToRest('GET', self::API_CHECKOUT_PATH . '/' . $result['response']['results'][0]['id'], null, false);
+                $result = $this->callToRest('GET', self::API_CHECKOUT_PATH . '/' . $result['response']['results'][0]['id']);
                 $result['response'] = json_decode($result['response'], true);
 
                 if ($result['code'] == '200') {
@@ -596,8 +596,12 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         return $serializer->getHistory($customer, $limit);
     }
 
-    public function callToRest($method, $url, $values, $to_json = true)
+    public function callToRest($method, $url, array $values = null)
     {
+        if ($values) {
+            $values = json_encode($values);
+        }
+
         $versions = array(
             'PHP/' . PHP_VERSION,
             'Prestashop/' . _PS_VERSION_,
@@ -628,14 +632,6 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                 (Configuration::get('APLAZAME_SANDBOX', null) ? 'sandbox.' : '') . $version . '+json';
 
         if (extension_loaded('curl') == false || $method == 'PUT') {
-            if ($to_json && $values) {
-                $postdata = json_encode($values);
-            } elseif ($values) {
-                $postdata = http_build_query(
-                    $values
-                );
-            }
-
             $opts = array('http' =>
                 array(
                     'method' => $method,
@@ -643,8 +639,8 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
 
                 )
             );
-            if (isset($postdata)) {
-                $opts['http']['content'] = $postdata;
+            if ($values) {
+                $opts['http']['content'] = $values;
             }
 
             $context = stream_context_create($opts);
@@ -658,7 +654,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
             }
         } else {
             try {
-                $response = RestClient::$method($url, ($to_json) ? json_encode($values) : $values, null, null, null, $headers);
+                $response = RestClient::$method($url, $values, null, null, null, $headers);
             } catch (Exception $e) {
                 $this->logError($e->getMessage());
             }
@@ -728,7 +724,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
             $cart_id = $id_order;
             $amount = $cart->getOrderTotal();
         }else{
-            $result = $this->callToRest('POST', self::API_CHECKOUT_PATH . '/' . $id_order . '/authorize', null, false);
+            $result = $this->callToRest('POST', self::API_CHECKOUT_PATH . '/' . $id_order . '/authorize');
             $result['response'] = json_decode($result['response'], true);
             $cart_id = $result['response']['id'];
             $amount = $result['response']['amount'] / 100;
@@ -885,7 +881,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
     }
     
     public function getCampaigns(){
-        $result = $this->callToRest('GET', self::API_CAMPAIGN_PATH, null, false);
+        $result = $this->callToRest('GET', self::API_CAMPAIGN_PATH);
         $result['response'] = json_decode($result['response'], true);
         if(isset($result['response']['results']) && count($result['response']['results'])){
             return $result['response']['results'];
@@ -895,7 +891,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
     
     public function deleteCampaignProduct($id_product,$id_campaign){
         if((int)$id_campaign>0){
-            $result = $this->callToRest('DELETE', self::API_CAMPAIGN_PATH.'/'.$id_campaign.'/articles/'.$id_product, null, false);
+            $result = $this->callToRest('DELETE', self::API_CAMPAIGN_PATH . '/' . $id_campaign . '/articles/' . $id_product);
         }
     }
     
@@ -903,12 +899,12 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         if((int)$id_campaign>0){
             $serializer = new Aplazame_Serializers();
             $articles = $serializer->getArticlesCampaign($ids_products,$this->context->language->id);
-            $result = $this->callToRest('POST', self::API_CAMPAIGN_PATH.'/'.$id_campaign.'/articles', $articles, true);
+            $result = $this->callToRest('POST', self::API_CAMPAIGN_PATH . '/' . $id_campaign . '/articles', $articles);
         }
     }
     
     public function getMerchant($only_id=false){
-        $result = $this->callToRest('GET', '/merchants', null, false);
+        $result = $this->callToRest('GET', '/merchants');
         $result['response'] = json_decode($result['response'], true);
         if(isset($result['response']['results'][0]['id']) && !empty($result['response']['results'][0]['id'])){
             $merchant = $result['response']['results'][0];
