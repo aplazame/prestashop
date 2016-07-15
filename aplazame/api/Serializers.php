@@ -262,7 +262,8 @@ class Aplazame_Serializers
             "meta"=> self::_getMetadata());
     }
     
-    public function getArticleCampaign(Link $link, $id_product,$id_lang){
+    public function getArticleCampaign($id_product, $id_lang){
+        $link = new Link();
         $cover = Product::getCover($id_product);
         $Product = new Product($id_product,false,$id_lang);
         $image_url = str_replace(array('http://','https://'), '', $link->getImageLink('product', $cover['id_image']));
@@ -276,10 +277,9 @@ class Aplazame_Serializers
     }
     
     public function getArticlesCampaign($ids_product,$id_lang){
-        $link = new Link();
         $articles = array();
         foreach($ids_product as $id_product){
-            $articles[] = $this->getArticleCampaign($link, $id_product,$id_lang);
+            $articles[] = $this->getArticleCampaign($id_product, $id_lang);
         }
         return $articles;
     }

@@ -12,7 +12,6 @@ class Aplazame extends PaymentModule
 
     const _version = '1.0.11';
     const API_CHECKOUT_PATH = '/orders';
-    const API_CAMPAIGN_PATH = '/me/campaigns';
 
     public function __construct()
     {
@@ -88,9 +87,10 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                 $this->registerHook('displayRightColumnProduct') &&
                 $this->registerHook('displayRightColumn') &&
                 $this->registerHook('displayAdminProductsExtra') &&
-                $this->registerHook('actionProductUpdate') &&
                 $this->registerHook('displayAdminProductsListBefore') &&
-                $this->registerHook('displayPaymentReturn');
+                $this->registerHook('displayPaymentReturn') &&
+                $this->registerController('AdminAplazameApiProxy', 'Aplazame API Proxy')
+        ;
     }
 
     public function uninstall()
@@ -824,83 +824,36 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
     public function hookDisplayAdminProductsExtra($params)
     {
         $id_product = Tools::getValue('id_product');
-        $campaigns = $this->getCampaigns();
-        
-        $selected_campaigns = Configuration::get('APLAZAME_SEL_CAMP', null);
-        $selected_campaigns = json_decode($selected_campaigns,true);
-        if(isset($selected_campaigns[$id_product])){
-            $selected = $selected_campaigns[$id_product];
-        }
-        
+
+        $serializer = new Aplazame_Serializers();
+        $articles = $serializer->getArticlesCampaign(array($id_product), $this->context->language->id);
+
         $this->assignSmartyVars(array(
-            'aplazame_campaigns' => $campaigns,
-            'selected_aplazame_campaign' => $selected,
+            'articles' => $articles,
         ));
         
         return $this->display(__FILE__, 'views/templates/admin/product.tpl');
     }
-    
-    public function hookActionProductUpdate($params) {
-        $id_product = (int) Tools::getValue('id_product');
-        $selected_campaigns = Configuration::get('APLAZAME_SEL_CAMP', null);
-        $selected_campaigns = json_decode($selected_campaigns,true);
-        if(isset($selected_campaigns[$id_product])){
-            $selected = $selected_campaigns[$id_product];
-            $this->deleteCampaignProduct($id_product, $selected);
-        }
-        $campaign = Tools::getValue('APLAZAME_PRODUCT_CAMPAIGN',0);
-        if($campaign && $campaign != '-1'){
-            $ids_products = array();
-            $ids_products[] = $id_product;
-            $this->assignCampaignProducts($ids_products, $campaign);
-        }
-        $selected_campaigns[$id_product] = $campaign;
-        Configuration::updateValue('APLAZAME_SEL_CAMP', json_encode($selected_campaigns));
-    }
-    
+
     public function hookDisplayAdminProductsListBefore($params){
-        if (Tools::isSubmit('submitBulkupdateAplazameCampaignproduct'))
-        {
-            if (Tools::getIsset('cancel')){
-                return false;
-            }
-            $old_presta = false;
-            if (_PS_VERSION_ < 1.6) {
-                $old_presta = true;    
-            }
-            $campaigns = $this->getCampaigns();
-            $this->assignSmartyVars(array(
-                'updateAplazameCampaign_mode' => true,
-                'aplazame_campaigns' => $campaigns,
-                'REQUEST_URI' => $_SERVER['REQUEST_URI'],
-                'POST' => $_POST,
-                'old_presta'=> $old_presta));
-            return $this->display(__FILE__, 'views/templates/admin/product_list.tpl');
+        if (!Tools::isSubmit('submitBulkassignProductsToAplazameCampaignsproduct')) {
+            return false;
         }
-        return false;        
-    }
-    
-    public function getCampaigns(){
-        $result = $this->callToRest('GET', self::API_CAMPAIGN_PATH);
-        $result['response'] = json_decode($result['response'], true);
-        if(isset($result['response']['results']) && count($result['response']['results'])){
-            return $result['response']['results'];
+        if (Tools::getIsset('cancel')) {
+            return false;
         }
-        return false;
-    }
-    
-    public function deleteCampaignProduct($id_product,$id_campaign){
-        if((int)$id_campaign>0){
-            $result = $this->callToRest('DELETE', self::API_CAMPAIGN_PATH . '/' . $id_campaign . '/articles/' . $id_product);
-        }
-    }
-    
-    public function assignCampaignProducts($ids_products,$id_campaign){
-        if((int)$id_campaign>0){
-            $serializer = new Aplazame_Serializers();
-            $articles = $serializer->getArticlesCampaign($ids_products,$this->context->language->id);
-            $result = $this->callToRest('POST', self::API_CAMPAIGN_PATH . '/' . $id_campaign . '/articles', $articles);
-        }
+
+        $articlesId = Tools::getValue('productBox');
+
+        $serializer = new Aplazame_Serializers();
+        $articles = $serializer->getArticlesCampaign($articlesId, $this->context->language->id);
+
+        $this->assignSmartyVars(array(
+            'articles' => $articles,
+            'old_presta' => (_PS_VERSION_ < 1.6),
+        ));
+
+        return $this->display(__FILE__, 'views/templates/admin/product_list.tpl');
     }
     
     public function getMerchant($only_id=false){
@@ -915,5 +868,20 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         }
         return false;
         
+    }
+
+    protected function registerController($className, $name)
+    {
+        $tab = new Tab();
+        $tab->active = 1;
+        $tab->name = array();
+        $tab->class_name = $className;
+        foreach (Language::getLanguages(true) as $lang) {
+            $tab->name[$lang['id_lang']] = $name;
+        }
+        $tab->id_parent = -1;
+        $tab->module = 'aplazame';
+
+        return (boolean) $tab->add();
     }
 }
