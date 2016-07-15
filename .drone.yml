@@ -16,7 +16,7 @@ deploy:
     user: $$DEPLOY_USER
     host: prestashop.aplazame.com
     target: $$RELEASE_PATH
-    source: aplazame
+    source: aplazame/
     delete: true
     recursive: true
 
