@@ -103,7 +103,9 @@ class RestClient
             unset($parts[count($parts) - 1]);
         }
          preg_match("@Content-Type: ([a-zA-Z0-9-]+/?[a-zA-Z0-9-]*)@", $parts[0], $reg);// This extract the content type
-        $this->headers['content-type'] = $reg[1];
+         if (isset($reg[1])) {
+             $this->headers['content-type'] = $reg[1];
+         }
          preg_match("@HTTP/1.[0-1] ([0-9]{3}) ([a-zA-Z ]+)@", $parts[0], $reg); // This extracts the response header Code and Message
         $this->headers['code'] = $reg[1];
          $this->headers['message'] = $reg[2];
