@@ -1,10 +1,8 @@
-<script type="text/javascript" src="{$aplazame_host}/static/aplazame.js"></script>
+<script type="text/javascript" src="{$aplazame_js_uri|escape:'htmlall':'UTF-8'}"></script>
 
 <script>
 aplazame.init({
     publicKey: "{$aplazame_public_key}",
-    version: "{$aplazame_version}",
-    sandbox: "{$aplazame_is_sandbox}",
-    analytics: "{if $aplazame_enabled_cookies eq 1}true{else}false{/if}"
+    sandbox: "{$aplazame_is_sandbox}"
 });
 </script>
