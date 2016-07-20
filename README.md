@@ -18,10 +18,10 @@
 ![config](docs/config.png)
 
 * **Sandbox**: Determines if the module is on Sandbox mode.
+* **Private API Key**: The Private Key provided by Aplazame. You cannot share this key with anyone!!
+* **Public API Key**: The Public Key provided by Aplazame.
 * **Button**: The CSS Selector for Aplazame payment method. The default selector is `#aplazame_payment_button`. [See bellow](#one-step-checkout-button) to configure button with One Step Checkout modules.
 * **Button Image**: [Select the image](http://docs.aplazame.com/#buttons) that appear as payment method on you cart. The default image is `white-148x46`.
-* **Secret API Key**: The Secret Key provided by Aplazame. You cannot share this key with anyone!!
-* **Public API Key**: The Public Key provided by Aplazame.
 
 > Be sure that on all fields you don't keep any whitespace. Otherwise the module can generate unexpected results.
 
