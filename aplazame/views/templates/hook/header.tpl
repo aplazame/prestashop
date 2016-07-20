@@ -1,4 +1,4 @@
-<script type="text/javascript" src="{$aplazame_host}/static/aplazame.js"></script>
+<script type="text/javascript" src="{$aplazame_js_uri|escape:'htmlall':'UTF-8'}"></script>
 
 <script>
 aplazame.init({

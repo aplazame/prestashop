@@ -13,8 +13,15 @@ class Aplazame extends PaymentModule
     const _version = '1.0.11';
     const API_CHECKOUT_PATH = '/orders';
 
+    /**
+     * @var string
+     */
+    private $apiBaseUri;
+
     public function __construct()
     {
+        $this->apiBaseUri = getenv('APLAZAME_API_BASE_URI') ? getenv('APLAZAME_API_BASE_URI') : 'https://api.aplazame.com';
+
         $this->name = 'aplazame';
         if (!isset($this->local_path) || empty($this->local_path)) {
             $this->local_path = _PS_MODULE_DIR_.$this->name.'/';
@@ -61,7 +68,6 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         }
 
         Configuration::updateValue('APLAZAME_SANDBOX', false);
-        Configuration::updateValue('APLAZAME_HOST', 'https://aplazame.com');
         Configuration::updateValue('APLAZAME_BUTTON_IMAGE', 'white-148x46');
         Configuration::updateValue('APLAZAME_BUTTON', '#aplazame_payment_button');
         Configuration::updateValue('APLAZAME_WIDGET_PROD', "0");
@@ -190,14 +196,6 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                     array(
                         'col' => 4,
                         'type' => 'text',
-                        'prefix' => '<i class="icon icon-link"></i>',
-                        'desc' => $this->l('Aplazame Host'),
-                        'name' => 'APLAZAME_HOST',
-                        'label' => $this->l('Host'),
-                    ),
-                    array(
-                        'col' => 4,
-                        'type' => 'text',
                         'prefix' => '<i class="icon icon-code"></i>',
                         'desc' => $this->l('Aplazame Button CSS Selector'),
                         'name' => 'APLAZAME_BUTTON',
@@ -266,7 +264,6 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
     {
         return array(
             'APLAZAME_SANDBOX' => Configuration::get('APLAZAME_SANDBOX', null),
-            'APLAZAME_HOST' => Configuration::get('APLAZAME_HOST', null),
             'APLAZAME_BUTTON' => Configuration::get('APLAZAME_BUTTON', null),
             'APLAZAME_SECRET_KEY' => Configuration::get('APLAZAME_SECRET_KEY', null),
             'APLAZAME_PUBLIC_KEY' => Configuration::get('APLAZAME_PUBLIC_KEY', null),
@@ -302,12 +299,13 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
 
         $this->assignSmartyVars(array('module_dir'=> $this->_path));
 
+        $button_image_uri = 'https://aplazame.com/static/img/buttons/' . Configuration::get('APLAZAME_BUTTON_IMAGE', null) . '.png';
+
         $this->assignSmartyVars(array(
-            'aplazame_host' => Configuration::get('APLAZAME_HOST', null),
             'aplazame_button' => Configuration::get('APLAZAME_BUTTON', null),
             'aplazame_currency_iso' => $currency->iso_code,
             'aplazame_cart_total' => self::formatDecimals($params['cart']->getOrderTotal()),
-            'aplazame_button_image' => Configuration::get('APLAZAME_BUTTON_IMAGE', null),
+            'aplazame_button_image_uri' => $button_image_uri,
         ));
         return $this->display(__FILE__, 'views/templates/hook/payment.tpl');
     }
@@ -437,8 +435,10 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
             return;
         }
 
+        $aplazameJsUri = getenv('APLAZAME_JS_URI') ? getenv('APLAZAME_JS_URI') : 'https://aplazame.com/static/aplazame.js';
+
         $this->assignSmartyVars(array(
-            'aplazame_host' => Configuration::get('APLAZAME_HOST', null),
+            'aplazame_js_uri' => $aplazameJsUri,
             'aplazame_public_key' => Configuration::get('APLAZAME_PUBLIC_KEY', null),
             'aplazame_is_sandbox' => Configuration::get('APLAZAME_SANDBOX', null) ? 'true' : 'false',
         ));
@@ -563,7 +563,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         return $serializer->getHistory($customer, $limit);
     }
 
-    public function callToRest($method, $url, array $values = null)
+    public function callToRest($method, $path, array $values = null)
     {
         if ($values) {
             $values = json_encode($values);
@@ -575,7 +575,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
             'AplazamePrestashop/' . self::_version,
         );
 
-        $url = trim(str_replace('://', '://api.', Configuration::get('APLAZAME_HOST', null)), "/") . $url;
+        $url = $this->apiBaseUri . $path;
 
         $headers = array();
         if (in_array($method, array(
