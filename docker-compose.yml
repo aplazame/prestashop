@@ -1,0 +1,37 @@
+version: "2"
+
+services:
+  web:
+    build:
+      dockerfile: Dockerfile
+      context: ./
+    depends_on:
+      - db
+    environment:
+      - PS_DEV_MODE=1
+      - PS_COUNTRY=es
+      - PS_FOLDER_ADMIN=adminTest
+      - PS_FOLDER_INSTALL=installTest
+      - PS_HANDLE_DYNAMIC_DOMAIN=1
+      - PS_INSTALL_AUTO=1
+      - DB_SERVER=db
+      - DB_PASSWD=password
+    networks:
+      - internal
+      - public
+    volumes:
+      - ./aplazame:/var/www/html/modules/aplazame
+    ports:
+      - "80:80"
+
+  db:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=prestashop
+    networks:
+      - internal
+
+networks:
+  internal:
+  public:

@@ -1,4 +1,5 @@
 /vendor/
 aplazame/config.xml
 composer.lock
+docker-compose.override.yml
 latest.zip
