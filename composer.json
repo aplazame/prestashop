@@ -1,7 +1,7 @@
-{  
+{
     "name": "aplazame/prestashop",
     "description": "Aplazame Prestashop module",
-    "keywords": [  
+    "keywords": [
         "aplazame",
         "api",
         "rest",
@@ -20,24 +20,21 @@
     "homepage": "https://aplazame.com/",
     "license": "GPL-3.0",
     "authors": [
-        {  
+        {
             "name": "Dani M.",
             "email": "dmartin@webimpacto.es",
             "homepage": "http://webimpacto.es"
         },
-        {  
+        {
             "name": "Dani M.",
             "email": "dani@aplazame.com",
             "homepage": "https://aplazame.com"
         }
     ],
-    "require": {  
+    "require": {
         "php": ">=5.2"
     },
-    "require-dev": {  
-        "simpletest/simpletest": "1.1.*",
-        "fabpot/php-cs-fixer": "^1.10",
-        "smarty-gettext/smarty-gettext": "1.2.0"
-    },
-    "minimum-stability": "stable"
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "1.11.*"
+    }
 }

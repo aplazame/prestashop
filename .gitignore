@@ -1,5 +1,5 @@
 /vendor/
-aplazame/config.xml
+.php_cs.cache
 composer.lock
 docker-compose.override.yml
 latest.zip

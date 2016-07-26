@@ -1,4 +1,4 @@
-{if $old_presta}
+{if $smarty.const._PS_VERSION_ < 1.6}
     <style type="text/css">
         .panel{
             position: relative;

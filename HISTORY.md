@@ -1,5 +1,15 @@
 ## Change Log
 
+#### [v2.0.0](https://github.com/aplazame/prestashop/tree/v2.0.0) (2016-07-26)
+
+IMPORTANT: Credit slips are the way of issue refunds to Aplazame. For `partial 
+refunds` this is automatic, for `standard refunds` you must to check the option.
+
+* Module refactor
+* Added translations
+* Simplify lot of logic
+* Fix many reported issues
+
 #### [v1.0.11](https://github.com/aplazame/prestashop/tree/v1.0.11) (2016-04-21)
 
 * Update changelog entries in HISTORY.md
@@ -18,7 +28,7 @@
 
 #### [v1.0.7](https://github.com/aplazame/prestashop/tree/v1.0.7) (2016-04-07)
 
-[Full Changelog vº](https://github.com/aplazame/prestashop/compare/v1.0.6...v1.0.7)
+[Full Changelog v1.0.7](https://github.com/aplazame/prestashop/compare/v1.0.6...v1.0.7)
 
 * Php < 5.3 compatibility, static methods.
 * Product price context var.
