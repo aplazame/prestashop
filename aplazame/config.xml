@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<module>
+	<name>aplazame</name>
+	<displayName><![CDATA[Aplazame: compra ahora, paga despu&eacute;s]]></displayName>
+	<version><![CDATA[2.0.0]]></version>
+	<description><![CDATA[Financiamos las compras a clientes y aumentamos un 18% las ventas en tu ecommerce.]]></description>
+	<author><![CDATA[Aplazame]]></author><author_uri><![CDATA[https://aplazame.com]]></author_uri>
+	<tab><![CDATA[payments_gateways]]></tab>
+	<confirmUninstall><![CDATA[Are you sure about removing these details?]]></confirmUninstall>
+	<is_configurable>1</is_configurable>
+	<need_instance>0</need_instance>
+	<limited_countries>ES</limited_countries>
+</module>

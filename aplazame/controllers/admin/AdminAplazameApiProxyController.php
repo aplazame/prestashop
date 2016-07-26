@@ -18,10 +18,6 @@ final class AdminAplazameApiProxyController extends ModuleAdminController
     public function postProcess()
     {
         $method = Tools::getValue('method');
-        if (!in_array($method, array('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))) {
-            return parent::postProcess();
-        }
-
         $path = Tools::getValue('path');
         $data = Tools::getValue('data');
         $data = json_decode($data);
@@ -29,8 +25,8 @@ final class AdminAplazameApiProxyController extends ModuleAdminController
             $data = array();
         }
 
-        $result = $this->aplazame->callToRest($method, $path, $data, true);
+        $response = $this->aplazame->callToRest($method, $path, $data);
 
-        die(trim($result['response']));
+        die(json_encode($response['payload']));
     }
 }

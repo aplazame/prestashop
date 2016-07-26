@@ -1,61 +1,59 @@
 <?php
 
+/**
+ * @property Aplazame module
+ */
 class AplazameRedirectModuleFrontController extends ModuleFrontController
 {
-    /**
-     * Do whatever you have to before redirecting the customer on the website of your payment processor.
-     */
     public function postProcess()
     {
-        /**
-         * Oops, an error occurred.
-         */
-        if (Tools::getValue('action') == 'error'){
-            
-            if($cart_id = Tools::getValue('order_id',false)){
-                
-                if($this->module->validateController($cart_id,true,'Order cancelled by cancel_url')){
-                    $this->module->duplicateCart($cart_id);
-                    //It's an ajax call maded by aplazame JS, not return nothing
-                    exit();
-                }  
-            }
-            return $this->displayError('An error occurred while trying to redirect the customer');
-        }
-        else
-        {
-            //First solution to know if refreshed page: http://stackoverflow.com/a/6127748
-            $refreshButtonPressed = isset($_SERVER['HTTP_CACHE_CONTROL']) &&
-                    $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0';
+        $cart = Context::getContext()->cart;
 
-            $result = $this->module->callToRest('GET', '/orders?mid=' . Context::getContext()->cart->id, null, false);
-            $result['response'] = json_decode($result['response'], true);
-
-            if ($result['code'] == '200' && isset($result['response']['results'][0]['id']) && !$refreshButtonPressed) {
-                //The cart exists on Aplazame, we try to send with another ID
-                $this->module->duplicateCart();
-            }
-            $this->context->smarty->assign(array(
-                    'aplazame_order_json' => json_encode($this->module->getCheckoutSerializer(0, Context::getContext()->cart->id)),
-            ));
-            return $this->setTemplate('redirect.tpl');
+        if ($this->orderExists($cart->id)) {
+            $this->module->log(
+                Aplazame::LOG_INFO,
+                'Cart already exists in Aplazame. Create a new one with a different ID',
+                $cart->id
+            );
+            $this->duplicateCart($cart);
         }
+
+        $serializer = new Aplazame_Serializers();
+
+        $this->context->smarty->assign(array(
+            'aplazame_order' => $serializer->getCheckout($cart, (int) $this->module->id, $this->module->currentOrder),
+        ));
+
+        return $this->setTemplate('redirect.tpl');
     }
 
-    protected function displayError($message, $description = false)
+    /**
+     * @param string $mid
+     *
+     * @return bool
+     */
+    private function orderExists($mid)
     {
-        /**
-         * Create the breadcrumb for your ModuleFrontController.
-         */
-        $this->context->smarty->assign('path', '
-            <a href="'.$this->context->link->getPageLink('order', null, null, 'step=3').'">'.$this->module->l('Payment').'</a>
-            <span class="navigation-pipe">&gt;</span>'.$this->module->l('Error'));
+        $response = $this->module->callToRest('GET', '/orders?mid=' . $mid);
+        if ($response['is_error'] || empty($response['payload']['results'])) {
+            return false;
+        }
 
-        /**
-         * Set error message and description for the template.
-         */
-        array_push($this->errors, $this->module->l($message), $description);
+        return true;
+    }
 
-        return $this->setTemplate('error.tpl');
+    private function duplicateCart(Cart $oldCart)
+    {
+        $data = $oldCart->duplicate();
+        if (!$data || !$data['success']) {
+            $this->module->log(Aplazame::LOG_WARNING, 'Cannot duplicate cart', $oldCart->id);
+
+            return;
+        }
+
+        $cart = $data['cart'];
+        Context::getContext()->cart = $cart;
+        CartRule::autoAddToCart(Context::getContext());
+        Context::getContext()->cookie->id_cart = $cart->id;
     }
 }

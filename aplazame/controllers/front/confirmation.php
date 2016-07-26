@@ -1,58 +1,78 @@
 <?php
 
+/**
+ * @property Aplazame module
+ */
 class AplazameConfirmationModuleFrontController extends ModuleFrontController
 {
     public function postProcess()
     {
-        if ((Tools::isSubmit('cart_id') == false) || (Tools::isSubmit('secure_key') == false)) {
-            return false;
+        if (!Module::isInstalled('aplazame') || !Module::isEnabled('aplazame')) {
+            $this->error('Aplazame is not enabled');
         }
 
-        $cart_id = Tools::getValue('cart_id');
-        $secure_key = Tools::getValue('secure_key');
+        $cartId = $mid = Tools::getValue('checkout_token');
+        $secureKey = Tools::getValue('key', false);
+        if (!$mid || !$secureKey) {
+            $this->error('Missing required fields');
+        }
 
-        $cart = new Cart((int)$cart_id);
-        $customer = new Customer((int)$cart->id_customer);
+        $cart = new Cart((int) $mid);
+        if (!Validate::isLoadedObject($cart)) {
+            $this->error('Cart does not exists or does not have an order');
+        }
 
-        $payment_status = Configuration::get('PS_OS_PAYMENT'); // Default value for a payment that succeed.
-        $message = null; // You can add a comment directly into the order so the merchant will see it in the BO.
-
-        $module_name = $this->module->displayName;
-        $currency_id = (int)Context::getContext()->currency->id;
-
-        $order_id = Order::getOrderByCartId((int)$cart->id);
-
-        if ($order_id && ($secure_key == $customer->secure_key))
-        {
-            $Order = new Order($order_id);
-            if($Order->current_state == Configuration::get('PS_OS_ERROR') || $Order->current_state == Configuration::get('PS_OS_CANCELED')){
-                 $this->errors[] = $this->module->l('An error occurred. Your order has not been confirmed by Aplazame or is canceled. Please contact the merchant to have more information.');
-                 $this->module->duplicateCart($cart_id);  
-            }else{
-                $module_id = $this->module->id;
-                Tools::redirect('index.php?controller=order-confirmation&id_cart='.$cart_id.'&id_module='.$module_id.'&id_order='.$order_id.'&key='.$secure_key);
+        $response = $this->module->callToRest('POST', '/orders/' . $mid . '/authorize');
+        if ($response['is_error']) {
+            $message = 'Aplazame Error #' . $response['code'];
+            if (isset($response['payload']['error']['message'])) {
+                $message .= ' ' . $response['payload']['error']['message'];
             }
+
+            $this->module->validateOrder(
+                $cartId,
+                Configuration::get('PS_OS_ERROR'),
+                $cart->getOrderTotal(true),
+                $this->module->displayName,
+                $message,
+                null,
+                null,
+                false,
+                $secureKey
+            );
+
+            $this->error('Authorization error');
         }
-        else
-        {
-            if ($order_id) {
-                $this->errors[] = $this->module->l('An error occurred but don\'t worry. Your order has been placed before. Please contact the merchant to have more informations or visit "My Account" to see your order history');
-            } elseif($cart_id) {
-                //We will try a last client side validation
-                if($this->module->validateController($cart_id)){
-                    $order_id = Order::getOrderByCartId((int)$cart->id);
-                    $module_id = $this->module->id;
-                    Tools::redirect('index.php?controller=order-confirmation&id_cart='.$cart_id.'&id_module='.$module_id.'&id_order='.$order_id.'&key='.$secure_key);
-                } else {
-                    $this->module->duplicateCart($cart_id);
-                    $this->errors[] = $this->module->l('An error occurred. Your order has not been confirmed by Aplazame. Please contact the merchant to have more information.');
-                }
-            } else {
-                $this->errors[] = $this->module->l('An error occurred. Please contact the merchant to have more information.');
-            }
-    
-            
+
+        $cartAmount = Aplazame_Serializers::formatDecimals($cart->getOrderTotal(true));
+        if ($response['payload']['amount'] !== $cartAmount) {
+            $this->error('Invalid');
         }
-        return $this->setTemplate('error.tpl');
+
+        $aplazameAmount = Aplazame_Serializers::decodeDecimals($response['payload']['amount']);
+        if (!$this->module->validateOrder(
+                $cartId,
+                Configuration::get('PS_OS_PAYMENT'),
+                $aplazameAmount,
+                $this->module->displayName,
+                null,
+                null,
+                null,
+                false,
+                $secureKey
+            )
+        ) {
+            $this->error('Cannot validate order');
+        }
+
+        exit('success');
+    }
+
+    protected function error($message)
+    {
+        $this->module->log(Aplazame::LOG_WARNING, $message);
+
+        header('HTTP/1.1 400 Bad Request', true, 400);
+        exit($message);
     }
 }

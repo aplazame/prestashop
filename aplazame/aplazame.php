@@ -1,143 +1,153 @@
 <?php
+
 if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-include_once(_PS_MODULE_DIR_ . '/aplazame/api/Serializers.php');
-require_once(dirname(__FILE__) . '/api/RestClient.php');
+include_once __DIR__ . '/api/Serializers.php';
+include_once __DIR__ . '/api/Client.php';
 
+/**
+ * @property bool bootstrap
+ * @property string confirmUninstall
+ * @property string url
+ */
 class Aplazame extends PaymentModule
 {
-    protected $config_form = false;
-
-    const _version = '1.0.11';
-    const API_CHECKOUT_PATH = '/orders';
+    const VERSION = '2.0.0';
+    const LOG_INFO = 1;
+    const LOG_WARNING = 2;
+    const LOG_ERROR = 3;
+    const LOG_CRITICAL = 4;
 
     /**
      * @var string
      */
     private $apiBaseUri;
 
+    /**
+     * @var Aplazame_Client
+     */
+    private $apiClient;
+
+    /**
+     * @var string[]
+     */
+    private $limited_currencies;
+
     public function __construct()
     {
-        $this->apiBaseUri = getenv('APLAZAME_API_BASE_URI') ? getenv('APLAZAME_API_BASE_URI') : 'https://api.aplazame.com';
-
         $this->name = 'aplazame';
-        if (!isset($this->local_path) || empty($this->local_path)) {
-            $this->local_path = _PS_MODULE_DIR_.$this->name.'/';
-        }
         $this->tab = 'payments_gateways';
-        $this->version = self::_version;
+        $this->version = self::VERSION;
         $this->author = 'Aplazame';
-        $this->need_instance = 0;
-        $this->bootstrap = true;
+        $this->author_uri = 'https://aplazame.com';
+        $this->limited_countries = array('ES');
 
         parent::__construct();
 
         $this->displayName = $this->l('Aplazame: compra ahora, paga después');
         $this->description = $this->l('Financiamos las compras a clientes y aumentamos un 18% las ventas en tu ecommerce.');
+        $this->confirmUninstall = $this->l('Are you sure about removing these details?');
 
-        $this->confirmUninstall = $this->l('¿Estás seguro de desinstalar el módulo?');
-		
-        #Fix for PrestaShop bug on 1.5.4.X that not appear the payment method
-        if (_PS_VERSION_ > 1.5) {
-                $this->limited_countries = array('ES');
-                $this->limited_currencies = array('EUR');
-        }
-        $this->type = 'addonsPartner';
-        $this->description_full = 'PAGA COMO QUIERAS<br/>
+        $this->need_instance = 0;
+        $this->bootstrap = true;
 
-Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, cómoda y segura.';
-        $this->additional_description = "";
-        $this->img = $this->_path . '/img/logo.png';
         $this->url = 'https://aplazame.com';
+
+        $this->limited_currencies = array('EUR');
+        $this->apiBaseUri = getenv('APLAZAME_API_BASE_URI') ? getenv('APLAZAME_API_BASE_URI') : 'https://api.aplazame.com';
     }
 
     public function install()
     {
-        if (extension_loaded('curl') == false) {
+        if (!extension_loaded('curl')) {
             $this->_errors[] = $this->l('You have to enable the cURL extension on your server to install this module');
+
             return false;
         }
 
         $iso_code = Country::getIsoById(Configuration::get('PS_COUNTRY_DEFAULT'));
-
-        if (in_array($iso_code, $this->limited_countries) == false) {
+        if (!in_array($iso_code, $this->limited_countries)) {
             $this->_errors[] = $this->l('This module is not available in your country');
+
             return false;
         }
 
         Configuration::updateValue('APLAZAME_SANDBOX', false);
         Configuration::updateValue('APLAZAME_BUTTON_IMAGE', 'white-148x46');
         Configuration::updateValue('APLAZAME_BUTTON', '#aplazame_payment_button');
-        Configuration::updateValue('APLAZAME_WIDGET_PROD', "0");
-        
-        return parent::install() &&
-                $this->registerHook('payment') &&
-                $this->registerHook('paymentReturn') &&
-                $this->registerHook('actionProductCancel') &&
-                $this->registerHook('actionOrderDetail') &&
-                $this->registerHook('actionOrderStatusPostUpdate') &&
-                $this->registerHook('actionOrderStatusUpdate') &&
-                $this->registerHook('actionPaymentConfirmation') &&
-                $this->registerHook('actionValidateOrder') &&
-                $this->registerHook('displayBeforePayment') &&
-                $this->registerHook('displayHeader') &&
-                $this->registerHook('displayAdminOrder') &&
-                $this->registerHook('displayOrderConfirmation') &&
-                $this->registerHook('displayPayment') &&
-                $this->registerHook('displayProductButtons') &&
-                $this->registerHook('displayShoppingCart') &&
-                $this->registerHook('displayRightColumnProduct') &&
-                $this->registerHook('displayRightColumn') &&
-                $this->registerHook('displayAdminProductsExtra') &&
-                $this->registerHook('displayAdminProductsListBefore') &&
-                $this->registerHook('displayPaymentReturn') &&
-                $this->registerController('AdminAplazameApiProxy', 'Aplazame API Proxy')
-        ;
+        Configuration::updateValue('APLAZAME_WIDGET_PROD', '0');
+
+        return (parent::install()
+            && $this->registerHook('actionOrderSlipAdd')
+            && $this->registerHook('actionOrderStatusPostUpdate')
+            && $this->registerHook('displayAdminProductsExtra')
+            && $this->registerHook('displayAdminProductsListBefore')
+            && $this->registerHook('displayHeader')
+            && $this->registerHook('displayPayment')
+            && $this->registerHook('displayProductButtons')
+            && $this->registerHook('displayRightColumn')
+            && $this->registerHook('displayRightColumnProduct')
+            && $this->registerHook('displayShoppingCart')
+            && $this->registerHook('payment')
+            && $this->registerHook('paymentReturn')
+            && $this->registerController('AdminAplazameApiProxy', 'Aplazame API Proxy')
+        );
     }
 
     public function uninstall()
     {
         Configuration::deleteByName('APLAZAME_SANDBOX');
 
-
         return parent::uninstall();
     }
 
     /**
-     * Load the configuration form
+     * Load the configuration form.
      */
     public function getContent()
     {
-        /**
-         * If values have been submitted in the form, process.
-         */
-        $style15 = '<style>
-                label[for="active_on"],label[for="active_off"]{
-                    float: none
-                }
-                </style>';
+        $output = '';
 
-        if (((bool) Tools::isSubmit('submitAplazameModule')) == true) {
-            $this->_postProcess();
+        $settings = array();
+        $settingsKeys = array(
+            'APLAZAME_SANDBOX',
+            'APLAZAME_BUTTON',
+            'APLAZAME_SECRET_KEY',
+            'APLAZAME_PUBLIC_KEY',
+            'APLAZAME_BUTTON_IMAGE',
+            'APLAZAME_WIDGET_PROD',
+        );
+        foreach ($settingsKeys as $key) {
+            $settings[$key] = Configuration::get($key);
         }
 
-        $this->context->smarty->assign('module_dir', $this->_path);
+        if (Tools::isSubmit('submitAplazameModule')) {
+            foreach ($settingsKeys as $key) {
+                Configuration::updateValue($key, Tools::getValue($key));
+            }
 
-        $output = $this->context->smarty->fetch($this->local_path . 'views/templates/admin/configure.tpl');
+            $output .= $this->displayConfirmation($this->l('Settings updated'));
+        }
 
         if (_PS_VERSION_ < 1.6) {
-            $output .= $style15;
+            $output .= <<<HTML
+<style>
+    label[for="active_on"],label[for="active_off"]{
+        float: none
+    }
+</style>
+HTML;
         }
 
-        return $output . $this->renderForm();
+        return $output . $this->renderForm($settings);
     }
 
     /**
      * Create the form that will be displayed in the configuration of your module.
      */
-    protected function renderForm()
+    protected function renderForm(array $settings)
     {
         $helper = new HelperForm();
 
@@ -154,7 +164,7 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         $helper->token = Tools::getAdminTokenLite('AdminModules');
 
         $helper->tpl_vars = array(
-            'fields_value' => $this->getConfigFormValues(), /* Add values for your inputs */
+            'fields_value' => $settings,
             'languages' => $this->context->controller->getLanguages(),
             'id_language' => $this->context->language->id,
         );
@@ -184,13 +194,13 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                             array(
                                 'id' => 'active_on',
                                 'value' => true,
-                                'label' => $this->l('Yes')
+                                'label' => $this->l('Yes'),
                             ),
                             array(
                                 'id' => 'active_off',
                                 'value' => false,
-                                'label' => $this->l('No')
-                            )
+                                'label' => $this->l('No'),
+                            ),
                         ),
                     ),
                     array(
@@ -234,20 +244,20 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
                             'query' => array(
                                 array(
                                     'id_option' => 0,
-                                    'name' => $this->l('displayProductButtons')
+                                    'name' => $this->l('displayProductButtons'),
                                 ),
                                 array(
                                     'id_option' => 1,
-                                    'name' => $this->l('displayRightColumnProduct')
+                                    'name' => $this->l('displayRightColumnProduct'),
                                 ),
                                 array(
                                     'id_option' => 2,
-                                    'name' => $this->l('displayRightColumn')
+                                    'name' => $this->l('displayRightColumn'),
                                 ),
                             ),
                             'id' => 'id_option',
-                            'name' => 'name'
-                        )
+                            'name' => 'name',
+                        ),
                     ),
                 ),
                 'submit' => array(
@@ -257,545 +267,66 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         );
     }
 
-    /**
-     * Set values for the inputs.
-     */
-    protected function getConfigFormValues()
+    public function isAvailable()
     {
-        return array(
-            'APLAZAME_SANDBOX' => Configuration::get('APLAZAME_SANDBOX', null),
-            'APLAZAME_BUTTON' => Configuration::get('APLAZAME_BUTTON', null),
-            'APLAZAME_SECRET_KEY' => Configuration::get('APLAZAME_SECRET_KEY', null),
-            'APLAZAME_PUBLIC_KEY' => Configuration::get('APLAZAME_PUBLIC_KEY', null),
-            'APLAZAME_BUTTON_IMAGE' => Configuration::get('APLAZAME_BUTTON_IMAGE', null),
-            'APLAZAME_WIDGET_PROD' => Configuration::get('APLAZAME_WIDGET_PROD', null),
-        );
-    }
-
-    /**
-     * Save form data.
-     */
-    protected function _postProcess()
-    {
-        $form_values = $this->getConfigFormValues();
-
-        foreach (array_keys($form_values) as $key) {
-            Configuration::updateValue($key, Tools::getValue($key));
-        }
-    }
-
-    /**
-     * This method is used to render the payment button,
-     * Take care if the button should be displayed or not.
-     */
-    public function hookPayment($params)
-    {
-        $currency_id = $params['cart']->id_currency;
-        $currency = new Currency((int) $currency_id);
-
-        if (in_array($currency->iso_code, $this->limited_currencies) == false) {
+        if (!$this->active) {
             return false;
         }
 
-        $this->assignSmartyVars(array('module_dir'=> $this->_path));
+        $privateKey = Configuration::get('APLAZAME_SECRET_KEY');
+        $publicKey = Configuration::get('APLAZAME_PUBLIC_KEY');
 
-        $button_image_uri = 'https://aplazame.com/static/img/buttons/' . Configuration::get('APLAZAME_BUTTON_IMAGE', null) . '.png';
-
-        $this->assignSmartyVars(array(
-            'aplazame_button' => Configuration::get('APLAZAME_BUTTON', null),
-            'aplazame_currency_iso' => $currency->iso_code,
-            'aplazame_cart_total' => self::formatDecimals($params['cart']->getOrderTotal()),
-            'aplazame_button_image_uri' => $button_image_uri,
-        ));
-        return $this->display(__FILE__, 'views/templates/hook/payment.tpl');
+        return (!empty($privateKey) && !empty($publicKey));
     }
 
-    /**
-     * This hook is used to display the order confirmation page.
-     */
-    public function hookPaymentReturn($params)
+    public function hookActionOrderSlipAdd($params)
     {
-        //Add conditionals for a bad ERP Connector that calls to this method without parameters
-        if ($this->active == false || !isset($params['objOrder']) || !Validate::isLoadedObject($params['objOrder'])) {
-            return;
+        if (!$this->isAvailable()
+            || Tools::isSubmit('generateDiscount')
+        ) {
+            return false;
         }
 
-        $order = $params['objOrder'];
-        
-        if ($order->getCurrentOrderState()->id != Configuration::get('PS_OS_ERROR')) {
-            $this->assignSmartyVars(array('status'=> 'ok'));
-        }
+        /** @var Order $order */
+        $order = $params['order'];
 
-        $this->assignSmartyVars(array(
-            'reference' => $order->reference,
-        ));
+        $orderSlips = $order->getOrderSlipsCollection();
 
-        return $this->display(__FILE__, 'views/templates/hook/confirmation.tpl');
-    }
+        /** @var OrderSlip $lastOrderSlip */
+        $lastOrderSlip = $orderSlips->orderBy('date_add', 'desc')->getFirst();
 
-    public function hookActionOrderDetail()
-    {
-    }
-
-    public function refundAmount($Order, $amount)
-    {
-        $price_refund = $this->formatDecimals($amount);
-        $result = $this->callToRest('GET', self::API_CHECKOUT_PATH . '?mid=' . $Order->id_cart);
-        $result['response'] = json_decode($result['response'], true);
-        if ($result['code'] == '200' && isset($result['response']['results'][0]['id'])) {
-            $resultOrder = $this->callToRest('POST', self::API_CHECKOUT_PATH . '/' . $result['response']['results'][0]['mid'] . '/refund', array('amount' => $price_refund));
-            if ($resultOrder['code'] != '200') {
-                $this->logError('Error: Cannot refund order #'.$Order->id_cart.' - ID AP: '.$result['response']['results'][0]['id']);
-            }
-        } else {
-            $this->logError('Error: Cannot refund order mid #'.$Order->id_cart.' not exists on Aplazame');
-        }
-    }
-    public function hookActionProductCancel($params)
-    {
-        if (!Tools::isSubmit('generateDiscount') && !Tools::isSubmit('generateCreditSlip')) {
-            $result = $this->callToRest('GET', self::API_CHECKOUT_PATH . '?mid=' . $params['order']->id_cart);
-            $result['response'] = json_decode($result['response'], true);
-            if ($result['code'] == '200' && isset($result['response']['results'][0]['id'])) {
-                $checkout_data = $this->getCheckoutSerializer($params['order']->id, false);
-                $order_data = array('order'=>$checkout_data['order']);
-                $order_data['order']['shipping'] = $checkout_data['shipping'];
-                $resultOrder = $this->callToRest('PUT', self::API_CHECKOUT_PATH . '/' . $result['response']['results'][0]['mid'], $order_data);
-                $resultOrder['response'] = json_decode($resultOrder['response'], true);
-                if ($resultOrder['response']['success'] != 'true') {
-                    $this->logError('Error: Cannot update order mid #'.$params['order']->id_cart.' - ID AP: '.$result['response']['results'][0]['id'].' with_response: '.json_encode($resultOrder).' with data: '.json_encode($order_data));
-                } else {
-                    $this->logError('Success on update order mid #'.$params['order']->id_cart.' - ID AP: '.$result['response']['results'][0]['id'].' with data: '.json_encode($order_data));
-                }
-            } else {
-                $this->logError('Error: Cannot update order mid #'.$params['order']->id_cart.' not exists on Aplazame');
-            }
-        }
+        return $this->refundAmount($order, $lastOrderSlip->total_products_tax_incl + $lastOrderSlip->total_shipping_tax_incl);
     }
 
     public function hookActionOrderStatusPostUpdate($params)
     {
-        $id_order = $params['id_order'];
         $statusObject = $params['newOrderStatus'];
-        $Order = new Order($id_order);
+        switch ($statusObject->id) {
+            case Configuration::get('PS_OS_CANCELED'):
+                $order = new Order($params['id_order']);
 
-        if ($statusObject->id == _PS_OS_CANCELED_) {
-            $result = $this->callToRest('GET', self::API_CHECKOUT_PATH . '?mid=' . $Order->id_cart);
-            $result['response'] = json_decode($result['response'], true);
-            if ($result['code'] == '200' && isset($result['response']['results'][0]['id'])) {
-                $result = $this->callToRest('POST', self::API_CHECKOUT_PATH . '/' . $result['response']['results'][0]['mid'] . '/cancel');
-                $result['response'] = json_decode($result['response'], true);
-                if ($result['response']['success'] != 'true') {
-                    $this->logError('Error: Cannot cancel order mid #'.$Order->id_cart.' - ID AP: '.$result['response']['results'][0]['id']);
-                }
-            } else {
-                $this->logError('Error: Cannot cancel order mid #'.$Order->id_cart.' not exists on Aplazame');
-            }
-        }
-    }
-
-    public function hookDisplayAdminOrder($params) {
-        //if (_PS_VERSION_ < 1.6) {
-        $id_order = $params['id_order'];
-        $Order = new Order($id_order);
-
-        if ($Order->module == $this->name) {
-            $result = $this->callToRest('GET', self::API_CHECKOUT_PATH . '?mid=' . $Order->id_cart);
-            $result['response'] = json_decode($result['response'], true);
-            if ($result['code'] == '200' && isset($result['response']['results'][0]['id'])) {
-                $result = $this->callToRest('GET', self::API_CHECKOUT_PATH . '/' . $result['response']['results'][0]['id']);
-                $result['response'] = json_decode($result['response'], true);
-
-                if ($result['code'] == '200') {
-                    $dataAplazame = array(
-                        'uuid' => $result['response']['id'],
-                        'mid' => $Order->id_cart
-                    );
-
-                    $this->assignSmartyVars(array(
-                        'aplazame_data' => $dataAplazame,
-                        'logo' => $this->img,
-                    ));
-
-                    return $this->display(__FILE__, 'views/templates/admin/order_16.tpl');
-                } else {
-                    $this->logError('Error: @2 #'.$id_order.' not exists on Aplazame #'.$result['code'] .'# '.var_export($result['response'], true));
-                    return '<div class="error_aplazame" code="'.$result['code'] .'" style="display:none">'.var_export($result['response'], true).'</div>';
-                }
-            } else {
-                $this->logError('Error: @1  #'.$id_order.' not exists on Aplazame #'.$result['code'] .'# '.var_export($result['response'], true));
-            }
-        }
-        return '';
-    }
-
-    public function hookDisplayHeader()
-    {
-        if ($this->active == false) {
-            return;
-        }
-
-        $aplazameJsUri = getenv('APLAZAME_JS_URI') ? getenv('APLAZAME_JS_URI') : 'https://aplazame.com/static/aplazame.js';
-
-        $this->assignSmartyVars(array(
-            'aplazame_js_uri' => $aplazameJsUri,
-            'aplazame_public_key' => Configuration::get('APLAZAME_PUBLIC_KEY', null),
-            'aplazame_is_sandbox' => Configuration::get('APLAZAME_SANDBOX', null) ? 'true' : 'false',
-        ));
-        return $this->display(__FILE__, 'views/templates/hook/header.tpl');
-    }
-
-    public function hookDisplayOrderConfirmation($params)
-    {
-        return $this->hookPaymentReturn($params);
-    }
-
-    public function hookDisplayProductButtons($params)
-    {
-        $display_widget = (int)Configuration::get('APLAZAME_WIDGET_PROD', null);
-        if($display_widget == 0 || empty($display_widget)){
-            return $this->getProductWidget($params);
-        }
-        return false;
-    }
-    
-    public function hookDisplayRightColumnProduct($params){
-        $display_widget = (int)Configuration::get('APLAZAME_WIDGET_PROD', null);
-        if($display_widget == 1){
-            return $this->getProductWidget($params);
-        }
-        return false;
-    }
-    
-    public function hookDisplayRightColumn($params){
-        if (isset($this->context->controller->php_self) && $this->context->controller->php_self == 'product'){
-            $display_widget = (int)Configuration::get('APLAZAME_WIDGET_PROD', null);
-            if($display_widget == 2){
-                return $this->getProductWidget($params);
-            }
-        }
-        return false;
-    }
-    
-    public function getProductWidget($params){
-        if(isset($params['product'])){
-            $product = $params['product'];
-        }elseif(Tools::getValue('controller')=='product' && Tools::getValue('id_product')){
-            $product = new Product(Tools::getValue('id_product'));
-        }else{
-            if (method_exists($this->context->controller, 'getProduct')){
-                $product = $this->context->controller->getProduct();
-            }
-        }
-        
-        if (!isset($product) || !Validate::isLoadedObject($product)){
-            return false; 
-        }elseif(!$product->show_price || !$product->available_for_order){
-            return false;
-        }
-        
-        //Workaround for DevOps that change server locale
-        $defaultLocate = setlocale(LC_ALL,"0");
-        if($defaultLocate != 'C'){
-                setlocale(LC_NUMERIC, 'en_US');
-        }
-        $this->assignSmartyVars(array(
-            'product_aplazame_price' => self::formatDecimals($product->getPrice(true, null, 2))
-        ));
-        if($defaultLocate != 'C'){
-                setlocale(LC_ALL, $defaultLocate);
-        }
-        return $this->display(__FILE__, 'views/templates/hook/product.tpl');
-    }
-    
-    public function hookDisplayPayment($params)
-    {
-        return $this->hookPayment($params);
-    }
-
-    public function hookDisplayPaymentReturn($params)
-    {
-        //PrestaShop hook duplication problem. We keep this if we show a error on a client
-        return false;
-        //return $this->hookPaymentReturn($params);
-    }
-
-    public static function formatDecimals($amount = 0)
-    {
-        $negative = false;
-        $str = sprintf("%.2f", $amount);
-        if (strcmp($str[0], "-") === 0) {
-            $str = substr($str, 1);
-            $negative = true;
-        }
-        $parts = explode(".", $str, 2);
-        if ($parts === false) {
-            return 0;
-        }
-        if (empty($parts)) {
-            return 0;
-        }
-        if (strcmp($parts[0], 0) === 0 && strcmp($parts[1], "00") === 0) {
-            return 0;
-        }
-        $retVal = "";
-        if ($negative) {
-            $retVal .= "-";
-        }
-        $retVal .= ltrim($parts[0] . substr($parts[1], 0, 2), "0");
-        return intval($retVal);
-    }
-
-    public function getCheckoutSerializer($id_order = 0, $id_cart = 0)
-    {
-        $serializer = new Aplazame_Serializers();
-        $Order = new Order($id_order);
-        $Cart = false;
-        if ($id_cart) {
-            $Cart = new Cart($id_cart);
-        }
-        return $serializer->getCheckout($Order, $Cart);
-    }
-
-    public function getCustomerHistory(Customer $customer, $limit)
-    {
-        $serializer = new Aplazame_Serializers();
-        return $serializer->getHistory($customer, $limit);
-    }
-
-    public function callToRest($method, $path, array $values = null)
-    {
-        if ($values) {
-            $values = json_encode($values);
-        }
-
-        $versions = array(
-            'PHP/' . PHP_VERSION,
-            'Prestashop/' . _PS_VERSION_,
-            'AplazamePrestashop/' . self::_version,
-        );
-
-        $url = $this->apiBaseUri . $path;
-
-        $headers = array();
-        if (in_array($method, array(
-                    'POST', 'PUT', 'PATCH', 'DELETE')) && $values) {
-            $headers[] = 'Content-type: application/json';
-        }
-
-        $headers[] = 'Authorization: Bearer ' .
-                Configuration::get('APLAZAME_SECRET_KEY', null);
-
-        $headers[] = 'User-Agent: ' . implode(', ', $versions);
-
-        $headers[] = 'Accept: ' . 'application/vnd.aplazame.' .
-                (Configuration::get('APLAZAME_SANDBOX', null) ? 'sandbox.' : '') . 'v1+json';
-
-        if (extension_loaded('curl') == false || $method == 'PUT') {
-            $opts = array('http' =>
-                array(
-                    'method' => $method,
-                    'header' => $headers,
-
-                )
-            );
-            if ($values) {
-                $opts['http']['content'] = $values;
-            }
-
-            $context = stream_context_create($opts);
-            try {
-                $response = file_get_contents($url, false, $context);
-                $headersResponse = $this->parseHeaders($http_response_header);
-                $result['response'] = $response;
-                $result['code'] = $headersResponse['reponse_code'];
-            } catch (Exception $e) {
-                $this->logError($e->getMessage());
-            }
-        } else {
-            try {
-                $response = RestClient::$method($url, $values, null, null, null, $headers);
-            } catch (Exception $e) {
-                $this->logError($e->getMessage());
-            }
-            $result['response'] = $response->getResponse();
-            $result['code'] = $response->getResponseCode();
-        }
-
-        return $result;
-    }
-
-    public function parseHeaders($headers)
-    {
-        $head = array();
-        foreach ($headers as $k => $v) {
-            $t = explode(':', $v, 2);
-            if (isset($t[1])) {
-                $head[trim($t[0])] = trim($t[1]);
-            } else {
-                $head[] = $v;
-                if (preg_match("#HTTP/[0-9\.]+\s+([0-9]+)#", $v, $out)) {
-                    $head['reponse_code'] = intval($out[1]);
-                }
-            }
-        }
-        return $head;
-    }
-
-    public function getErrorMessage($error_code)
-    {
-        $error = "An error occurred while processing payment";
-        switch ($error_code) {
-            case "400": $error = "Bad Request - The data have not been correctly validated";
-                break;
-            case "401": $error = "Unauthorized - Token is not found in the request or it is wrong";
-                break;
-            case "403": $error = "Forbidden - You do not have permission to do this operation";
-                break;
-            case "404": $error = "Not Found - The object or the resource is not found";
-                break;
-            case "405": $error = "Method Not Allowed - You tried to access with an invalid method";
-                break;
-            case "406": $error = "Not Acceptable - You requested a format that is not valid";
-                break;
-            case "429": $error = "Too Many Requests - Multiple simultaneous requests are made. Slown down!";
-                break;
-            case "500": $error = "Internal Server Error	Houston, we have a problem. Try again later.";
-                break;
-            case "503": $error = "Service Unavailable	We’re temporarially offline for maintanance. Please try again later.";
-                break;
-        }
-        return $error;
-    }
-
-    public function logError($message)
-    {
-        file_put_contents(dirname(__FILE__) . '/logs/exception_log', PHP_EOL.date(DATE_ISO8601) . ' ' . $message . '\r\n', FILE_APPEND);
-    }
-    
-    function validateController($id_order,$cancel_order=false,$custom_message=false){
-        if(empty($id_order)){
-            return false;
-        }
-        
-        if($cancel_order){
-            $result['code'] = '403';
-            $cart = new Cart((int) $id_order);
-            $cart_id = $id_order;
-            $amount = $cart->getOrderTotal();
-        }else{
-            $result = $this->callToRest('POST', self::API_CHECKOUT_PATH . '/' . $id_order . '/authorize');
-            $result['response'] = json_decode($result['response'], true);
-            $cart_id = $result['response']['id'];
-            $amount = $result['response']['amount'] / 100;
-            $cart = new Cart((int) $cart_id);
-            if(!Validate::isLoadedObject($cart)){
-                //throw new Exception('Error processing order. KO - Cart not loaded. This symptom is maybe of WAF webservice protection. Please contact your server provider to take action.', 400);
-                header('HTTP/1.1 400 Bad Request', true, 400);
-                exit('Error processing order. KO - Cart not loaded. This symptom is maybe of WAF webservice protection. Please contact your server provider to take action '.  var_export($result,true));
-            }
-        }
-
-        Context::getContext()->cart = new Cart((int) $cart_id);
-
-        $customer_id = Context::getContext()->cart->id_customer;
-
-        Context::getContext()->customer = new Customer((int) $customer_id);
-        Context::getContext()->currency = new Currency((int) Context::getContext()->cart->id_currency);
-        Context::getContext()->language = new Language((int) Context::getContext()->cart->id_lang);
-
-        $secure_key = Context::getContext()->customer->secure_key;
-        $module_name = $this->displayName;
-        
-        $order_id = Order::getOrderByCartId((int)$cart_id);
-        if(!empty($order_id)){
-            return false;
-        }
-        
-        if ($this->isValidOrder($result['code']) === true && !$cancel_order) {
-            $payment_status = Configuration::get('PS_OS_PAYMENT');
-            $message = null;
-            
-            $currency_id = (int) Context::getContext()->currency->id;
-
-            return $this->validateOrder($cart_id, $payment_status, $amount, $module_name, $message, array(), $currency_id, false, $secure_key);
-        } else {
-            $payment_status = Configuration::get('PS_OS_ERROR');
-            $error = $this->getErrorMessage($result['code']);
-            if($custom_message){
-                $error = $custom_message;
-            }
-            if($cancel_order){
-                $payment_status = Configuration::get('PS_OS_CANCELED');
-            }
-            $message = $this->l($error);
-            $this->logError($message);
-            $this->validateOrder($cart_id, $payment_status, $amount, $module_name, $message, array(), $currency_id, false, $secure_key);
-            if($cancel_order){
+                return $this->cancelOrder($order->id_cart);
+            default:
                 return true;
-            }
-            return false;
         }
     }
 
-    public function assignSmartyVars($array)
-    {
-        if (_PS_VERSION_ >= 1.6 || isset($this->smarty)) {
-            $this->smarty->assign($array);
-        } else {
-            $this->context->smarty->assign($array);
-        }
-    }
-
-    protected function isValidOrder($code)
-    {
-        if ($code == '200') {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    
-    function duplicateCart($id_cart=false){
-        $oldCart = new Cart(($id_cart)?$id_cart:Context::getContext()->cart->id);
-        $data = $oldCart->duplicate();
-
-        if($data['success']) {
-            $cart = $data['cart'];
-            Context::getContext()->cart = $cart;
-            CartRule::autoAddToCart(Context::getContext());
-            Context::getContext()->cookie->id_cart = $cart->id;
-        } else {
-            $this->logError('Error: Cannot duplicate cart '.Context::getContext()->cart->id);
-        }
-        
-    }
-    
-    public function hookDisplayShoppingCart($params){
-        // $params contiene realmente $this->context->cart->getSummaryDetails(null, true); 
-        $this->assignSmartyVars(
-            array(
-                'total_aplazame_price' => self::formatDecimals($params['total_price']),
-            )
-        );
-        return $this->display(__FILE__, 'views/templates/hook/shoppingcart.tpl');
-    }
-    
-    public function hookDisplayAdminProductsExtra($params)
+    public function hookDisplayAdminProductsExtra()
     {
         $id_product = Tools::getValue('id_product');
 
         $serializer = new Aplazame_Serializers();
         $articles = $serializer->getArticlesCampaign(array($id_product), $this->context->language->id);
 
-        $this->assignSmartyVars(array(
+        $this->context->smarty->assign(array(
             'articles' => $articles,
         ));
-        
+
         return $this->display(__FILE__, 'views/templates/admin/product.tpl');
     }
 
-    public function hookDisplayAdminProductsListBefore($params){
+    public function hookDisplayAdminProductsListBefore()
+    {
         if (!Tools::isSubmit('submitBulkassignProductsToAplazameCampaignsproduct')) {
             return false;
         }
@@ -808,30 +339,230 @@ Tu decides cuándo y cómo quieres pagar todas tus compras de manera fácil, có
         $serializer = new Aplazame_Serializers();
         $articles = $serializer->getArticlesCampaign($articlesId, $this->context->language->id);
 
-        $this->assignSmartyVars(array(
+        $this->context->smarty->assign(array(
             'articles' => $articles,
-            'old_presta' => (_PS_VERSION_ < 1.6),
         ));
 
         return $this->display(__FILE__, 'views/templates/admin/product_list.tpl');
     }
-    
-    public function getMerchant($only_id=false){
-        $result = $this->callToRest('GET', '/merchants');
-        $result['response'] = json_decode($result['response'], true);
-        if(isset($result['response']['results'][0]['id']) && !empty($result['response']['results'][0]['id'])){
-            $merchant = $result['response']['results'][0];
-            if($only_id){
-                return $merchant['id'];
-            }
-            return $merchant;
+
+    public function hookDisplayHeader()
+    {
+        if (!$this->isAvailable()) {
+            return false;
         }
-        return false;
-        
+
+        $aplazameJsUri = getenv('APLAZAME_JS_URI') ? getenv('APLAZAME_JS_URI') : 'https://aplazame.com/static/aplazame.js';
+
+        $this->context->smarty->assign(array(
+            'aplazame_js_uri' => $aplazameJsUri,
+            'aplazame_public_key' => Configuration::get('APLAZAME_PUBLIC_KEY'),
+            'aplazame_is_sandbox' => Configuration::get('APLAZAME_SANDBOX'),
+        ));
+
+        return $this->display(__FILE__, 'header.tpl');
     }
 
-    protected function registerController($className, $name)
+    public function hookDisplayPayment($params)
     {
+        return $this->hookPayment($params);
+    }
+
+    public function hookDisplayProductButtons($params)
+    {
+        $displayWidget = (int) Configuration::get('APLAZAME_WIDGET_PROD');
+        // display if configured or by default
+        if ($displayWidget === 0 || empty($displayWidget)) {
+            return $this->getWidget($params);
+        }
+
+        return false;
+    }
+
+    public function hookDisplayRightColumnProduct($params)
+    {
+        $displayWidget = (int) Configuration::get('APLAZAME_WIDGET_PROD');
+        if ($displayWidget === 1) {
+            return $this->getWidget($params);
+        }
+
+        return false;
+    }
+
+    public function hookDisplayRightColumn($params)
+    {
+        if (isset($this->context->controller->php_self) && $this->context->controller->php_self == 'product') {
+            $displayWidget = (int) Configuration::get('APLAZAME_WIDGET_PROD');
+            if ($displayWidget === 2) {
+                return $this->getWidget($params);
+            }
+        }
+
+        return false;
+    }
+
+    public function hookDisplayShoppingCart($params)
+    {
+        $this->context->smarty->assign(array(
+            'aplazame_amount' => Aplazame_Serializers::formatDecimals($params['total_price']),
+        ));
+
+        return $this->display(__FILE__, 'shoppingcart.tpl');
+    }
+
+    /**
+     * This method is used to render the payment button,
+     * Take care if the button should be displayed or not.
+     */
+    public function hookPayment($params)
+    {
+        if (!$this->isAvailable()) {
+            return false;
+        }
+
+        /** @var Cart $cart */
+        $cart = $params['cart'];
+
+        $currency_id = $cart->id_currency;
+        $currency = new Currency((int) $currency_id);
+
+        if (!in_array($currency->iso_code, $this->limited_currencies)) {
+            return false;
+        }
+
+        $button_image_uri = 'https://aplazame.com/static/img/buttons/' . Configuration::get('APLAZAME_BUTTON_IMAGE') . '.png';
+
+        $this->context->smarty->assign(array(
+            'aplazame_button' => Configuration::get('APLAZAME_BUTTON'),
+            'aplazame_currency_iso' => $currency->iso_code,
+            'aplazame_cart_total' => Aplazame_Serializers::formatDecimals($cart->getOrderTotal()),
+            'aplazame_button_image_uri' => $button_image_uri,
+        ));
+
+        return $this->display(__FILE__, 'payment.tpl');
+    }
+
+    public function hookPaymentReturn($params)
+    {
+        /** @var Order $order */
+        $order = $params['objOrder'];
+
+        $this->context->smarty->assign(array(
+            'reference' => $order->reference,
+        ));
+
+        if ($order->getCurrentState() === Configuration::get('PS_OS_PAYMENT')) {
+            return $this->display(__FILE__, 'confirmation_success.tpl');
+        }
+
+        return $this->display(__FILE__, 'confirmation_failure.tpl');
+    }
+
+    public function getWidget($params)
+    {
+        if (!$this->isAvailable()) {
+            return false;
+        }
+
+        if (isset($params['product'])) {
+            $product = $params['product'];
+        } elseif (Tools::getValue('controller') === 'product' && Tools::getValue('id_product')) {
+            $product = new Product(Tools::getValue('id_product'));
+        } elseif (method_exists($this->context->controller, 'getProduct')) {
+            $product = $this->context->controller->getProduct();
+        }
+
+        if (!isset($product) || !Validate::isLoadedObject($product)) {
+            return false;
+        }
+
+        if (!$product->show_price || !$product->available_for_order) {
+            return false;
+        }
+
+        $this->context->smarty->assign(array(
+            'aplazame_amount' => Aplazame_Serializers::formatDecimals($product->getPrice(true, null, 2)),
+        ));
+
+        return $this->display(__FILE__, 'product.tpl');
+    }
+
+    public function getApiClient()
+    {
+        if (!$this->apiClient) {
+            $this->apiClient = new Aplazame_Client(
+                $this->apiBaseUri,
+                Configuration::get('APLAZAME_SECRET_KEY'),
+                Configuration::get('APLAZAME_SANDBOX')
+            );
+        }
+
+        return $this->apiClient;
+    }
+
+    public function callToRest($method, $path, array $values = null)
+    {
+        $client = $this->getApiClient();
+
+        try {
+            return $client->callToRest($method, $path, $values);
+        } catch (Exception $e) {
+            $this->log(self::LOG_ERROR, $e->getMessage());
+
+            throw $e;
+        }
+    }
+
+    public function log($severity, $message, $mid = null)
+    {
+        if (!class_exists('PrestaShopLogger')) {
+            return;
+        }
+
+        $objectType = $mid ? 'Cart' : null;
+        $objectId = $mid;
+
+        PrestaShopLogger::addLog($message, $severity, null, $objectType, $objectId);
+    }
+
+    public function refundAmount(Order $order, $amount)
+    {
+        $mid = $order->id_cart;
+
+        $decimal = Aplazame_Serializers::formatDecimals($amount);
+        $response = $this->callToRest('POST', '/orders/' . $mid . '/refund', array('amount' => $decimal));
+        if ($response['is_error']) {
+            $this->log(self::LOG_CRITICAL, 'Cannot refund. Detail ' . $response['payload']['error']['message'], $mid);
+
+            return false;
+        }
+
+        return $order->addOrderPayment(-$amount, $this->displayName);
+    }
+
+    /**
+     * @param string $mid
+     *
+     * @return bool
+     */
+    public function cancelOrder($mid)
+    {
+        $response = $this->callToRest('POST', '/orders/' . $mid . '/cancel');
+        if ($response['is_error']) {
+            $this->log(self::LOG_CRITICAL, 'Cannot cancel. Detail ' . $response['payload']['error']['message'], $mid);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private function registerController($className, $name)
+    {
+        if (Tab::getIdFromClassName($className)) {
+            return true;
+        }
+
         $tab = new Tab();
         $tab->active = 1;
         $tab->name = array();

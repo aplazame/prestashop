@@ -3,6 +3,6 @@
 <script>
 aplazame.init({
     publicKey: "{$aplazame_public_key}",
-    sandbox: "{$aplazame_is_sandbox}"
+    sandbox: "{if $aplazame_is_sandbox}true{else}false{/if}"
 });
 </script>
