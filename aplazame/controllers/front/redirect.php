@@ -15,7 +15,7 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
                 'Cart already exists in Aplazame. Create a new one with a different ID',
                 $cart->id
             );
-            $this->duplicateCart($cart);
+            $cart = $this->duplicateCart($cart);
         }
 
         $serializer = new Aplazame_Serializers();
@@ -48,12 +48,14 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
         if (!$data || !$data['success']) {
             $this->module->log(Aplazame::LOG_WARNING, 'Cannot duplicate cart', $oldCart->id);
 
-            return;
+            return $oldCart;
         }
 
         $cart = $data['cart'];
         Context::getContext()->cart = $cart;
         CartRule::autoAddToCart(Context::getContext());
         Context::getContext()->cookie->id_cart = $cart->id;
+
+        return $cart;
     }
 }

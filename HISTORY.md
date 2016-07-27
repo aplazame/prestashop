@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v2.0.1](https://github.com/aplazame/prestashop/tree/v2.0.1) (2016-07-27)
+
+* Fix an issue with duplicate cart IDs when ID already exists on Aplazame.
+
 #### [v2.0.0](https://github.com/aplazame/prestashop/tree/v2.0.0) (2016-07-26)
 
 IMPORTANT: Credit slips are the way of issue refunds to Aplazame. For `partial 
