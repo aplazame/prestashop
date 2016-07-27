@@ -52,9 +52,10 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
         }
 
         $cart = $data['cart'];
-        Context::getContext()->cart = $cart;
-        CartRule::autoAddToCart(Context::getContext());
-        Context::getContext()->cookie->id_cart = $cart->id;
+        $this->context->cookie->id_cart = $cart->id;
+        $this->context->cart = $cart;
+        CartRule::autoAddToCart($this->context);
+        $this->context->cookie->write();
 
         return $cart;
     }
