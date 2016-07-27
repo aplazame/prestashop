@@ -11,7 +11,7 @@ style:
 	@vendor/bin/php-cs-fixer fix -v
 
 zip:
-	@rm latest.zip
+	@rm -f latest.zip
 	@zip -r latest.zip aplazame
 
 push:
