@@ -1,5 +1,10 @@
 ## Change Log
 
+#### [v2.0.2](https://github.com/aplazame/prestashop/tree/v2.0.1) (2016-07-27)
+
+* Add a timeout of 10 seconds for API connections.
+* Fix override.
+
 #### [v2.0.1](https://github.com/aplazame/prestashop/tree/v2.0.1) (2016-07-27)
 
 * Fix an issue with duplicate cart IDs when ID already exists on Aplazame.

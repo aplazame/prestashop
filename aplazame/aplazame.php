@@ -14,7 +14,7 @@ include_once __DIR__ . '/api/Client.php';
  */
 class Aplazame extends PaymentModule
 {
-    const VERSION = '2.0.1';
+    const VERSION = '2.0.2';
     const LOG_INFO = 1;
     const LOG_WARNING = 2;
     const LOG_ERROR = 3;
