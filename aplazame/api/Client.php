@@ -54,6 +54,7 @@ class Aplazame_Client
     protected function doCurlRequest($method, $url, $headers, $values)
     {
         $ch = curl_init();
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);

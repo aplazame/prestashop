@@ -34,7 +34,12 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
      */
     private function orderExists($mid)
     {
-        $response = $this->module->callToRest('GET', '/orders?mid=' . $mid);
+        try {
+            $response = $this->module->callToRest('GET', '/orders?mid=' . $mid);
+        } catch (Exception $e) {
+            return false;
+        }
+
         if ($response['is_error'] || empty($response['payload']['results'])) {
             return false;
         }
