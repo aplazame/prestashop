@@ -22,7 +22,7 @@
 {/if}
 <div class="panel">
     <div class="panel-heading">
-        {l s='Aplazame Campaigns'}
+        {l s='Aplazame Campaigns' mod='aplazame'}
     </div>
 
     <div id="aplazame_campaigns_container">
@@ -32,11 +32,11 @@
     <div class="panel-footer">
         <button type="button" name="associateProductsToCampaigns" id="associateProductsToCampaigns" onclick="associateArticlesToCampaigns()" class="btn btn-default">
             <i class="icon-check"></i>
-            {l s='Associate products to selected campaigns'}
+            {l s='Associate products to selected campaigns' mod='aplazame'}
         </button>
         <button type="button" name="removeProductsFromCampaigns" id="removeProductsFromCampaigns" onclick="removeArticlesFromCampaigns()" class="btn btn-default">
             <i class="icon-remove"></i>
-            {l s='Remove products from selected campaigns'}
+            {l s='Remove products from selected campaigns' mod='aplazame'}
         </button>
     </div>
 </div>

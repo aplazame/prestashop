@@ -6,7 +6,7 @@
             <span class="pull-right">{*/NOT MULTISHOP ENABLED/include file="controllers/products/multishop/checkbox.tpl" field="visibility" type="default"*}</span>
         </div>
         <label class="control-label col-lg-2" for="aplazame_campaigns_container">
-            {l s='Aplazame Campaigns'}
+            {l s='Aplazame Campaigns' mod='aplazame'}
         </label>
         <div class="col-lg-9" id="aplazame_campaigns_container">
 
