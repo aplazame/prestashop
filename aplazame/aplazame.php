@@ -327,7 +327,7 @@ HTML;
 
     public function hookDisplayAdminProductsListBefore()
     {
-        if (!Tools::isSubmit('submitBulkassignProductsToAplazameCampaignsproduct')) {
+        if (!Tools::isSubmit('submitBulkmanageProductsAssociatedToAplazameCampaignsproduct')) {
             return false;
         }
         if (Tools::getIsset('cancel')) {

@@ -10,13 +10,11 @@ class AdminProductsController extends AdminProductsControllerCore
             return;
         }
 
-        $this->bulk_actions['assignProductsToAplazameCampaigns'] = array(
-            'text' => $this->l('Assign to Aplazame Campaigns'),
+        $aplazame = Module::getInstanceByName('aplazame');
+
+        $this->bulk_actions['manageProductsAssociatedToAplazameCampaigns'] = array(
+            'text' => $aplazame->l('Assign to / remove from Aplazame Campaigns'),
             'icon' => 'icon-check',
-        );
-        $this->bulk_actions['removeProductsFromAplazameCampaigns'] = array(
-            'text' => $this->l('Remove from Aplazame Campaigns'),
-            'icon' => 'icon-remove',
         );
     }
 }
