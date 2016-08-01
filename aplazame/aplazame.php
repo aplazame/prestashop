@@ -356,6 +356,7 @@ HTML;
 
         $this->context->smarty->assign(array(
             'aplazame_js_uri' => $aplazameJsUri,
+            'aplazame_api_base_uri' => $this->apiBaseUri,
             'aplazame_public_key' => Configuration::get('APLAZAME_PUBLIC_KEY'),
             'aplazame_is_sandbox' => Configuration::get('APLAZAME_SANDBOX'),
         ));
