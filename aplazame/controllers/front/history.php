@@ -39,21 +39,11 @@ class AplazameHistoryModuleFrontController extends ModuleFrontController
 
     private function getHeaderAuthorization()
     {
-        if (!function_exists('getallheaders')) {
-            function getallheaders()
-            {
-                $headers = '';
-                foreach ($_SERVER as $name => $value) {
-                    if (Tools::substr($name, 0, 5) == 'HTTP_') {
-                        $headers[str_replace(' ', '-', ucwords(Tools::strtolower(str_replace('_', ' ', Tools::substr($name, 5)))))] = $value;
-                    }
-                }
-
-                return $headers;
-            }
+        if (function_exists('getallheaders')) {
+            $headers = getallheaders();
+        } else {
+            $headers = $this->getallheaders();
         }
-
-        $headers = getallheaders();
 
         if (isset($headers['Authorization'])) {
             return trim(str_replace('Bearer', '', $headers['Authorization']));
@@ -73,5 +63,17 @@ class AplazameHistoryModuleFrontController extends ModuleFrontController
         );
 
         return $serializer->getHistory($orders);
+    }
+
+    private function getallheaders()
+    {
+        $headers = '';
+        foreach ($_SERVER as $name => $value) {
+            if (Tools::substr($name, 0, 5) == 'HTTP_') {
+                $headers[str_replace(' ', '-', ucwords(Tools::strtolower(str_replace('_', ' ', Tools::substr($name, 5)))))] = $value;
+            }
+        }
+
+        return $headers;
     }
 }
