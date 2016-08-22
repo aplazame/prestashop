@@ -20,7 +20,7 @@ final class AdminAplazameApiProxyController extends ModuleAdminController
         $method = Tools::getValue('method');
         $path = Tools::getValue('path');
         $data = Tools::getValue('data');
-        $data = json_decode($data);
+        $data = Tools::jsonDecode($data);
         if (!$data) {
             $data = array();
         }

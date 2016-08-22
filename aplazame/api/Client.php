@@ -46,7 +46,7 @@ class Aplazame_Client
 
         $result = $this->doCurlRequest($method, $url, $headers, $values);
         $result['is_error'] = ($result['code'] >= 400);
-        $result['payload'] = json_decode($result['payload'], true);
+        $result['payload'] = Tools::jsonDecode($result['payload'], true);
 
         return $result;
     }
