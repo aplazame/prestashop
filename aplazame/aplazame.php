@@ -26,7 +26,7 @@ class Aplazame extends PaymentModule
     private $apiBaseUri;
 
     /**
-     * @var Aplazame_Client
+     * @var AplazameClient
      */
     private $apiClient;
 
@@ -491,7 +491,7 @@ HTML;
     public function getApiClient()
     {
         if (!$this->apiClient) {
-            $this->apiClient = new Aplazame_Client(
+            $this->apiClient = new AplazameClient(
                 $this->apiBaseUri,
                 Configuration::get('APLAZAME_SECRET_KEY'),
                 Configuration::get('APLAZAME_SANDBOX')

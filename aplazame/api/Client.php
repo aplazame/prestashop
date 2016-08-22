@@ -1,6 +1,6 @@
 <?php
 
-class Aplazame_Client
+class AplazameClient
 {
     /**
      * @var string
