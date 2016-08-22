@@ -4,8 +4,8 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-include_once __DIR__ . '/api/Serializers.php';
-include_once __DIR__ . '/api/Client.php';
+include_once _PS_MODULE_DIR_ . 'aplazame/api/Serializers.php';
+include_once _PS_MODULE_DIR_ . 'aplazame/api/Client.php';
 
 /**
  * @property bool bootstrap
