@@ -315,7 +315,7 @@ HTML;
     {
         $id_product = Tools::getValue('id_product');
 
-        $serializer = new Aplazame_Serializers();
+        $serializer = new AplazameSerializers();
         $articles = $serializer->getArticlesCampaign(array($id_product), $this->context->language->id);
 
         $this->context->smarty->assign(array(
@@ -336,7 +336,7 @@ HTML;
 
         $articlesId = Tools::getValue('productBox');
 
-        $serializer = new Aplazame_Serializers();
+        $serializer = new AplazameSerializers();
         $articles = $serializer->getArticlesCampaign($articlesId, $this->context->language->id);
 
         $this->context->smarty->assign(array(
@@ -405,7 +405,7 @@ HTML;
     public function hookDisplayShoppingCart($params)
     {
         $this->context->smarty->assign(array(
-            'aplazame_amount' => Aplazame_Serializers::formatDecimals($params['total_price']),
+            'aplazame_amount' => AplazameSerializers::formatDecimals($params['total_price']),
         ));
 
         return $this->display(__FILE__, 'shoppingcart.tpl');
@@ -436,7 +436,7 @@ HTML;
         $this->context->smarty->assign(array(
             'aplazame_button' => Configuration::get('APLAZAME_BUTTON'),
             'aplazame_currency_iso' => $currency->iso_code,
-            'aplazame_cart_total' => Aplazame_Serializers::formatDecimals($cart->getOrderTotal()),
+            'aplazame_cart_total' => AplazameSerializers::formatDecimals($cart->getOrderTotal()),
             'aplazame_button_image_uri' => $button_image_uri,
         ));
 
@@ -482,7 +482,7 @@ HTML;
         }
 
         $this->context->smarty->assign(array(
-            'aplazame_amount' => Aplazame_Serializers::formatDecimals($product->getPrice(true, null, 2)),
+            'aplazame_amount' => AplazameSerializers::formatDecimals($product->getPrice(true, null, 2)),
         ));
 
         return $this->display(__FILE__, 'product.tpl');
@@ -530,7 +530,7 @@ HTML;
     {
         $mid = $order->id_cart;
 
-        $decimal = Aplazame_Serializers::formatDecimals($amount);
+        $decimal = AplazameSerializers::formatDecimals($amount);
         $response = $this->callToRest('POST', '/orders/' . $mid . '/refund', array('amount' => $decimal));
         if ($response['is_error']) {
             $this->log(self::LOG_CRITICAL, 'Cannot refund. Detail ' . $response['payload']['error']['message'], $mid);

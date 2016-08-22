@@ -54,7 +54,7 @@ class AplazameHistoryModuleFrontController extends ModuleFrontController
 
     private function getCustomerHistory($customerId, $limit)
     {
-        $serializer = new Aplazame_Serializers();
+        $serializer = new AplazameSerializers();
 
         $orders = Db::getInstance()->executeS(
             'SELECT * FROM ' . _DB_PREFIX_ . 'orders'

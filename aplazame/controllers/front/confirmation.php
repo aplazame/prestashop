@@ -44,12 +44,12 @@ class AplazameConfirmationModuleFrontController extends ModuleFrontController
             $this->error('Authorization error');
         }
 
-        $cartAmount = Aplazame_Serializers::formatDecimals($cart->getOrderTotal(true));
+        $cartAmount = AplazameSerializers::formatDecimals($cart->getOrderTotal(true));
         if ($response['payload']['amount'] !== $cartAmount) {
             $this->error('Invalid');
         }
 
-        $aplazameAmount = Aplazame_Serializers::decodeDecimals($response['payload']['amount']);
+        $aplazameAmount = AplazameSerializers::decodeDecimals($response['payload']['amount']);
         if (!$this->module->validateOrder(
                 $cartId,
                 Configuration::get('PS_OS_PAYMENT'),

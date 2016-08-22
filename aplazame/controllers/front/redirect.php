@@ -18,7 +18,7 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
             $cart = $this->duplicateCart($cart);
         }
 
-        $serializer = new Aplazame_Serializers();
+        $serializer = new AplazameSerializers();
 
         $this->context->smarty->assign(array(
             'aplazame_order' => $serializer->getCheckout($cart, (int) $this->module->id, $this->module->currentOrder),

@@ -1,6 +1,6 @@
 <?php
 
-class Aplazame_Serializers
+class AplazameSerializers
 {
     public static function formatDecimals($amount)
     {
