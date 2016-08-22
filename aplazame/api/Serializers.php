@@ -81,7 +81,7 @@ class Aplazame_Serializers
                 'id' => $productData['id_product'],
                 'sku' => $productData['id_product_attribute'],
                 'name' => $productData['name'],
-                'description' => substr(strip_tags($productData['description_short']), 0, 255),
+                'description' => Tools::substr(strip_tags($productData['description_short']), 0, 255),
                 'url' => $link->getProductLink($productData['id_product']),
                 'image_url' => $link->getImageLink('product', $productData['id_image']),
                 'quantity' => intval($productData['cart_quantity']),
@@ -185,7 +185,7 @@ class Aplazame_Serializers
         return array(
             'id' => $product->id,
             'name' => $product->name,
-            'description' => substr(strip_tags($product->description_short), 0, 255),
+            'description' => Tools::substr(strip_tags($product->description_short), 0, 255),
             'url' => $link->getProductLink($product),
             'image_url' => $link->getImageLink('product', $product->getCoverWs()),
         );
