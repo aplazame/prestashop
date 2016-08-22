@@ -51,17 +51,16 @@ class AplazameConfirmationModuleFrontController extends ModuleFrontController
 
         $aplazameAmount = AplazameSerializers::decodeDecimals($response['payload']['amount']);
         if (!$this->module->validateOrder(
-                $cartId,
-                Configuration::get('PS_OS_PAYMENT'),
-                $aplazameAmount,
-                $this->module->displayName,
-                null,
-                null,
-                null,
-                false,
-                $secureKey
-            )
-        ) {
+            $cartId,
+            Configuration::get('PS_OS_PAYMENT'),
+            $aplazameAmount,
+            $this->module->displayName,
+            null,
+            null,
+            null,
+            false,
+            $secureKey
+        )) {
             $this->error('Cannot validate order');
         }
 
