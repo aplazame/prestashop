@@ -84,7 +84,7 @@ class Aplazame_Serializers
                 'description' => Tools::substr(strip_tags($productData['description_short']), 0, 255),
                 'url' => $link->getProductLink($productData['id_product']),
                 'image_url' => $link->getImageLink('product', $productData['id_image']),
-                'quantity' => intval($productData['cart_quantity']),
+                'quantity' => (int) $productData['cart_quantity'],
                 'price' => self::formatDecimals($productData['price']),
                 'tax_rate' => self::formatDecimals($productData['rate']),
                 'discount' => self::formatDecimals($productData['reduction_applies']),
