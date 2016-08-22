@@ -34,7 +34,7 @@ class AplazameHistoryModuleFrontController extends ModuleFrontController
 
     private function apiResponse($data)
     {
-        exit(json_encode($data));
+        exit(Tools::jsonEncode($data));
     }
 
     private function getHeaderAuthorization()

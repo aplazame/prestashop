@@ -27,6 +27,6 @@ final class AdminAplazameApiProxyController extends ModuleAdminController
 
         $response = $this->aplazame->callToRest($method, $path, $data);
 
-        die(json_encode($response['payload']));
+        die(Tools::jsonEncode($response['payload']));
     }
 }

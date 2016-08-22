@@ -41,7 +41,7 @@ class Aplazame_Client
 
         if ($values) {
             $headers[] = 'Content-type: application/json';
-            $values = json_encode($values);
+            $values = Tools::jsonEncode($values);
         }
 
         $result = $this->doCurlRequest($method, $url, $headers, $values);
