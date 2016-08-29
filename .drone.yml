@@ -13,14 +13,6 @@ build:
     - 'make zip'
 
 deploy:
-  rsync:
-    user: $$DEPLOY_USER
-    host: prestashop.aplazame.com
-    target: $$RELEASE_PATH
-    source: aplazame/
-    delete: true
-    recursive: true
-
   s3:
     acl: public-read
     region: $$S3_REGION
