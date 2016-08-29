@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v3.0.0](https://github.com/aplazame/prestashop/tree/v3.0.0) (2016-08-29)
+
+* Make module compatible with latest PrestaShop guidelines.
+
 #### [v2.0.2](https://github.com/aplazame/prestashop/tree/v2.0.1) (2016-07-27)
 
 * Add a timeout of 10 seconds for API connections.

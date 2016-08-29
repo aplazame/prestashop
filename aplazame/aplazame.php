@@ -14,7 +14,7 @@ include_once _PS_MODULE_DIR_ . 'aplazame/api/Client.php';
  */
 class Aplazame extends PaymentModule
 {
-    const VERSION = '2.0.2';
+    const VERSION = '3.0.0';
     const LOG_INFO = 1;
     const LOG_WARNING = 2;
     const LOG_ERROR = 3;
@@ -83,7 +83,6 @@ class Aplazame extends PaymentModule
             && $this->registerHook('actionOrderSlipAdd')
             && $this->registerHook('actionOrderStatusPostUpdate')
             && $this->registerHook('displayAdminProductsExtra')
-            && $this->registerHook('displayAdminProductsListBefore')
             && $this->registerHook('displayHeader')
             && $this->registerHook('displayPayment')
             && $this->registerHook('displayProductButtons')
@@ -323,27 +322,6 @@ HTML;
         ));
 
         return $this->display(__FILE__, 'views/templates/admin/product.tpl');
-    }
-
-    public function hookDisplayAdminProductsListBefore()
-    {
-        if (!Tools::isSubmit('submitBulkmanageProductsAssociatedToAplazameCampaignsproduct')) {
-            return false;
-        }
-        if (Tools::getIsset('cancel')) {
-            return false;
-        }
-
-        $articlesId = Tools::getValue('productBox');
-
-        $serializer = new AplazameSerializers();
-        $articles = $serializer->getArticlesCampaign($articlesId, $this->context->language->id);
-
-        $this->context->smarty->assign(array(
-            'articles' => $articles,
-        ));
-
-        return $this->display(__FILE__, 'views/templates/admin/product_list.tpl');
     }
 
     public function hookDisplayHeader()
