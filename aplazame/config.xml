@@ -2,7 +2,7 @@
 <module>
 	<name>aplazame</name>
 	<displayName><![CDATA[Aplazame: compra ahora, paga despu&eacute;s]]></displayName>
-	<version><![CDATA[3.0.0]]></version>
+	<version><![CDATA[3.0.1]]></version>
 	<description><![CDATA[Financiamos las compras a clientes y aumentamos un 18% las ventas en tu ecommerce.]]></description>
 	<author><![CDATA[Aplazame]]></author><author_uri><![CDATA[https://aplazame.com]]></author_uri>
 	<tab><![CDATA[payments_gateways]]></tab>

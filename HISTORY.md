@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v3.0.1](https://github.com/aplazame/prestashop/tree/v3.0.1) (2016-09-14)
+
+* Revert aplazame.js use of data attributes.
+
 #### [v3.0.0](https://github.com/aplazame/prestashop/tree/v3.0.0) (2016-08-29)
 
 * Make module compatible with latest PrestaShop guidelines.

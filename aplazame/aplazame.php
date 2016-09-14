@@ -14,7 +14,7 @@ include_once _PS_MODULE_DIR_ . 'aplazame/api/Client.php';
  */
 class Aplazame extends PaymentModule
 {
-    const VERSION = '3.0.0';
+    const VERSION = '3.0.1';
     const LOG_INFO = 1;
     const LOG_WARNING = 2;
     const LOG_ERROR = 3;
