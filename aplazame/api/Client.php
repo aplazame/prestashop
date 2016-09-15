@@ -17,11 +17,17 @@ class AplazameClient
      */
     private $sandbox;
 
-    public function __construct($apiBaseUri, $accessToken, $sandbox)
+    /**
+     * @var string
+     */
+    private $aplazameVersion;
+
+    public function __construct($apiBaseUri, $accessToken, $sandbox, $aplazameVersion)
     {
         $this->apiBaseUri = $apiBaseUri;
         $this->accessToken = $accessToken;
         $this->sandbox = $sandbox;
+        $this->aplazameVersion = $aplazameVersion;
     }
 
     public function callToRest($method, $path, array $values = null)
@@ -35,7 +41,7 @@ class AplazameClient
         $versions = array(
             'PHP/' . PHP_VERSION,
             'Prestashop/' . _PS_VERSION_,
-            'AplazamePrestashop/' . Aplazame::VERSION,
+            'AplazamePrestashop/' . $this->aplazameVersion,
         );
         $headers[] = 'User-Agent: ' . implode(', ', $versions);
 

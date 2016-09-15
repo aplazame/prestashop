@@ -39,7 +39,7 @@ class Aplazame extends PaymentModule
     {
         $this->name = 'aplazame';
         $this->tab = 'payments_gateways';
-        $this->version = self::VERSION;
+        $this->version = '3.0.1';
         $this->author = 'Aplazame';
         $this->author_uri = 'https://aplazame.com';
         $this->limited_countries = array('ES');
@@ -472,7 +472,8 @@ HTML;
             $this->apiClient = new AplazameClient(
                 $this->apiBaseUri,
                 Configuration::get('APLAZAME_SECRET_KEY'),
-                Configuration::get('APLAZAME_SANDBOX')
+                Configuration::get('APLAZAME_SANDBOX'),
+                $this->version
             );
         }
 

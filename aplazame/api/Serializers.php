@@ -134,6 +134,9 @@ class AplazameSerializers
 
     public function getCheckout(Cart $cart, $moduleId, $orderId)
     {
+        /** @var Aplazame $aplazame */
+        $aplazame = ModuleCore::getInstanceByName('aplazame');
+
         $confirmationQuery = http_build_query(array(
             'fc' => 'module',
             'module' => 'aplazame',
@@ -171,7 +174,7 @@ class AplazameSerializers
             'meta' => array(
                 'module' => array(
                     'name' => 'aplazame:prestashop',
-                    'version' => Aplazame::VERSION,
+                    'version' => $aplazame->version,
                 ),
                 'version' => _PS_VERSION_,
             ),
