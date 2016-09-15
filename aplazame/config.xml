@@ -3,7 +3,7 @@
 	<name>aplazame</name>
 	<displayName><![CDATA[Aplazame: compra ahora, paga despu&eacute;s]]></displayName>
 	<version><![CDATA[3.0.1]]></version>
-	<description><![CDATA[Financiamos las compras a clientes y aumentamos un 18% las ventas en tu ecommerce.]]></description>
+	<description><![CDATA[Boost sales by 50% with Aplazame, a risk free payment method that offers instant credit for online purchases.]]></description>
 	<author><![CDATA[Aplazame]]></author><author_uri><![CDATA[https://aplazame.com]]></author_uri>
 	<tab><![CDATA[payments_gateways]]></tab>
 	<confirmUninstall><![CDATA[Are you sure about removing these details?]]></confirmUninstall>

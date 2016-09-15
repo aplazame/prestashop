@@ -3,7 +3,7 @@
 global $_MODULE;
 $_MODULE = array();
 $_MODULE['<{aplazame}prestashop>aplazame_8980f70f5f3caeebb60cb359e6e4b902'] = 'Aplazame: compra ahora, paga después';
-$_MODULE['<{aplazame}prestashop>aplazame_a12b205d91db93ade640880f05c5a672'] = 'Financiamos las compras a clientes y aumentamos un 18% las ventas en tu ecommerce.';
+$_MODULE['<{aplazame}prestashop>aplazame_2603da3d4c4bfd9e3af9a11c7ec5143b'] = 'Aumenta las ventas un 50% con Aplazame, un método de pago libre de riesgos que ofrece crédito instantáneo para compras online.';
 $_MODULE['<{aplazame}prestashop>aplazame_cbe0a99684b145e77f3e14174ac212e3'] = '¿Estas seguro de eliminar el módulo?';
 $_MODULE['<{aplazame}prestashop>aplazame_92d4773a9f32fc3333cb8238471cf763'] = 'Tienes que habilitar la extensión cURL en tu servidor para instalar este módulo';
 $_MODULE['<{aplazame}prestashop>aplazame_cdbe2f170711683cb6624cf9c509cc99'] = 'Este módulo no está disponible en tu país';
