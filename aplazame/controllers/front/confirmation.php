@@ -22,7 +22,9 @@ class AplazameConfirmationModuleFrontController extends ModuleFrontController
             $this->error('Cart does not exists or does not have an order');
         }
 
-        $response = $this->module->callToRest('POST', '/orders/' . $mid . '/authorize');
+        $response = $this->module->callToRest('POST', '/orders/' . $mid . '/authorize', array(
+            'checkout_token' => $cartId,
+        ));
         if ($response['is_error']) {
             $message = 'Aplazame Error #' . $response['code'];
             if (isset($response['payload']['error']['message'])) {
