@@ -12,7 +12,7 @@ class AplazameSerializers
         return $decimals / 100;
     }
 
-    protected function getAddress(Address $address)
+    public static function getAddress(Address $address)
     {
         return array(
             'first_name' => $address->firstname,
@@ -28,7 +28,7 @@ class AplazameSerializers
         );
     }
 
-    protected function getCustomer(Customer $customer)
+    protected static function getCustomer(Customer $customer)
     {
         return array(
             'id' => $customer->id,
@@ -42,7 +42,7 @@ class AplazameSerializers
         );
     }
 
-    public function checkoutShipping(Order $order = null, Cart $cart = null)
+    public static function checkoutShipping(Order $order = null, Cart $cart = null)
     {
         if ($cart) {
             $id_address_delivery = $cart->id_address_delivery;
@@ -61,7 +61,7 @@ class AplazameSerializers
         }
 
         $shipping = array_merge(
-            $this->getAddress(new Address($id_address_delivery)),
+            self::getAddress(new Address($id_address_delivery)),
             array(
                 'price' => self::formatDecimals($shippingCost),
                 'name' => $carrierName,
@@ -71,7 +71,7 @@ class AplazameSerializers
         return $shipping;
     }
 
-    protected function getArticles(array $products)
+    protected static function getArticles(array $products)
     {
         $articles = array();
         $link = new Link();
@@ -94,20 +94,20 @@ class AplazameSerializers
         return $articles;
     }
 
-    public function checkoutOrder(Cart $cart)
+    protected static function checkoutOrder(Cart $cart)
     {
         $currency = new Currency($cart->id_currency);
 
         return array(
             'id' => $cart->id,
-            'articles' => $this->getArticles($cart->getProducts()),
+            'articles' => self::getArticles($cart->getProducts()),
             'currency' => $currency->iso_code,
             'total_amount' => self::formatDecimals($cart->getOrderTotal(true)),
             'discount' => self::formatDecimals($cart->getOrderTotal(true, Cart::ONLY_DISCOUNTS)),
         );
     }
 
-    public function getHistory($orders)
+    public static function getHistory($orders)
     {
         $history = array();
 
@@ -124,15 +124,15 @@ class AplazameSerializers
                 'type' => $order->module,
                 'order_date' => date(DATE_ISO8601, strtotime($order->date_add)),
                 'currency' => $currency->iso_code,
-                'billing' => $this->getAddress(new Address($order->id_address_invoice)),
-                'shipping' => $this->checkoutShipping($order),
+                'billing' => self::getAddress(new Address($order->id_address_invoice)),
+                'shipping' => self::checkoutShipping($order),
             );
         }
 
         return $history;
     }
 
-    public function getCheckout(Cart $cart, $moduleId, $orderId)
+    public static function getCheckout(Cart $cart, $moduleId, $orderId)
     {
         /** @var Aplazame $aplazame */
         $aplazame = ModuleCore::getInstanceByName('aplazame');
@@ -167,10 +167,10 @@ class AplazameSerializers
                 'checkout_url' => __PS_BASE_URI__ . 'index.php?controller=order-opc',
                 'success_url' => __PS_BASE_URI__ . 'index.php?' . $successQuery,
             ),
-            'customer' => $this->getCustomer(new Customer($cart->id_customer)),
-            'order' => $this->checkoutOrder($cart),
-            'billing' => $this->getAddress(new Address($cart->id_address_invoice)),
-            'shipping' => $this->checkoutShipping(null, $cart),
+            'customer' => self::getCustomer(new Customer($cart->id_customer)),
+            'order' => self::checkoutOrder($cart),
+            'billing' => self::getAddress(new Address($cart->id_address_invoice)),
+            'shipping' => self::checkoutShipping(null, $cart),
             'meta' => array(
                 'module' => array(
                     'name' => 'aplazame:prestashop',
@@ -181,7 +181,7 @@ class AplazameSerializers
         );
     }
 
-    public function getArticleCampaign(Product $product)
+    public static function getArticleCampaign(Product $product)
     {
         $link = new Link();
 
@@ -192,15 +192,5 @@ class AplazameSerializers
             'url' => $link->getProductLink($product),
             'image_url' => $link->getImageLink('product', $product->getCoverWs()),
         );
-    }
-
-    public function getArticlesCampaign($productsId, $id_lang)
-    {
-        $articles = array();
-        foreach ($productsId as $productId) {
-            $articles[] = $this->getArticleCampaign(new Product($productId, false, $id_lang));
-        }
-
-        return $articles;
     }
 }
