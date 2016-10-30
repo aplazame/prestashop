@@ -314,7 +314,8 @@ HTML;
     {
         $id_product = Tools::getValue('id_product');
 
-        $articles = array(AplazameSerializers::getArticleCampaign(new Product($id_product, false, $this->context->language->id)));
+        include_once _PS_MODULE_DIR_ . 'aplazame/controllers/front/Api/serializer.php';
+        $articles = array(AplazameApiSerializer::article(new Product($id_product, false, $this->context->language->id)));
 
         $this->context->smarty->assign(array(
             'articles' => $articles,
