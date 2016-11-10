@@ -137,35 +137,29 @@ class AplazameSerializers
         /** @var Aplazame $aplazame */
         $aplazame = ModuleCore::getInstanceByName('aplazame');
 
-        $confirmationQuery = http_build_query(array(
-            'fc' => 'module',
-            'module' => 'aplazame',
-            'controller' => 'confirmation',
+        $link = Context::getContext()->link;
+        $confirmationQuery = array(
             'id_cart' => $cart->id,
             'key' => $cart->secure_key,
-        ));
-        $cancelQuery = http_build_query(array(
-            'fc' => 'module',
-            'module' => 'aplazame',
-            'controller' => 'cancel',
+        );
+        $cancelQuery = array(
             'id_cart' => $cart->id,
             'key' => $cart->secure_key,
-        ));
-        $successQuery = http_build_query(array(
-            'controller' => 'order-confirmation',
+        );
+        $successQuery = array(
             'id_cart' => $cart->id,
             'id_module' => $moduleId,
             'id_order' => $orderId,
             'key' => $cart->secure_key,
-        ));
+        );
 
         return array(
             'toc' => true,
             'merchant' => array(
-                'confirmation_url' => __PS_BASE_URI__ . 'index.php?' . $confirmationQuery,
-                'cancel_url' => __PS_BASE_URI__ . 'index.php?' . $cancelQuery,
-                'checkout_url' => __PS_BASE_URI__ . 'index.php?controller=order-opc',
-                'success_url' => __PS_BASE_URI__ . 'index.php?' . $successQuery,
+                'confirmation_url' => $link->getModuleLink('aplazame', 'confirmation', $confirmationQuery),
+                'cancel_url' => $link->getModuleLink('aplazame', 'cancel', $cancelQuery),
+                'checkout_url' => $link->getPageLink('order-opc'),
+                'success_url' => $link->getPageLink('order-confirmation', null, null, $successQuery),
             ),
             'customer' => self::getCustomer(new Customer($cart->id_customer)),
             'order' => self::checkoutOrder($cart),
