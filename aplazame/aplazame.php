@@ -118,16 +118,20 @@ class Aplazame extends PaymentModule
             'APLAZAME_BUTTON_IMAGE',
             'APLAZAME_WIDGET_PROD',
         );
-        foreach ($settingsKeys as $key) {
-            $settings[$key] = Configuration::get($key);
-        }
 
         if (Tools::isSubmit('submitAplazameModule')) {
             foreach ($settingsKeys as $key) {
-                Configuration::updateValue($key, Tools::getValue($key));
+                $value = Tools::getValue($key);
+
+                Configuration::updateValue($key, $value);
+                $settings[$key] = $value;
             }
 
             $output .= $this->displayConfirmation($this->l('Settings updated'));
+        } else {
+            foreach ($settingsKeys as $key) {
+                $settings[$key] = Configuration::get($key);
+            }
         }
 
         if (_PS_VERSION_ < 1.6) {
