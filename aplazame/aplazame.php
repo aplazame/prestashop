@@ -386,8 +386,10 @@ HTML;
 
     public function hookDisplayShoppingCart($params)
     {
+        /** @var Cart $cart */
+        $cart = $params['cart'];
         $this->context->smarty->assign(array(
-            'aplazame_amount' => AplazameSerializers::formatDecimals($params['total_price']),
+            'aplazame_amount' => AplazameSerializers::formatDecimals($cart->getOrderTotal()),
         ));
 
         return $this->display(__FILE__, 'shoppingcart.tpl');
