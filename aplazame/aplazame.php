@@ -469,7 +469,7 @@ HTML;
             return false;
         }
 
-        if (isset($params['product'])) {
+        if (isset($params['product']) && $params['product'] instanceof Product) {
             $product = $params['product'];
         } elseif (Tools::getValue('controller') === 'product' && Tools::getValue('id_product')) {
             $product = new Product(Tools::getValue('id_product'));
