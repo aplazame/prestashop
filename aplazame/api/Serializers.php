@@ -158,7 +158,7 @@ class AplazameSerializers
             'merchant' => array(
                 'confirmation_url' => $link->getModuleLink('aplazame', 'confirmation', $confirmationQuery),
                 'cancel_url' => $link->getModuleLink('aplazame', 'cancel', $cancelQuery),
-                'checkout_url' => $link->getPageLink('order-opc'),
+                'checkout_url' => $link->getPageLink('order'),
                 'success_url' => $link->getPageLink('order-confirmation', null, null, $successQuery),
             ),
             'customer' => self::getCustomer(new Customer($cart->id_customer)),
