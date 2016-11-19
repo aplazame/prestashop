@@ -22,7 +22,11 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
             'aplazame_order' => AplazameSerializers::getCheckout($cart, (int) $this->module->id, $this->module->currentOrder),
         ));
 
-        return $this->setTemplate('redirect.tpl');
+        if (_PS_VERSION_ < 1.7) {
+            return $this->setTemplate('redirect_1.5.tpl');
+        }
+
+        return $this->setTemplate('module:aplazame/views/templates/front/redirect_1.7.tpl');
     }
 
     /**
