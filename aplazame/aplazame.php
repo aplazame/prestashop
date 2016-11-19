@@ -46,7 +46,7 @@ class Aplazame extends PaymentModule
 
         parent::__construct();
 
-        $this->displayName = $this->l('Aplazame: compra ahora, paga después');
+        $this->displayName = $this->l('Aplazame: buy now, pay later');
         $this->description = $this->l('Boost sales by 50% with Aplazame, a risk free payment method that offers instant credit for online purchases.');
         $this->confirmUninstall = $this->l('Are you sure about removing these details?');
 
