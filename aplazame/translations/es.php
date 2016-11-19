@@ -24,6 +24,7 @@ $_MODULE['<{aplazame}prestashop>aplazame_e16a7e0024c424d99358b036ef652458'] = 'I
 $_MODULE['<{aplazame}prestashop>aplazame_51a5d256ee66864ae5dbd4e4dc12d0a8'] = 'Hook del producto para el Widget';
 $_MODULE['<{aplazame}prestashop>aplazame_c6d85bdfa0778a3de3b998b10926a235'] = 'Selecciona el hook donde quieres mostrar el widget del producto';
 $_MODULE['<{aplazame}prestashop>aplazame_c9cc8cce247e49bae79f15173ce97354'] = 'Guardar';
+$_MODULE['<{aplazame}prestashop>aplazame_b5d9dbe9f72d808a98fbf80e03efc1e1'] = 'Pagar con aplazame';
 $_MODULE['<{aplazame}prestashop>product_0afdbf89481e500a4318c84c5554ade8'] = 'Aplazame';
 $_MODULE['<{aplazame}prestashop>product_1d29468458a4701436852d8fb6264008'] = 'Campañas Aplazame';
 $_MODULE['<{aplazame}prestashop>redirect_737b71a1aa2cc4709aeef419cd25dc93'] = 'Procesando el pago con Aplazame';
@@ -38,5 +39,5 @@ $_MODULE['<{aplazame}prestashop>confirmation_success_63d5049791d9d79d86e9a108b0a
 $_MODULE['<{aplazame}prestashop>confirmation_success_19c419a8a4f1cd621853376a930a2e24'] = 'Un email te ha sido enviado con esta información.';
 $_MODULE['<{aplazame}prestashop>confirmation_success_0db71da7150c27142eef9d22b843b4a9'] = 'Para cualquier cuestión o información adicional, por favor contacte con nuestro';
 $_MODULE['<{aplazame}prestashop>confirmation_success_decce112a9e64363c997b04aa71b7cb8'] = 'servicio de atención al cliente.';
-$_MODULE['<{aplazame}prestashop>payment_b5d9dbe9f72d808a98fbf80e03efc1e1'] = 'Paga con Aplazame';
-$_MODULE['<{aplazame}prestashop>payment_25075ae7801b7b69da45ec1c2fae36df'] = 'Aplaza o fracciona tu compra con Aplazame';
+$_MODULE['<{aplazame}prestashop>payment_1.5_b5d9dbe9f72d808a98fbf80e03efc1e1'] = 'Pagar con aplazame';
+$_MODULE['<{aplazame}prestashop>payment_1.5_25075ae7801b7b69da45ec1c2fae36df'] = 'Aplaza o fracciona tu compra con Aplazame';

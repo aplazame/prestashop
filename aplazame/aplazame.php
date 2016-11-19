@@ -90,6 +90,7 @@ class Aplazame extends PaymentModule
             && $this->registerHook('displayRightColumnProduct')
             && $this->registerHook('displayShoppingCart')
             && $this->registerHook('payment')
+            && $this->registerHook('paymentOptions')
             && $this->registerHook('paymentReturn')
             && $this->registerController('AdminAplazameApiProxy', 'Aplazame API Proxy')
         );
@@ -404,24 +405,44 @@ HTML;
 
         /** @var Cart $cart */
         $cart = $params['cart'];
-
-        $currency_id = $cart->id_currency;
-        $currency = new Currency((int) $currency_id);
-
-        if (!in_array($currency->iso_code, $this->limited_currencies)) {
+        $currency = new Currency((int)($cart->id_currency));
+        if (!$this->checkCurrency($currency)) {
             return false;
         }
 
         $button_image_uri = 'https://aplazame.com/static/img/buttons/' . Configuration::get('APLAZAME_BUTTON_IMAGE') . '.png';
 
-        $this->context->smarty->assign(array(
-            'aplazame_button' => Configuration::get('APLAZAME_BUTTON'),
-            'aplazame_currency_iso' => $currency->iso_code,
-            'aplazame_cart_total' => AplazameSerializers::formatDecimals($cart->getOrderTotal()),
-            'aplazame_button_image_uri' => $button_image_uri,
-        ));
+        $this->context->smarty->assign($this->getButtonTemplateVars($currency, $cart));
+        $this->context->smarty->assign(array('aplazame_button_image_uri' => $button_image_uri));
 
-        return $this->display(__FILE__, 'payment.tpl');
+        return $this->display(__FILE__, 'payment_1.5.tpl');
+    }
+
+    public function hookPaymentOptions($params)
+    {
+        if (!$this->isAvailable()) {
+            return array();
+        }
+
+        /** @var Cart $cart */
+        $cart = $params['cart'];
+        $currency = new Currency((int)($cart->id_currency));
+        if (!$this->checkCurrency($currency)) {
+            return array();
+        }
+
+        $link = new Link();
+        $this->context->smarty->assign($this->getButtonTemplateVars($currency, $cart));
+
+        $newOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
+        $newOption->setCallToActionText($this->l('Pay with Aplazame'))
+            ->setAction($link->getModuleLink('aplazame', 'redirect'))
+            ->setAdditionalInformation($this->fetch('module:aplazame/views/templates/hook/payment_1.7.tpl'))
+        ;
+
+        return array(
+            $newOption,
+        );
     }
 
     public function hookPaymentReturn($params)
@@ -523,6 +544,15 @@ HTML;
         return $order->addOrderPayment(-$amount, $this->displayName);
     }
 
+    public function checkCurrency(Currency $currency)
+    {
+        if (!in_array($currency->iso_code, $this->limited_currencies)) {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * @param string $mid
      *
@@ -557,5 +587,14 @@ HTML;
         $tab->module = 'aplazame';
 
         return (boolean) $tab->add();
+    }
+
+    private function getButtonTemplateVars(Currency $currency, Cart $cart)
+    {
+        return array(
+            'aplazame_button' => Configuration::get('APLAZAME_BUTTON'),
+            'aplazame_currency_iso' => $currency->iso_code,
+            'aplazame_cart_total' => AplazameSerializers::formatDecimals($cart->getOrderTotal()),
+        );
     }
 }
