@@ -8,8 +8,8 @@
 
 <script>
 aplazame.button({
-  selector: "{$aplazame_button}",
-  amount: {$aplazame_cart_total},
-  currency: "{$aplazame_currency_iso}"
+  selector: "{$aplazame_button|escape:'javascript':'UTF-8'}",
+  amount: {$aplazame_cart_total|escape:'javascript':'UTF-8'},
+  currency: "{$aplazame_currency_iso|escape:'javascript':'UTF-8'}"
 });
 </script>

@@ -13,6 +13,6 @@
     <br /><br />
     {l s='An email has been sent with this information.' mod='aplazame'}
     <br /><br />
-    {l s='For any questions or for further information, please contact our' mod='aplazame'} <a href="{$link->getPageLink('contact', true)|escape:'html'}">{l s='customer service department.' mod='aplazame'}</a>
+    {l s='For any questions or for further information, please contact our' mod='aplazame'} <a href="{$link->getPageLink('contact', true)|escape:'htmlall':'UTF-8'}">{l s='customer service department.' mod='aplazame'}</a>
 </p>
 <hr />

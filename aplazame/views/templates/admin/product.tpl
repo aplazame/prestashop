@@ -23,7 +23,7 @@
 </div>
 
 <script>
-    var apiProxyEndpoint = "{$link->getAdminLink('AdminAplazameApiProxy')}&ajax=1";
+    var apiProxyEndpoint = "{html_entity_decode($link->getAdminLink('AdminAplazameApiProxy')|escape:'htmlall':'UTF-8')}&ajax=1";
     var campaignsContainer = document.getElementById("aplazame_campaigns_container");
 
     var articles = {$articles|@json_encode};

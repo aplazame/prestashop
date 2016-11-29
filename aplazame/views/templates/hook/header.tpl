@@ -10,8 +10,8 @@
 
 <script>
     aplazame.init({
-        host: "{$aplazame_api_base_uri}",
-        publicKey: "{$aplazame_public_key}",
+        host: "{$aplazame_api_base_uri|escape:'javascript':'UTF-8'}",
+        publicKey: "{$aplazame_public_key|escape:'javascript':'UTF-8'}",
         sandbox: "{if $aplazame_is_sandbox}true{else}false{/if}"
     });
 </script>
