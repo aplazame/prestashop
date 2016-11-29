@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @copyright 2015-2016 Aplazame
+ * @license   see file: LICENSE
+ */
 
 final class AdminAplazameApiProxyController extends ModuleAdminController
 {

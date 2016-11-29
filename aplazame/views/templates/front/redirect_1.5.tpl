@@ -1,3 +1,8 @@
+{*
+ * @copyright 2015-2016 Aplazame
+ * @license   see file: LICENSE
+ *}
+
 <style>
   iframe#aplazame{
     top:0;

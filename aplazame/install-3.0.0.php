@@ -1,4 +1,8 @@
 <?php
+/**
+ * @copyright 2015-2016 Aplazame
+ * @license   see file: LICENSE
+ */
 
 if (!defined('_PS_VERSION_')) {
     exit;

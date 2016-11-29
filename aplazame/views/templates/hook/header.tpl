@@ -1,3 +1,8 @@
+{*
+ * @copyright 2015-2016 Aplazame
+ * @license   see file: LICENSE
+ *}
+
 <script type="text/javascript" src="{$aplazame_js_uri|escape:'htmlall':'UTF-8'}"></script>
 
 <script>

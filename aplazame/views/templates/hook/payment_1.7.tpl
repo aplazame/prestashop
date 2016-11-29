@@ -1,3 +1,8 @@
+{*
+ * @copyright 2015-2016 Aplazame
+ * @license   see file: LICENSE
+ *}
+
 <script>
 aplazame.button({
   selector: "{$aplazame_button}",

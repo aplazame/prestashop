@@ -1,3 +1,8 @@
+{*
+ * @copyright 2015-2016 Aplazame
+ * @license   see file: LICENSE
+ *}
+
 <div class="row">
   <div class="col-xs-12 col-md-12">
     <p class="payment_module" id="aplazame_payment_button">

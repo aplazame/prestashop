@@ -1,3 +1,8 @@
+{*
+ * @copyright 2015-2016 Aplazame
+ * @license   see file: LICENSE
+ *}
+
 <div id="product-aplazame" class="panel product-tab">
     <input type="hidden" name="submitted_tabs[]" value="Aplazame" />
     <h3 class="tab"> <i class="icon-info"></i> {l s='Aplazame' mod='aplazame'}</h3>

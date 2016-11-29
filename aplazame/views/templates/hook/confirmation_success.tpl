@@ -1,3 +1,8 @@
+{*
+ * @copyright 2015-2016 Aplazame
+ * @license   see file: LICENSE
+ *}
+
 <h3>{l s='Your order on %s is complete.' sprintf=$shop_name mod='aplazame'}</h3>
 <p>
     <br />
