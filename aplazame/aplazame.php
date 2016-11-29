@@ -414,7 +414,7 @@ HTML;
 
         /** @var Cart $cart */
         $cart = $params['cart'];
-        $currency = new Currency((int)($cart->id_currency));
+        $currency = new Currency((int) ($cart->id_currency));
         if (!$this->checkCurrency($currency)) {
             return false;
         }
@@ -435,7 +435,7 @@ HTML;
 
         /** @var Cart $cart */
         $cart = $params['cart'];
-        $currency = new Currency((int)($cart->id_currency));
+        $currency = new Currency((int) ($cart->id_currency));
         if (!$this->checkCurrency($currency)) {
             return array();
         }

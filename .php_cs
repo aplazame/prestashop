@@ -11,6 +11,7 @@ return Symfony\CS\Config\Config::create()
             '-phpdoc_params',
             '-phpdoc_to_comment',
             '-psr0',
+            '-no_empty_lines_after_phpdocs',
             '-unneeded_control_parentheses',
             'long_array_syntax',
             'concat_with_spaces',
