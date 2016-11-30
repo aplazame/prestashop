@@ -50,6 +50,7 @@ class Aplazame extends PaymentModule
         $this->author = 'Aplazame';
         $this->author_uri = 'https://aplazame.com';
         $this->limited_countries = array('ES');
+        $this->module_key = '64b13ea3527b4df3fe2e3fc1526ce515';
 
         parent::__construct();
 
