@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v3.0.3](https://github.com/aplazame/prestashop/tree/v3.0.3) (2016-11-30)
+
+* Added more changes related with PrestaShop module validator.
+
 #### [v3.0.2](https://github.com/aplazame/prestashop/tree/v3.0.2) (2016-11-10)
 
 * Improve compatibility with friendly URLs.
