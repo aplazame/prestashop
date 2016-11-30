@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v3.0.2](https://github.com/aplazame/prestashop/tree/v3.0.2) (2016-11-10)
+
+* Improve compatibility with friendly URLs.
+
 #### [v3.0.1](https://github.com/aplazame/prestashop/tree/v3.0.1) (2016-09-14)
 
 * Revert aplazame.js use of data attributes.
