@@ -67,7 +67,12 @@ class AplazameHistoryModuleFrontController extends ModuleFrontController
             . ' ORDER BY id_order DESC LIMIT ' . $limit
         );
 
-        return AplazameSerializers::getHistory($orders);
+        $historyOrders = array();
+        foreach ($orders as $orderData) {
+            $historyOrders[] = Aplazame_Aplazame_Api_BusinessModel_HistoricalOrder::createFromOrder(new Order($orderData['id_order']));
+        }
+
+        return $historyOrders;
     }
 
     private function getallheaders()

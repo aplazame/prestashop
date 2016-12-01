@@ -25,8 +25,9 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
             $cart = $this->duplicateCart($cart);
         }
 
+        $checkout = Aplazame_Aplazame_BusinessModel_Checkout::createFromCart($cart, (int) $this->module->id, $this->module->currentOrder);
         $this->context->smarty->assign(array(
-            'aplazame_order' => AplazameSerializers::getCheckout($cart, (int) $this->module->id, $this->module->currentOrder),
+            'aplazame_order' => Aplazame_Sdk_Serializer_JsonSerializer::serializeValue($checkout),
         ));
 
         if (_PS_VERSION_ < 1.7) {
@@ -49,7 +50,7 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
             return false;
         }
 
-        if ($response['is_error'] || empty($response['payload']['results'])) {
+        if (empty($response['results'])) {
             return false;
         }
 
