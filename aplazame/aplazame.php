@@ -11,8 +11,8 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-include_once _PS_MODULE_DIR_ . 'aplazame/api/Serializers.php';
-include_once _PS_MODULE_DIR_ . 'aplazame/api/Client.php';
+include_once _PS_MODULE_DIR_ . 'aplazame/lib/Aplazame/Aplazame/autoload.php';
+include_once _PS_MODULE_DIR_ . 'aplazame/lib/Aplazame/Sdk/autoload.php';
 
 /**
  * @property bool bootstrap
@@ -32,7 +32,7 @@ class Aplazame extends PaymentModule
     private $apiBaseUri;
 
     /**
-     * @var AplazameClient
+     * @var Aplazame_Sdk_Api_Client
      */
     private $apiClient;
 
@@ -326,7 +326,7 @@ HTML;
     {
         $id_product = Tools::getValue('id_product');
 
-        $articles = array(AplazameSerializers::getArticleCampaign(new Product($id_product, false, $this->context->language->id)));
+        $articles = array(Aplazame_Aplazame_Api_BusinessModel_Article::createFromProduct(new Product($id_product, false, $this->context->language->id)));
 
         $this->context->smarty->assign(array(
             'articles' => $articles,
@@ -396,7 +396,7 @@ HTML;
         /** @var Cart $cart */
         $cart = $params['cart'];
         $this->context->smarty->assign(array(
-            'aplazame_amount' => AplazameSerializers::formatDecimals($cart->getOrderTotal()),
+            'aplazame_amount' => Aplazame_Sdk_Serializer_Decimal::fromFloat($cart->getOrderTotal())->value,
         ));
 
         return $this->display(__FILE__, 'shoppingcart.tpl');
@@ -440,7 +440,7 @@ HTML;
             return array();
         }
 
-        $link = new Link();
+        $link = $this->context->link;
         $this->context->smarty->assign($this->getButtonTemplateVars($currency, $cart));
 
         $newOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
@@ -493,7 +493,7 @@ HTML;
         }
 
         $this->context->smarty->assign(array(
-            'aplazame_amount' => AplazameSerializers::formatDecimals($product->getPrice(true, null, 2)),
+            'aplazame_amount' => Aplazame_Sdk_Serializer_Decimal::fromFloat($product->getPrice(true, null, 2))->value,
         ));
 
         return $this->display(__FILE__, 'product.tpl');
@@ -502,11 +502,10 @@ HTML;
     public function getApiClient()
     {
         if (!$this->apiClient) {
-            $this->apiClient = new AplazameClient(
+            $this->apiClient = new Aplazame_Sdk_Api_Client(
                 $this->apiBaseUri,
-                Configuration::get('APLAZAME_SECRET_KEY'),
-                Configuration::get('APLAZAME_SANDBOX'),
-                $this->version
+                Configuration::get('APLAZAME_SANDBOX') ? Aplazame_Sdk_Api_Client::ENVIRONMENT_SANDBOX : Aplazame_Sdk_Api_Client::ENVIRONMENT_PRODUCTION,
+                Configuration::get('APLAZAME_SECRET_KEY')
             );
         }
 
@@ -518,7 +517,7 @@ HTML;
         $client = $this->getApiClient();
 
         try {
-            return $client->callToRest($method, $path, $values);
+            return $client->request($method, $path, $values);
         } catch (Exception $e) {
             $this->log(self::LOG_ERROR, $e->getMessage());
 
@@ -542,10 +541,11 @@ HTML;
     {
         $mid = $order->id_cart;
 
-        $decimal = AplazameSerializers::formatDecimals($amount);
-        $response = $this->callToRest('POST', '/orders/' . $mid . '/refund', array('amount' => $decimal));
-        if ($response['is_error']) {
-            $this->log(self::LOG_CRITICAL, 'Cannot refund. Detail ' . $response['payload']['error']['message'], $mid);
+        $decimal = Aplazame_Sdk_Serializer_Decimal::fromFloat($amount)->value;
+        try {
+            $this->callToRest('POST', '/orders/' . $mid . '/refund', array('amount' => $decimal));
+        } catch (Exception $e) {
+            $this->log(self::LOG_CRITICAL, 'Cannot refund. Detail ' . $e->getMessage(), $mid);
 
             return false;
         }
@@ -569,9 +569,10 @@ HTML;
      */
     public function cancelOrder($mid)
     {
-        $response = $this->callToRest('POST', '/orders/' . $mid . '/cancel');
-        if ($response['is_error']) {
-            $this->log(self::LOG_CRITICAL, 'Cannot cancel. Detail ' . $response['payload']['error']['message'], $mid);
+        try {
+            $this->callToRest('POST', '/orders/' . $mid . '/cancel');
+        } catch (Exception $e) {
+            $this->log(self::LOG_CRITICAL, 'Cannot cancel. Detail ' . $e->getMessage(), $mid);
 
             return false;
         }
@@ -603,7 +604,7 @@ HTML;
         return array(
             'aplazame_button' => Configuration::get('APLAZAME_BUTTON'),
             'aplazame_currency_iso' => $currency->iso_code,
-            'aplazame_cart_total' => AplazameSerializers::formatDecimals($cart->getOrderTotal()),
+            'aplazame_cart_total' => Aplazame_Sdk_Serializer_Decimal::fromFloat($cart->getOrderTotal())->value,
         );
     }
 }

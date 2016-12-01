@@ -29,12 +29,10 @@ class AplazameConfirmationModuleFrontController extends ModuleFrontController
             $this->error('Cart does not exists or does not have an order');
         }
 
-        $response = $this->module->callToRest('POST', '/orders/' . $mid . '/authorize');
-        if ($response['is_error']) {
-            $message = 'Aplazame Error #' . $response['code'];
-            if (isset($response['payload']['error']['message'])) {
-                $message .= ' ' . $response['payload']['error']['message'];
-            }
+        try {
+            $response = $this->module->callToRest('POST', '/orders/' . $mid . '/authorize');
+        } catch (Exception $e) {
+            $message = 'Aplazame Error ' . $e->getMessage();
 
             $this->module->validateOrder(
                 $cartId,
@@ -49,18 +47,19 @@ class AplazameConfirmationModuleFrontController extends ModuleFrontController
             );
 
             $this->error('Authorization error');
+
+            return;
         }
 
-        $cartAmount = AplazameSerializers::formatDecimals($cart->getOrderTotal(true));
-        if ($response['payload']['amount'] !== $cartAmount) {
+        $cartAmount = Aplazame_Sdk_Serializer_Decimal::fromFloat($cart->getOrderTotal(true))->value;
+        if ($response['amount'] !== $cartAmount) {
             $this->error('Invalid');
         }
 
-        $aplazameAmount = AplazameSerializers::decodeDecimals($response['payload']['amount']);
         if (!$this->module->validateOrder(
             $cartId,
             Configuration::get('PS_OS_PAYMENT'),
-            $aplazameAmount,
+            $cart->getOrderTotal(true),
             $this->module->displayName,
             null,
             null,
