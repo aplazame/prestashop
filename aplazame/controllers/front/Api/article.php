@@ -16,8 +16,8 @@ final class AplazameApiArticle
 
     public function articles(array $queryArguments)
     {
-        $page = (isset($queryArguments['page'])) ? $queryArguments['page'] : 1;
-        $page_size = (isset($queryArguments['page_size'])) ? $queryArguments['page_size'] : 10;
+        $page = (isset($queryArguments['page'])) ? (int) $queryArguments['page'] : 1;
+        $page_size = (isset($queryArguments['page_size'])) ? (int) $queryArguments['page_size'] : 10;
         $offset = ($page - 1) * $page_size;
 
         $products = $this->db->executeS(

@@ -26,14 +26,14 @@ final class AplazameApiOrder
             return AplazameApiModuleFrontController::not_found();
         }
 
-        $page = (isset($queryArguments['page'])) ? $queryArguments['page'] : 1;
-        $page_size = (isset($queryArguments['page_size'])) ? $queryArguments['page_size'] : 10;
+        $page = (isset($queryArguments['page'])) ? (int) $queryArguments['page'] : 1;
+        $page_size = (isset($queryArguments['page_size'])) ? (int) $queryArguments['page_size'] : 10;
         $offset = ($page - 1) * $page_size;
 
         $orders = $this->db->executeS(
             'SELECT id_order FROM ' . _DB_PREFIX_ . 'orders'
-            . ' WHERE id_customer = ' . $order->id_customer
-            . ' LIMIT ' . $offset . ', ' . $page_size
+            . ' WHERE id_customer = ' . (int) $order->id_customer
+            . ' LIMIT ' . (int) $offset . ', ' . (int) $page_size
         );
 
         $historyOrders = array();

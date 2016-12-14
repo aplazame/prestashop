@@ -63,8 +63,8 @@ class AplazameHistoryModuleFrontController extends ModuleFrontController
     {
         $orders = Db::getInstance()->executeS(
             'SELECT * FROM ' . _DB_PREFIX_ . 'orders'
-            . ' WHERE id_customer = ' . $customerId
-            . ' ORDER BY id_order DESC LIMIT ' . $limit
+            . ' WHERE id_customer = ' . (int) $customerId
+            . ' ORDER BY id_order DESC LIMIT ' . (int) $limit
         );
 
         $historyOrders = array();
