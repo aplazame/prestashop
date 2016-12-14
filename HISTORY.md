@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v3.1.0](https://github.com/aplazame/prestashop/tree/v3.1.0) (2016-12-14)
+
+* Merchant API
+
 #### [v3.0.3](https://github.com/aplazame/prestashop/tree/v3.0.3) (2016-11-30)
 
 * Added more changes related with PrestaShop module validator.
