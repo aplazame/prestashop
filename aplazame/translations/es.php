@@ -27,6 +27,7 @@ $_MODULE['<{aplazame}prestashop>aplazame_c9cc8cce247e49bae79f15173ce97354'] = 'G
 $_MODULE['<{aplazame}prestashop>aplazame_b5d9dbe9f72d808a98fbf80e03efc1e1'] = 'Pagar con aplazame';
 $_MODULE['<{aplazame}prestashop>product_0afdbf89481e500a4318c84c5554ade8'] = 'Aplazame';
 $_MODULE['<{aplazame}prestashop>product_1d29468458a4701436852d8fb6264008'] = 'Campañas Aplazame';
+$_MODULE['<{aplazame}prestashop>product_1ddb67bacfdbd88fd1fdcaeda4577c68'] = 'La campaña aplica a todo el catálogo de productos';
 $_MODULE['<{aplazame}prestashop>redirect_1.5_737b71a1aa2cc4709aeef419cd25dc93'] = 'Procesando pago con aplazame';
 $_MODULE['<{aplazame}prestashop>redirect_1.5_a4cc79ba7081fb9a019ba4b53c35f624'] = 'Tu navegador web no soporta IFrames. Por favor, actualiza el navegador o intenta usar otro más moderno.';
 $_MODULE['<{aplazame}prestashop>redirect_1.7_737b71a1aa2cc4709aeef419cd25dc93'] = 'Procesando pago con aplazame';

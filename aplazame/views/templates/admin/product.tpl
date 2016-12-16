@@ -61,6 +61,12 @@
         checkbox["data-campaignId"] = campaign.id;
         checkbox.addEventListener("click", campaignToggle, false);
 
+        if (!campaign.partial) {
+          checkbox.checked = true;
+          checkbox.disabled = true;
+          checkbox.title = "{l s='The campaign applies to all products from your catalogue' mod='aplazame'}";
+        }
+
         var label = document.createElement("label");
         label.htmlFor = inputId;
 
