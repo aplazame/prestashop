@@ -52,7 +52,7 @@ class AplazameHistoryModuleFrontController extends ModuleFrontController
             $headers = $this->getallheaders();
         }
 
-        if (isset($headers['Authorization'])) {
+        if (Tools::getIsset($headers['Authorization'])) {
             return trim(str_replace('Bearer', '', $headers['Authorization']));
         }
 

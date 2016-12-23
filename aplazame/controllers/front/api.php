@@ -1,4 +1,11 @@
 <?php
+/**
+ * This file is part of the official Aplazame module for PrestaShop.
+ *
+ * @author    Aplazame <soporte@aplazame.com>
+ * @copyright 2015-2016 Aplazame
+ * @license   see file: LICENSE
+ */
 
 /**
  * @property Aplazame module
@@ -43,9 +50,9 @@ class AplazameApiModuleFrontController extends ModuleFrontController
 
     public function postProcess()
     {
-        $path = isset($_GET['path']) ? $_GET['path'] : '';
-        $pathArguments = isset($_GET['path_arguments']) ? json_decode($_GET['path_arguments'], true) : array();
-        $queryArguments = isset($_GET['query_arguments']) ? json_decode($_GET['query_arguments'], true) : array();
+        $path = Tools::getValue('path', '');
+        $pathArguments = Tools::jsonDecode(Tools::getValue('path_arguments', '[]'), true);
+        $queryArguments = Tools::jsonDecode(Tools::getValue('query_arguments', '[]'), true);
 
         $response = $this->route($path, $pathArguments, $queryArguments);
 
@@ -120,7 +127,7 @@ class AplazameApiModuleFrontController extends ModuleFrontController
         $headers = '';
         foreach ($_SERVER as $name => $value) {
             if (substr($name, 0, 5) == 'HTTP_') {
-                $headers[str_replace(' ', '-', strtolower(str_replace('_', ' ', substr($name, 5))))] = $value;
+                $headers[str_replace(' ', '-', Tools::strtolower(str_replace('_', ' ', Tools::substr($name, 5))))] = $value;
             }
         }
 
