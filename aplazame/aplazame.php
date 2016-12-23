@@ -197,7 +197,7 @@ HTML;
                 'input' => array(
                     array(
                         'type' => (_PS_VERSION_ >= 1.6) ? 'switch' : 'radio',
-                        'label' => $this->l('Sandbox'),
+                        'label' => $this->l('Test Mode (Sandbox)'),
                         'name' => 'APLAZAME_SANDBOX',
                         'is_bool' => true,
                         'desc' => $this->l('Determines if the module is on Sandbox mode'),
