@@ -1,5 +1,10 @@
 ## Change Log
 
+#### [v3.1.1](https://github.com/aplazame/prestashop/tree/v3.1.1) (2016-12-23)
+
+* [fixed] Improve visualization when product is already included in a campaign which applies to the whole catalog.
+* [changed] "Sandbox" is now named "Test Mode (Sandbox)"
+
 #### [v3.1.0](https://github.com/aplazame/prestashop/tree/v3.1.0) (2016-12-14)
 
 * Merchant API
