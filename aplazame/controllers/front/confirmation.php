@@ -29,8 +29,16 @@ class AplazameConfirmationModuleFrontController extends ModuleFrontController
             $this->error('Cart does not exists or does not have an order');
         }
 
+        $currency = new Currency($cart->id_currency);
+        $cartAmount = Aplazame_Sdk_Serializer_Decimal::fromFloat($cart->getOrderTotal(true))->value;
         try {
-            $response = $this->module->callToRest('POST', '/orders/' . $mid . '/authorize');
+            $aOrder = $this->module->callToRest('GET', '/orders?mid=' . $mid);
+            $aOrder = $aOrder['results'][0];
+            if ($aOrder['total_amount'] !== $cartAmount || $aOrder['currency']['code'] !== $currency->iso_code) {
+                $this->error('Invalid');
+            }
+
+            $this->module->callToRest('POST', '/orders/' . $mid . '/authorize');
         } catch (Exception $e) {
             $message = 'Aplazame Error ' . $e->getMessage();
 
@@ -49,11 +57,6 @@ class AplazameConfirmationModuleFrontController extends ModuleFrontController
             $this->error('Authorization error');
 
             return;
-        }
-
-        $cartAmount = Aplazame_Sdk_Serializer_Decimal::fromFloat($cart->getOrderTotal(true))->value;
-        if ($response['amount'] !== $cartAmount) {
-            $this->error('Invalid');
         }
 
         if (!$this->module->validateOrder(

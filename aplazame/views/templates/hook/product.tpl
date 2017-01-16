@@ -6,4 +6,9 @@
  * @license   see file: LICENSE
  *}
 
-<div data-aplazame-simulator="" data-view="product" data-amount="{$aplazame_amount|escape:'htmlall':'UTF-8'}"></div>
+<div
+    data-aplazame-simulator=""
+    data-view="product"
+    data-amount="{$aplazame_amount|escape:'htmlall':'UTF-8'}"
+    data-currency="{$aplazame_currency_iso|escape:'htmlall':'UTF-8'}"
+></div>
