@@ -457,7 +457,13 @@ HTML;
             'reference' => $order->reference,
         ));
 
-        if ($order->getCurrentState() === Configuration::get('PS_OS_PAYMENT')) {
+        $currentState = $order->getCurrentState();
+        $successfullyStates = array(
+            Configuration::get('PS_OS_PAYMENT'),
+            Configuration::get('PS_OS_OUTOFSTOCK'),
+        );
+
+        if (in_array($currentState, $successfullyStates)) {
             return $this->display(__FILE__, 'confirmation_success.tpl');
         }
 
