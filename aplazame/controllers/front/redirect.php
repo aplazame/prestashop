@@ -15,6 +15,9 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
     public function postProcess()
     {
         $cart = Context::getContext()->cart;
+        if (!$cart->id) {
+            Tools::redirect('index.php?controller=order');
+        }
 
         if ($this->orderExists($cart->id)) {
             $this->module->log(
