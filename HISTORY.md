@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v3.1.2](https://github.com/aplazame/prestashop/tree/v3.1.2) (2017-02-14)
+
+* [fixed] Multiple fixes and improvements
+
 #### [v3.1.1](https://github.com/aplazame/prestashop/tree/v3.1.1) (2016-12-23)
 
 * [fixed] Improve visualization when product is already included in a campaign which applies to the whole catalog.
