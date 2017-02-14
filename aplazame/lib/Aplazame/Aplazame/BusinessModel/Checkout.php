@@ -22,10 +22,6 @@ class Aplazame_Aplazame_BusinessModel_Checkout
             'id_cart' => $cart->id,
             'key' => $cart->secure_key,
         );
-        $cancelQuery = array(
-            'id_cart' => $cart->id,
-            'key' => $cart->secure_key,
-        );
         $successQuery = array(
             'id_cart' => $cart->id,
             'id_module' => $moduleId,
@@ -35,7 +31,7 @@ class Aplazame_Aplazame_BusinessModel_Checkout
 
         $merchant = new stdClass();
         $merchant->confirmation_url = $link->getModuleLink('aplazame', 'confirmation', $confirmationQuery);
-        $merchant->cancel_url = $link->getModuleLink('aplazame', 'cancel', $cancelQuery);
+        $merchant->cancel_url = $link->getPageLink('order');
         $merchant->success_url = $link->getPageLink('order-confirmation', null, null, $successQuery);
         $merchant->checkout_url = $link->getPageLink('order');
 
