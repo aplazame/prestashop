@@ -69,7 +69,20 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
             return $oldCart;
         }
 
+        /** @var Cart $cart */
         $cart = $data['cart'];
+
+        // Workaround for PrestaShop bug which does not preserve cart rules/discounts
+        if (_PS_VERSION_ < 1.5) {
+            foreach ($oldCart->getDiscounts() as $cartRule) {
+                $cart->addDiscount($cartRule['id_cart_rule']);
+            }
+        } else {
+            foreach ($oldCart->getCartRules() as $cartRule) {
+                $cart->addCartRule($cartRule['id_cart_rule']);
+            }
+        }
+
         $this->context->cookie->id_cart = $cart->id;
         $this->context->cart = $cart;
         CartRule::autoAddToCart($this->context);
