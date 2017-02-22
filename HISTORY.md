@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v3.1.3](https://github.com/aplazame/prestashop/tree/v3.1.3) (2017-02-22)
+
+* [fixed] Shipping for virtual products
+
 #### [v3.1.2](https://github.com/aplazame/prestashop/tree/v3.1.2) (2017-02-14)
 
 * [fixed] Multiple fixes and improvements
