@@ -24,8 +24,11 @@ class Aplazame_Aplazame_Api_BusinessModel_HistoricalOrder
             'order_date' => Aplazame_Sdk_Serializer_Date::fromDateTime(new DateTime($order->date_add)),
             'currency' => $currency->iso_code,
             'billing' => Aplazame_Aplazame_BusinessModel_Address::createFromAddress(new Address($order->id_address_invoice)),
-            'shipping' => Aplazame_Aplazame_BusinessModel_ShippingInfo::createFromCart($cart),
         );
+
+        if (!$cart->isVirtualCart()) {
+            $serialized['shipping'] = Aplazame_Aplazame_BusinessModel_ShippingInfo::createFromCart($cart);
+        }
 
         return $serialized;
     }

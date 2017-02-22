@@ -41,7 +41,11 @@ class Aplazame_Aplazame_BusinessModel_Checkout
         $checkout->order = Aplazame_Aplazame_BusinessModel_Order::createFromCart($cart);
         $checkout->customer = Aplazame_Aplazame_BusinessModel_Customer::createFromCustomer(new Customer($cart->id_customer));
         $checkout->billing = Aplazame_Aplazame_BusinessModel_Address::createFromAddress(new Address($cart->id_address_invoice));
-        $checkout->shipping = Aplazame_Aplazame_BusinessModel_ShippingInfo::createFromCart($cart);
+
+        if (!$cart->isVirtualCart()) {
+            $checkout->shipping = Aplazame_Aplazame_BusinessModel_ShippingInfo::createFromCart($cart);
+        }
+
         $checkout->meta = array(
             'module' => array(
                 'name' => 'aplazame:prestashop',
