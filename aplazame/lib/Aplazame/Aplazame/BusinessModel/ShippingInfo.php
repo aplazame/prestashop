@@ -16,11 +16,10 @@ class Aplazame_Aplazame_BusinessModel_ShippingInfo
     {
         $address = new Address($cart->id_address_delivery);
         $customer = new Customer($cart->id_customer);
-        /** @var Carrier[] $carriers */
         $carriers = Carrier::getCarriersForOrder(Address::getZoneById($cart->id_address_delivery), $customer->getGroups(), $cart, $carrier_error);
         $carrierNames = array();
         foreach ($carriers as $carrier) {
-            $carrierNames[] = $carrier->name;
+            $carrierNames[] = $carrier['name'];
         }
 
         $shippingInfo = new self();

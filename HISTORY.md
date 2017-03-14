@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v3.1.5](https://github.com/aplazame/prestashop/tree/v3.1.5) (2017-03-15)
+
+* [fixed] Shipping for when multiple carriers are present
+
 #### [v3.1.4](https://github.com/aplazame/prestashop/tree/v3.1.4) (2017-03-14)
 
 * [fixed] Shipping for when multiple carriers are present
