@@ -15,7 +15,13 @@ class Aplazame_Aplazame_BusinessModel_ShippingInfo
     public static function createFromCart(Cart $cart)
     {
         $address = new Address($cart->id_address_delivery);
-        $carrier = new Carrier($cart->id_carrier);
+        $customer = new Customer($cart->id_customer);
+        /** @var Carrier[] $carriers */
+        $carriers = Carrier::getCarriersForOrder(Address::getZoneById($cart->id_address_delivery), $customer->getGroups(), $cart, $carrier_error);
+        $carrierNames = array();
+        foreach ($carriers as $carrier) {
+            $carrierNames[] = $carrier->name;
+        }
 
         $shippingInfo = new self();
         $shippingInfo->first_name = $address->firstname;
@@ -28,9 +34,8 @@ class Aplazame_Aplazame_BusinessModel_ShippingInfo
         $shippingInfo->phone = $address->phone;
         $shippingInfo->alt_phone = $address->phone_mobile;
         $shippingInfo->address_addition = $address->address2;
-        $shippingInfo->name = $carrier->name;
+        $shippingInfo->name = implode($carrierNames, ';');
         $shippingInfo->price = Aplazame_Sdk_Serializer_Decimal::fromFloat($cart->getOrderTotal(false, Cart::ONLY_SHIPPING));
-        $shippingInfo->tax_rate = Aplazame_Sdk_Serializer_Decimal::fromFloat($carrier->getTaxesRate($address));
 
         return $shippingInfo;
     }
