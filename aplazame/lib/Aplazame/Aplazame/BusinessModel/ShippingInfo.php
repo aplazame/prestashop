@@ -15,12 +15,6 @@ class Aplazame_Aplazame_BusinessModel_ShippingInfo
     public static function createFromCart(Cart $cart)
     {
         $address = new Address($cart->id_address_delivery);
-        $customer = new Customer($cart->id_customer);
-        $carriers = Carrier::getCarriersForOrder(Address::getZoneById($cart->id_address_delivery), $customer->getGroups(), $cart, $carrier_error);
-        $carrierNames = array();
-        foreach ($carriers as $carrier) {
-            $carrierNames[] = $carrier['name'];
-        }
 
         $shippingInfo = new self();
         $shippingInfo->first_name = $address->firstname;
@@ -33,9 +27,28 @@ class Aplazame_Aplazame_BusinessModel_ShippingInfo
         $shippingInfo->phone = $address->phone;
         $shippingInfo->alt_phone = $address->phone_mobile;
         $shippingInfo->address_addition = $address->address2;
-        $shippingInfo->name = implode($carrierNames, ';');
+        $shippingInfo->name = implode(self::compileCarriersName($cart), ';');
         $shippingInfo->price = Aplazame_Sdk_Serializer_Decimal::fromFloat($cart->getOrderTotal(false, Cart::ONLY_SHIPPING));
 
         return $shippingInfo;
+    }
+
+    private static function compileCarriersName(Cart $cart)
+    {
+        $carriersName = array();
+
+        $deliveryOptions = $cart->getDeliveryOption();
+        $deliveryOptionsList = $cart->getDeliveryOptionList();
+        foreach ($deliveryOptions as $id_address => $key) {
+            if (!isset($deliveryOptionsList[$id_address]) || !isset($deliveryOptionsList[$id_address][$key])) {
+                continue;
+            }
+
+            foreach ($deliveryOptionsList[$id_address][$key]['carrier_list'] as $c) {
+                $carriersName[] = $c['instance']->name;
+            }
+        }
+
+        return $carriersName;
     }
 }
