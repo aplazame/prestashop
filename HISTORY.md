@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v3.1.7](https://github.com/aplazame/prestashop/tree/v3.1.7) (2017-03-30)
+
+* [fixed] Compatibility with PrestaShop 1.7
+
 #### [v3.1.6](https://github.com/aplazame/prestashop/tree/v3.1.6) (2017-03-16)
 
 * [fixed] Shipping for when multiple carriers are present
