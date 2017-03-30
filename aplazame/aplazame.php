@@ -451,9 +451,14 @@ HTML;
     public function hookPaymentReturn($params)
     {
         /** @var Order $order */
-        $order = $params['objOrder'];
+        if (isset($params['order'])) {
+            $order = $params['order'];
+        } else {
+            $order = $params['objOrder'];
+        }
 
         $this->context->smarty->assign(array(
+            'shop_name' => $this->context->shop->name,
             'reference' => $order->reference,
         ));
 
