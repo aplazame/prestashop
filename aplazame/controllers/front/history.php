@@ -48,12 +48,13 @@ class AplazameHistoryModuleFrontController extends ModuleFrontController
     {
         if (function_exists('getallheaders')) {
             $headers = getallheaders();
+            $headers = array_change_key_case($headers, CASE_LOWER);
         } else {
             $headers = $this->getallheaders();
         }
 
-        if (Tools::getIsset($headers['Authorization'])) {
-            return trim(str_replace('Bearer', '', $headers['Authorization']));
+        if (isset($headers['authorization'])) {
+            return trim(str_replace('Bearer', '', $headers['authorization']));
         }
 
         return false;
