@@ -17,9 +17,6 @@ services:
       - PS_INSTALL_AUTO=1
       - DB_SERVER=db
       - DB_PASSWD=password
-    networks:
-      - internal
-      - public
     volumes:
       - ./aplazame:/var/www/html/modules/aplazame
     ports:
@@ -30,9 +27,3 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_DATABASE=prestashop
-    networks:
-      - internal
-
-networks:
-  internal:
-  public:
