@@ -6,7 +6,6 @@ $_MODULE['<{aplazame}prestashop>aplazame_eccea7b6425818117dbc2b819d9f9d88'] = 'A
 $_MODULE['<{aplazame}prestashop>aplazame_2603da3d4c4bfd9e3af9a11c7ec5143b'] = 'Aumenta las ventas un 50% con Aplazame, un método de pago libre de riesgos que ofrece crédito instantáneo para compras online.';
 $_MODULE['<{aplazame}prestashop>aplazame_cbe0a99684b145e77f3e14174ac212e3'] = '¿Estas seguro de eliminar el módulo?';
 $_MODULE['<{aplazame}prestashop>aplazame_92d4773a9f32fc3333cb8238471cf763'] = 'Tienes que habilitar la extensión cURL en tu servidor para instalar este módulo';
-$_MODULE['<{aplazame}prestashop>aplazame_cdbe2f170711683cb6624cf9c509cc99'] = 'Este módulo no está disponible en tu país';
 $_MODULE['<{aplazame}prestashop>aplazame_c888438d14855d7d96a2724ee9c306bd'] = 'Ajustes actualizados';
 $_MODULE['<{aplazame}prestashop>aplazame_f4f70727dc34561dfde1a3c529b6205c'] = 'Ajustes';
 $_MODULE['<{aplazame}prestashop>aplazame_5e4c2268ac4944037fca9c2e5436dc85'] = 'Modo de Pruebas (Sandbox)';

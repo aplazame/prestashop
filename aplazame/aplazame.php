@@ -48,7 +48,6 @@ class Aplazame extends PaymentModule
         $this->version = '3.1.7';
         $this->author = 'Aplazame';
         $this->author_uri = 'https://aplazame.com';
-        $this->limited_countries = array('ES');
         $this->module_key = '64b13ea3527b4df3fe2e3fc1526ce515';
 
         parent::__construct();
@@ -69,13 +68,6 @@ class Aplazame extends PaymentModule
     {
         if (!extension_loaded('curl')) {
             $this->_errors[] = $this->l('You have to enable the cURL extension on your server to install this module');
-
-            return false;
-        }
-
-        $iso_code = Country::getIsoById(Configuration::get('PS_COUNTRY_DEFAULT'));
-        if (!in_array($iso_code, $this->limited_countries)) {
-            $this->_errors[] = $this->l('This module is not available in your country');
 
             return false;
         }
