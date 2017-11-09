@@ -1,6 +1,6 @@
 FROM prestashop/prestashop
 
-RUN pecl install xdebug-beta \
+RUN pecl install xdebug \
     && docker-php-ext-enable xdebug
 
 RUN echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
