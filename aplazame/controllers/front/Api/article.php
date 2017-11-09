@@ -7,8 +7,6 @@
  * @license   see file: LICENSE
  */
 
-include_once _PS_MODULE_DIR_ . 'aplazame/controllers/front/Api/serializer.php';
-
 final class AplazameApiArticle
 {
     /**
