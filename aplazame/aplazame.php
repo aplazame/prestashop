@@ -25,6 +25,7 @@ class Aplazame extends PaymentModule
     const LOG_WARNING = 2;
     const LOG_ERROR = 3;
     const LOG_CRITICAL = 4;
+    const ORDER_STATE_PENDING = 'APLAZAME_OS_PENDING';
 
     /**
      * @var string
@@ -66,9 +67,17 @@ class Aplazame extends PaymentModule
 
     public function install()
     {
+        if (!parent::install()) {
+            return false;
+        }
+
         if (!extension_loaded('curl')) {
             $this->_errors[] = $this->l('You have to enable the cURL extension on your server to install this module');
 
+            return false;
+        }
+
+        if(!$this->installOrderState()) {
             return false;
         }
 
@@ -77,8 +86,7 @@ class Aplazame extends PaymentModule
         Configuration::updateValue('APLAZAME_BUTTON', '#aplazame_payment_button');
         Configuration::updateValue('APLAZAME_WIDGET_PROD', '0');
 
-        return (parent::install()
-            && $this->registerHook('actionOrderSlipAdd')
+        return ($this->registerHook('actionOrderSlipAdd')
             && $this->registerHook('actionOrderStatusPostUpdate')
             && $this->registerHook('displayAdminProductsExtra')
             && $this->registerHook('displayHeader')
@@ -92,6 +100,75 @@ class Aplazame extends PaymentModule
             && $this->registerHook('paymentReturn')
             && $this->registerController('AdminAplazameApiProxy', 'Aplazame API Proxy')
         );
+    }
+
+    public function installOrderState()
+    {
+        $orderStatePending = Configuration::get(self::ORDER_STATE_PENDING);
+        if ($orderStatePending && Validate::isLoadedObject(new OrderState($orderStatePending))) {
+            return true;
+        }
+
+        $order_state = new OrderState();
+        $order_state->name = array();
+        foreach (Language::getLanguages() as $language) {
+            $order_state->name[$language['id_lang']] = 'Awaiting for Aplazame payment';
+        }
+        $order_state->send_email = false;
+        $order_state->color = '#4169E1';
+        $order_state->hidden = false;
+        $order_state->delivery = false;
+        $order_state->logable = false;
+        $order_state->invoice = false;
+        if ($order_state->add()) {
+            Configuration::updateValue(self::ORDER_STATE_PENDING, (int) $order_state->id);
+        }
+
+        return true;
+    }
+
+    public function accept(
+        Cart $cart,
+        $fraud
+    ) {
+        if ($fraud) {
+            $this->deny($cart, $fraud);
+
+            return false;
+        }
+
+        $cartId = $cart->id;
+        $orderStateId = Configuration::get('PS_OS_PAYMENT');
+
+        if (!$cart->orderExists()) {
+            return $this->validateOrder(
+                $cartId,
+                $orderStateId,
+                $cart->getOrderTotal(true),
+                $this->displayName
+            );
+        }
+
+        return $this->setOrderStateToOrderByCartId($cartId, $orderStateId);
+    }
+
+    public function deny(
+        Cart $cart,
+        $fraud
+    ) {
+        $cartId = $cart->id;
+        $orderStateId = (int) Configuration::get('PS_OS_ERROR');
+
+        if (!$cart->orderExists()) {
+            return $this->validateOrder(
+                $cartId,
+                $orderStateId,
+                $cart->getOrderTotal(true),
+                $this->displayName
+            );
+        }
+
+        return $this->setOrderStateToOrderByCartId($cartId, $orderStateId);
     }
 
     public function uninstall()
@@ -125,18 +202,10 @@ class Aplazame extends PaymentModule
 
                 switch ($key) {
                     case 'APLAZAME_SECRET_KEY':
-                        $client = new Aplazame_Sdk_Api_Client(
-                            getenv('APLAZAME_API_BASE_URI') ? getenv('APLAZAME_API_BASE_URI') : 'https://api.aplazame.com',
-                            (Tools::getValue('APLAZAME_SANDBOX') ? Aplazame_Sdk_Api_Client::ENVIRONMENT_SANDBOX : Aplazame_Sdk_Api_Client::ENVIRONMENT_PRODUCTION),
-                            $value
-                        );
-
                         try {
-                            $response = $client->get('/me');
-                            $publicApiKey = $response['public_api_key'];
+                            $this->updateSettingsFromAplazame($value);
 
                             Configuration::updateValue($key, $value);
-                            Configuration::updateValue('APLAZAME_PUBLIC_KEY', $publicApiKey);
                         } catch (Aplazame_Sdk_Api_ApiClientException $apiClientException) {
                             $output .= $this->displayError($apiClientException->getMessage());
                             $hasFoundErrors = true;
@@ -172,6 +241,24 @@ HTML;
         return $output . $this->renderForm($settings);
     }
 
+    public function updateSettingsFromAplazame($privateKey)
+    {
+        $client = new Aplazame_Sdk_Api_Client(
+            getenv('APLAZAME_API_BASE_URI') ? getenv('APLAZAME_API_BASE_URI') : 'https://api.aplazame.com',
+            (Configuration::get('APLAZAME_SANDBOX') ? Aplazame_Sdk_Api_Client::ENVIRONMENT_SANDBOX : Aplazame_Sdk_Api_Client::ENVIRONMENT_PRODUCTION),
+            $privateKey
+        );
+
+        $link = Context::getContext()->link;
+
+        $response = $client->patch('/me', array(
+            'confirmation_url' => $link->getModuleLink('aplazame', 'api', array('path' => '/confirm/'))
+        ));
+
+        Configuration::updateValue('APLAZAME_PUBLIC_KEY', $response['public_api_key']);
+
+        return $response;
+    }
     /**
      * Create the form that will be displayed in the configuration of your module.
      */
@@ -625,5 +712,18 @@ HTML;
             'aplazame_currency_iso' => $currency->iso_code,
             'aplazame_cart_total' => Aplazame_Sdk_Serializer_Decimal::fromFloat($cart->getOrderTotal())->value,
         );
+    }
+
+    private function setOrderStateToOrderByCartId($cartId, $orderStateId)
+    {
+        $orderId = Order::getOrderByCartId($cartId);
+        $order = new Order($orderId);
+        if (!Validate::isLoadedObject($order)) {
+            return false;
+        }
+
+        $order->setCurrentState($orderStateId);
+
+        return true;
     }
 }
