@@ -18,6 +18,7 @@ services:
       - DB_SERVER=db
       - DB_PASSWD=password
     volumes:
+      - prestashop:/var/www/html
       - ./aplazame:/var/www/html/modules/aplazame
     ports:
       - "80:80"
@@ -27,3 +28,11 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_DATABASE=prestashop
+    volumes:
+      - db:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+volumes:
+  db:
+  prestashop:
