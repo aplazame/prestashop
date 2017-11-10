@@ -11,17 +11,16 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-// object module ($this) available
-function upgrade_module_3_0_0($object)
+function upgrade_module_3_0_0(Aplazame $module)
 {
     $logsDirectory = _PS_MODULE_DIR_ . 'aplazame/logs';
     if (is_dir($logsDirectory)) {
         removeDirectory($logsDirectory);
     }
 
-    $this->unregisterHook('displayAdminProductsListBefore');
+    $module->unregisterHook('displayAdminProductsListBefore');
 
-    return false;
+    return true;
 }
 
 /**
