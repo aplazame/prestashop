@@ -1,4 +1,4 @@
-aplazame/config.xml
+aplazame/config*.xml
 /vendor/
 .php_cs.cache
 composer.lock
