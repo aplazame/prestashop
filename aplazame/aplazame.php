@@ -113,20 +113,46 @@ class Aplazame extends PaymentModule
             'APLAZAME_SANDBOX',
             'APLAZAME_BUTTON',
             'APLAZAME_SECRET_KEY',
-            'APLAZAME_PUBLIC_KEY',
             'APLAZAME_BUTTON_IMAGE',
             'APLAZAME_WIDGET_PROD',
         );
 
         if (Tools::isSubmit('submitAplazameModule')) {
+            $hasFoundErrors = false;
+
             foreach ($settingsKeys as $key) {
                 $value = Tools::getValue($key);
 
-                Configuration::updateValue($key, $value);
+                switch ($key) {
+                    case 'APLAZAME_SECRET_KEY':
+                        $client = new Aplazame_Sdk_Api_Client(
+                            getenv('APLAZAME_API_BASE_URI') ? getenv('APLAZAME_API_BASE_URI') : 'https://api.aplazame.com',
+                            (Tools::getValue('APLAZAME_SANDBOX') ? Aplazame_Sdk_Api_Client::ENVIRONMENT_SANDBOX : Aplazame_Sdk_Api_Client::ENVIRONMENT_PRODUCTION),
+                            $value
+                        );
+
+                        try {
+                            $response = $client->get('/me');
+                            $publicApiKey = $response['public_api_key'];
+
+                            Configuration::updateValue($key, $value);
+                            Configuration::updateValue('APLAZAME_PUBLIC_KEY', $publicApiKey);
+                        } catch (Aplazame_Sdk_Api_ApiClientException $apiClientException) {
+                            $output .= $this->displayError($apiClientException->getMessage());
+                            $hasFoundErrors = true;
+                        }
+
+                        break;
+                    default:
+                        Configuration::updateValue($key, $value);
+                }
+
                 $settings[$key] = $value;
             }
 
-            $output .= $this->displayConfirmation($this->l('Settings updated'));
+            if (!$hasFoundErrors) {
+                $output .= $this->displayConfirmation($this->l('Settings updated'));
+            }
         } else {
             foreach ($settingsKeys as $key) {
                 $settings[$key] = Configuration::get($key);
@@ -210,14 +236,6 @@ HTML;
                         'type' => 'text',
                         'label' => $this->l('Private API Key'),
                         'desc' => $this->l('Aplazame API Private Key'),
-                        'prefix' => '<i class="icon icon-key"></i>',
-                        'col' => 4,
-                    ),
-                    array(
-                        'name' => 'APLAZAME_PUBLIC_KEY',
-                        'type' => 'text',
-                        'label' => $this->l('Public API Key'),
-                        'desc' => $this->l('Aplazame API Public Key'),
                         'prefix' => '<i class="icon icon-key"></i>',
                         'col' => 4,
                     ),
