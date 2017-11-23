@@ -81,24 +81,27 @@ final class AplazameApiConfirm
         }
 
         switch ($payload['status']) {
-            case 'ok':
-                if (!$this->module->accept($cart, $fraud)) {
-                    return self::ko();
+            case 'pending':
+                switch ($payload['status_reason']) {
+                    case 'confirmation_required':
+                        if (!$this->module->accept($cart, $fraud)) {
+                            return self::ko();
+                        }
+                        break;
                 }
-
-                return self::ok();
+                break;
             case 'ko':
                 if (!$this->module->deny($cart, $fraud)) {
                     return self::ko();
                 }
+                break;
 
-                if ($fraud) {
-                    return self::ko();
-                }
-
-                return self::ok();
-            default:
-                return AplazameApiModuleFrontController::client_error('Unknown "status" ' . $payload['status']);
         }
+
+        if ($fraud) {
+            return self::ko();
+        }
+
+        return self::ok();
     }
 }

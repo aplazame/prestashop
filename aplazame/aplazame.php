@@ -157,7 +157,7 @@ class Aplazame extends PaymentModule
         $fraud
     ) {
         $cartId = $cart->id;
-        $orderStateId = (int) Configuration::get('PS_OS_ERROR');
+        $orderStateId = (int) Configuration::get('PS_OS_CANCELED');
 
         if (!$cart->orderExists()) {
             return $this->validateOrder(
