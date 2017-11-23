@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v4.0.0](https://github.com/aplazame/prestashop/tree/v4.0.0) (2017-11-23)
+
+* [fixed] Compatibility with PrestaShop 1.7
+
 #### [v3.1.7](https://github.com/aplazame/prestashop/tree/v3.1.7) (2017-03-30)
 
 * [fixed] Compatibility with PrestaShop 1.7
