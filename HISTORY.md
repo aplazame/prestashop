@@ -1,8 +1,12 @@
 ## Change Log
 
+#### [v4.0.1](https://github.com/aplazame/prestashop/tree/v4.0.1) (2017-11-28)
+
+* Improve workaround when getallheaders is not available
+
 #### [v4.0.0](https://github.com/aplazame/prestashop/tree/v4.0.0) (2017-11-23)
 
-* [fixed] Compatibility with PrestaShop 1.7
+* Module refactor and pending support
 
 #### [v3.1.7](https://github.com/aplazame/prestashop/tree/v3.1.7) (2017-03-30)
 
