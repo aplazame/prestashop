@@ -133,10 +133,10 @@ class AplazameApiModuleFrontController extends ModuleFrontController
     {
         if (function_exists('getallheaders')) {
             $headers = getallheaders();
-            $headers = array_change_key_case($headers, CASE_LOWER);
         } else {
             $headers = $this->getallheaders();
         }
+        $headers = array_change_key_case($headers, CASE_LOWER);
 
         if (isset($headers['authorization'])) {
             return trim(str_replace('Bearer', '', $headers['authorization']));
@@ -147,10 +147,32 @@ class AplazameApiModuleFrontController extends ModuleFrontController
 
     private function getallheaders()
     {
-        $headers = '';
+        $headers = array();
+        $copy_server = array(
+            'CONTENT_TYPE'   => 'content-type',
+            'CONTENT_LENGTH' => 'content-length',
+            'CONTENT_MD5'    => 'content-md5',
+        );
+
         foreach ($_SERVER as $name => $value) {
-            if (Tools::substr($name, 0, 5) == 'HTTP_') {
-                $headers[str_replace(' ', '-', Tools::strtolower(str_replace('_', ' ', Tools::substr($name, 5))))] = $value;
+            if (Tools::substr($name, 0, 5) === 'HTTP_') {
+                $name = Tools::substr($name, 5);
+                if (!isset($copy_server[$name]) || !isset($_SERVER[$name])) {
+                    $headers[str_replace(' ', '-', Tools::strtolower(str_replace('_', ' ', $name)))] = $value;
+                }
+            } elseif (isset($copy_server[$name])) {
+                $headers[$copy_server[$name]] = $value;
+            }
+        }
+
+        if (!isset($headers['authorization'])) {
+            if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+                $headers['authorization'] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+            } elseif (isset($_SERVER['PHP_AUTH_USER'])) {
+                $basic_pass = isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : '';
+                $headers['authorization'] = 'Basic ' . base64_encode($_SERVER['PHP_AUTH_USER'] . ':' . $basic_pass);
+            } elseif (isset($_SERVER['PHP_AUTH_DIGEST'])) {
+                $headers['authorization'] = $_SERVER['PHP_AUTH_DIGEST'];
             }
         }
 
