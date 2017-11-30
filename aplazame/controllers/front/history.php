@@ -16,8 +16,7 @@ class AplazameHistoryModuleFrontController extends ModuleFrontController
 
     public function postProcess()
     {
-        $auth = $this->getAuthorizationFromRequest();
-        if (!$auth || $auth !== Configuration::get('APLAZAME_SECRET_KEY')) {
+        if (!$this->verifyAuthentication()) {
             $this->apiResponse(array('error' => 'Authorization not valid'));
         }
 
@@ -58,6 +57,21 @@ class AplazameHistoryModuleFrontController extends ModuleFrontController
         }
 
         return $historyOrders;
+    }
+
+    /**
+     * @return bool
+     */
+    private function verifyAuthentication()
+    {
+        $privateKey = Configuration::get('APLAZAME_SECRET_KEY');
+
+        $authorization = $this->getAuthorizationFromRequest();
+        if (!$authorization || empty($privateKey)) {
+            return false;
+        }
+
+        return ($authorization === $privateKey);
     }
 
     private function getAuthorizationFromRequest()
@@ -104,11 +118,6 @@ class AplazameHistoryModuleFrontController extends ModuleFrontController
         if (!isset($headers['authorization'])) {
             if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
                 $headers['authorization'] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
-            } elseif (isset($_SERVER['PHP_AUTH_USER'])) {
-                $basic_pass = isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : '';
-                $headers['authorization'] = 'Basic ' . base64_encode($_SERVER['PHP_AUTH_USER'] . ':' . $basic_pass);
-            } elseif (isset($_SERVER['PHP_AUTH_DIGEST'])) {
-                $headers['authorization'] = $_SERVER['PHP_AUTH_DIGEST'];
             }
         }
 

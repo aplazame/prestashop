@@ -77,7 +77,7 @@ class Aplazame extends PaymentModule
             return false;
         }
 
-        if(!$this->installOrderState()) {
+        if (!$this->installOrderState()) {
             return false;
         }
 

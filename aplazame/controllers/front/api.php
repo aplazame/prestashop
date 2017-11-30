@@ -23,7 +23,7 @@ class AplazameApiModuleFrontController extends ModuleFrontController
         );
     }
 
-    public static function not_found()
+    public static function notFound()
     {
         return array(
             'status_code' => 404,
@@ -34,7 +34,7 @@ class AplazameApiModuleFrontController extends ModuleFrontController
         );
     }
 
-    public static function client_error($detail)
+    public static function clientError($detail)
     {
         return array(
             'status_code' => 400,
@@ -65,7 +65,7 @@ class AplazameApiModuleFrontController extends ModuleFrontController
         $path = Tools::getValue('path', '');
         $pathArguments = Tools::jsonDecode(Tools::getValue('path_arguments', '[]'), true);
         $queryArguments = Tools::jsonDecode(Tools::getValue('query_arguments', '[]'), true);
-        $payload = Tools::jsonDecode(file_get_contents('php://input'), true);
+        $payload = Tools::jsonDecode(Tools::file_get_contents('php://input'), true);
 
         $response = $this->route($path, $pathArguments, $queryArguments, $payload);
 
@@ -85,7 +85,7 @@ class AplazameApiModuleFrontController extends ModuleFrontController
      */
     public function route($path, array $pathArguments, array $queryArguments, $payload)
     {
-        if (!$this->verify_authentication()) {
+        if (!$this->verifyAuthentication()) {
             return self::forbidden();
         }
 
@@ -110,14 +110,14 @@ class AplazameApiModuleFrontController extends ModuleFrontController
 
                 return $controller->history($pathArguments, $queryArguments);
             default:
-                return self::not_found();
+                return self::notFound();
         }
     }
 
     /**
      * @return bool
      */
-    private function verify_authentication()
+    private function verifyAuthentication()
     {
         $privateKey = Configuration::get('APLAZAME_SECRET_KEY');
 
@@ -173,11 +173,6 @@ class AplazameApiModuleFrontController extends ModuleFrontController
         if (!isset($headers['authorization'])) {
             if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
                 $headers['authorization'] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
-            } elseif (isset($_SERVER['PHP_AUTH_USER'])) {
-                $basic_pass = isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : '';
-                $headers['authorization'] = 'Basic ' . base64_encode($_SERVER['PHP_AUTH_USER'] . ':' . $basic_pass);
-            } elseif (isset($_SERVER['PHP_AUTH_DIGEST'])) {
-                $headers['authorization'] = $_SERVER['PHP_AUTH_DIGEST'];
             }
         }
 

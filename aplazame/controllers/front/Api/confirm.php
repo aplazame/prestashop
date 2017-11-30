@@ -68,7 +68,7 @@ final class AplazameApiConfirm
 
         $cart = new Cart($cartId);
         if (!Validate::isLoadedObject($cart)) {
-            return AplazameApiModuleFrontController::not_found();
+            return AplazameApiModuleFrontController::notFound();
         }
 
         $amount = $cart->getOrderTotal(true);
@@ -95,7 +95,6 @@ final class AplazameApiConfirm
                     return self::ko();
                 }
                 break;
-
         }
 
         if ($fraud) {
