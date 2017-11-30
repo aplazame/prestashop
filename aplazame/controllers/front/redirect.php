@@ -19,7 +19,7 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
             Tools::redirect('index.php?controller=order');
         }
 
-        if ($this->orderExists($cart->id)) {
+        while ($this->orderExists($cart->id)) {
             $this->module->log(
                 Aplazame::LOG_INFO,
                 'Cart already exists in Aplazame. Create a new one with a different ID',
