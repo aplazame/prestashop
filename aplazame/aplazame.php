@@ -141,12 +141,12 @@ class Aplazame extends PaymentModule
         $orderStateId = Configuration::get('PS_OS_PAYMENT');
 
         if (!$cart->orderExists()) {
-            return $this->validateOrder(
+            return !(false === $this->validateOrder(
                 $cartId,
                 $orderStateId,
                 $cart->getOrderTotal(true),
                 $this->displayName
-            );
+            ));
         }
 
         return $this->setOrderStateToOrderByCartId($cartId, $orderStateId);
