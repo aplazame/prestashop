@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v4.0.2](https://github.com/aplazame/prestashop/tree/v4.0.2) (2017-11-30)
+
+* Improvements for compatibility with third party broken modules.
+
 #### [v4.0.1](https://github.com/aplazame/prestashop/tree/v4.0.1) (2017-11-28)
 
 * Improve workaround when getallheaders is not available
