@@ -16,7 +16,7 @@ class AplazameHistoryModuleFrontController extends ModuleFrontController
 
     public function postProcess()
     {
-        $auth = $this->getHeaderAuthorization();
+        $auth = $this->getAuthorizationFromRequest();
         if (!$auth || $auth !== Configuration::get('APLAZAME_SECRET_KEY')) {
             $this->apiResponse(array('error' => 'Authorization not valid'));
         }
@@ -60,8 +60,13 @@ class AplazameHistoryModuleFrontController extends ModuleFrontController
         return $historyOrders;
     }
 
-    private function getHeaderAuthorization()
+    private function getAuthorizationFromRequest()
     {
+        $token = Tools::getValue('access_token', null);
+        if ($token) {
+            return $token;
+        }
+
         if (function_exists('getallheaders')) {
             $headers = getallheaders();
         } else {

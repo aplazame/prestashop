@@ -121,7 +121,7 @@ class AplazameApiModuleFrontController extends ModuleFrontController
     {
         $privateKey = Configuration::get('APLAZAME_SECRET_KEY');
 
-        $authorization = $this->getHeaderAuthorization();
+        $authorization = $this->getAuthorizationFromRequest();
         if (!$authorization || empty($privateKey)) {
             return false;
         }
@@ -129,8 +129,13 @@ class AplazameApiModuleFrontController extends ModuleFrontController
         return ($authorization === $privateKey);
     }
 
-    private function getHeaderAuthorization()
+    private function getAuthorizationFromRequest()
     {
+        $token = Tools::getValue('access_token', null);
+        if ($token) {
+            return $token;
+        }
+
         if (function_exists('getallheaders')) {
             $headers = getallheaders();
         } else {
