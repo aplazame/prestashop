@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v4.0.4](https://github.com/aplazame/prestashop/tree/v4.0.4) (2017-12-01)
+
+* Minor changes for PrestaShop Marketplace compliance.
+
 #### [v4.0.3](https://github.com/aplazame/prestashop/tree/v4.0.3) (2017-11-30)
 
 * Get access_token from query param if available
