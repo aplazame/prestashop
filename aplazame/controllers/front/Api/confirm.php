@@ -54,15 +54,15 @@ final class AplazameApiConfirm
     public function confirm($payload)
     {
         if (!$payload) {
-            return AplazameApiModuleFrontController::client_error('Payload is malformed');
+            return AplazameApiModuleFrontController::clientError('Payload is malformed');
         }
 
         if (!isset($payload['sandbox']) || $payload['sandbox'] !== $this->sandbox) {
-            return AplazameApiModuleFrontController::client_error('"sandbox" not provided');
+            return AplazameApiModuleFrontController::clientError('"sandbox" not provided');
         }
 
         if (!isset($payload['mid'])) {
-            return AplazameApiModuleFrontController::client_error('"mid" not provided');
+            return AplazameApiModuleFrontController::clientError('"mid" not provided');
         }
         $cartId = (int) $payload['mid'];
 
