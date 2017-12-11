@@ -64,7 +64,7 @@ final class AplazameApiConfirm
         if (!isset($payload['mid'])) {
             return AplazameApiModuleFrontController::clientError('"mid" not provided');
         }
-        $cartId = (int) $payload['mid'];
+        $cartId = Aplazame_Aplazame_BusinessModel_Order::getShopIdFromOrderId($payload['mid']);
 
         $cart = new Cart($cartId);
         if (!Validate::isLoadedObject($cart)) {
