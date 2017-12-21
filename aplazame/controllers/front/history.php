@@ -25,8 +25,7 @@ class AplazameHistoryModuleFrontController extends ModuleFrontController
             $this->apiResponse(array('error' => 'missing checkout_token'));
         }
 
-        $cartId = Aplazame_Aplazame_BusinessModel_Order::getShopIdFromOrderId($checkoutToken);
-        $orderId = Order::getOrderByCartId($cartId);
+        $orderId = Order::getOrderByCartId($checkoutToken);
         $order = new Order($orderId);
         if (!Validate::isLoadedObject($order)) {
             $this->apiResponse(array('error' => 'mid not found'));

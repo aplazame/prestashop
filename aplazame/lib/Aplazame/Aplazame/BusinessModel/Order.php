@@ -17,24 +17,12 @@ class Aplazame_Aplazame_BusinessModel_Order
         $currency = new Currency($cart->id_currency);
 
         $aOrder = new self();
-        $aOrder->id = self::generateOrderIdFromShopId($cart->id);
+        $aOrder->id = $cart->id;
         $aOrder->currency = $currency->iso_code;
         $aOrder->total_amount = Aplazame_Sdk_Serializer_Decimal::fromFloat($cart->getOrderTotal(true));
         $aOrder->articles = array_map(array('Aplazame_Aplazame_BusinessModel_Article', 'crateFromProductData'), $cart->getProducts());
         $aOrder->discount = Aplazame_Sdk_Serializer_Decimal::fromFloat($cart->getOrderTotal(true, Cart::ONLY_DISCOUNTS));
 
         return $aOrder;
-    }
-
-    public static function generateOrderIdFromShopId($shopId)
-    {
-        return sprintf('%s$$%d', $shopId, time());
-    }
-
-    public static function getShopIdFromOrderId($orderId)
-    {
-        $parts = explode('$$', $orderId);
-
-        return $parts[0];
     }
 }

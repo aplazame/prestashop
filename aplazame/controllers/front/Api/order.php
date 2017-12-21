@@ -25,8 +25,7 @@ final class AplazameApiOrder
             return AplazameApiModuleFrontController::notFound();
         }
 
-        $cartId = Aplazame_Aplazame_BusinessModel_Order::getShopIdFromOrderId($params['order_id']);
-        $orderId = Order::getOrderByCartId($cartId);
+        $orderId = Order::getOrderByCartId($params['order_id']);
         $order = new Order($orderId);
         if (!Validate::isLoadedObject($order)) {
             return AplazameApiModuleFrontController::notFound();
