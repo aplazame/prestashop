@@ -16,6 +16,7 @@ class AplazamePendingModuleFrontController extends ModuleFrontController
     {
         if (!Module::isInstalled('aplazame') || !Module::isEnabled('aplazame')) {
             $this->goKo();
+
             return;
         }
 
@@ -23,12 +24,14 @@ class AplazamePendingModuleFrontController extends ModuleFrontController
         $secureKey = Tools::getValue('key');
         if (!$mid || !$secureKey) {
             $this->goKo();
+
             return;
         }
 
         $cart = new Cart((int) $mid);
         if (!Validate::isLoadedObject($cart)) {
             $this->goKo();
+
             return;
         }
 
@@ -44,6 +47,7 @@ class AplazamePendingModuleFrontController extends ModuleFrontController
             $secureKey
         )) {
             $this->goKo();
+
             return;
         }
 
@@ -59,9 +63,9 @@ class AplazamePendingModuleFrontController extends ModuleFrontController
     {
         return Tools::redirect(
             'index.php?controller=order-confirmation&id_cart=' .
-            (int)$cart->id .
+            (int) $cart->id .
             '&id_module=' .
-            (int)$this->module->id .
+            (int) $this->module->id .
             '&id_order=' .
             $this->module->currentOrder .
             '&key=' .

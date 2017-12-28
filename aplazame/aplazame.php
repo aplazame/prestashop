@@ -127,10 +127,8 @@ class Aplazame extends PaymentModule
         return true;
     }
 
-    public function accept(
-        Cart $cart,
-        $fraud
-    ) {
+    public function accept(Cart $cart, $fraud)
+    {
         if ($fraud) {
             $this->deny($cart, $fraud);
 
@@ -152,10 +150,8 @@ class Aplazame extends PaymentModule
         return $this->setOrderStateToOrderByCartId($cartId, $orderStateId);
     }
 
-    public function deny(
-        Cart $cart,
-        $fraud
-    ) {
+    public function deny(Cart $cart, $fraud)
+    {
         $cartId = $cart->id;
         $orderStateId = (int) Configuration::get('PS_OS_CANCELED');
 
@@ -252,7 +248,7 @@ HTML;
         $link = Context::getContext()->link;
 
         $response = $client->patch('/me', array(
-            'confirmation_url' => $link->getModuleLink('aplazame', 'api', array('path' => '/confirm/'))
+            'confirmation_url' => $link->getModuleLink('aplazame', 'api', array('path' => '/confirm/')),
         ));
 
         Configuration::updateValue('APLAZAME_PUBLIC_KEY', $response['public_api_key']);
