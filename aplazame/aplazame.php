@@ -550,20 +550,12 @@ HTML;
             'reference' => $order->reference,
         ));
 
-        $currentState = $order->getCurrentState();
-
-        $successfullyStates = array(
-            Configuration::get('PS_OS_PAYMENT'),
-            Configuration::get('PS_OS_OUTOFSTOCK'),
-        );
-        if (in_array($currentState, $successfullyStates)) {
+        if ($order->hasBeenPaid()) {
             return $this->display(__FILE__, 'confirmation_success.tpl');
         }
 
-        $pendingStates = array(
-            Configuration::get(self::ORDER_STATE_PENDING),
-        );
-        if (in_array($currentState, $pendingStates)) {
+        $currentState = $order->getCurrentState();
+        if ($currentState === Configuration::get(self::ORDER_STATE_PENDING)) {
             return $this->display(__FILE__, 'confirmation_pending.tpl');
         }
 
