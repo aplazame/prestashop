@@ -152,17 +152,12 @@ class Aplazame extends PaymentModule
 
     public function deny(Cart $cart, $fraud)
     {
+        if (!$cart->orderExists()) {
+            return true;
+        }
+
         $cartId = $cart->id;
         $orderStateId = (int) Configuration::get('PS_OS_CANCELED');
-
-        if (!$cart->orderExists()) {
-            return $this->validateOrder(
-                $cartId,
-                $orderStateId,
-                $cart->getOrderTotal(true),
-                $this->displayName
-            );
-        }
 
         return $this->setOrderStateToOrderByCartId($cartId, $orderStateId);
     }
