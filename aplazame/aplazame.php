@@ -556,13 +556,20 @@ HTML;
         ));
 
         $currentState = $order->getCurrentState();
+
         $successfullyStates = array(
             Configuration::get('PS_OS_PAYMENT'),
             Configuration::get('PS_OS_OUTOFSTOCK'),
         );
-
         if (in_array($currentState, $successfullyStates)) {
             return $this->display(__FILE__, 'confirmation_success.tpl');
+        }
+
+        $pendingStates = array(
+            Configuration::get(self::ORDER_STATE_PENDING),
+        );
+        if (in_array($currentState, $pendingStates)) {
+            return $this->display(__FILE__, 'confirmation_pending.tpl');
         }
 
         return $this->display(__FILE__, 'confirmation_failure.tpl');

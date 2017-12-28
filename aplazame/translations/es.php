@@ -34,6 +34,11 @@ $_MODULE['<{aplazame}prestashop>confirmation_failure_63d5049791d9d79d86e9a108b0a
 $_MODULE['<{aplazame}prestashop>confirmation_failure_caa4088f1d295cf8ce8e358eb975ab32'] = 'Por favor, inténtelo de nuevo.';
 $_MODULE['<{aplazame}prestashop>confirmation_failure_0db71da7150c27142eef9d22b843b4a9'] = 'Para cualquier cuestión o información adicional, por favor contacte con nuestro';
 $_MODULE['<{aplazame}prestashop>confirmation_failure_decce112a9e64363c997b04aa71b7cb8'] = 'servicio de atención al cliente.';
+$_MODULE['<{aplazame}prestashop>confirmation_pending_88526efe38fd18179a127024aba8c1d7'] = 'Tu pedido en %s está completo.';
+$_MODULE['<{aplazame}prestashop>confirmation_pending_63d5049791d9d79d86e9a108b0a999ca'] = 'Referencia';
+$_MODULE['<{aplazame}prestashop>confirmation_pending_38155412ef4c453fd4e25d549c2a5e5b'] = 'Le enviaremos su pedido en cuanto Aplazame apruebe su solicitud de crédito.';
+$_MODULE['<{aplazame}prestashop>confirmation_pending_0db71da7150c27142eef9d22b843b4a9'] = 'Para cualquier cuestión o información adicional, por favor contacte con nuestro';
+$_MODULE['<{aplazame}prestashop>confirmation_pending_decce112a9e64363c997b04aa71b7cb8'] = 'servicio de atención al cliente.';
 $_MODULE['<{aplazame}prestashop>confirmation_success_88526efe38fd18179a127024aba8c1d7'] = 'Tu pedido en %s está completo.';
 $_MODULE['<{aplazame}prestashop>confirmation_success_63d5049791d9d79d86e9a108b0a999ca'] = 'Referencia';
 $_MODULE['<{aplazame}prestashop>confirmation_success_19c419a8a4f1cd621853376a930a2e24'] = 'Un email te ha sido enviado con esta información.';
