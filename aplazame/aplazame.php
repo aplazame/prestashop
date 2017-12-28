@@ -63,6 +63,9 @@ class Aplazame extends PaymentModule
         $this->url = 'https://aplazame.com';
 
         $this->apiBaseUri = getenv('APLAZAME_API_BASE_URI') ? getenv('APLAZAME_API_BASE_URI') : 'https://api.aplazame.com';
+        if (!Configuration::get('APLAZAME_SECRET_KEY')) {
+            $this->warning = $this->l('Aplazame API key must be configured before using this module.');
+        }
     }
 
     public function install()
