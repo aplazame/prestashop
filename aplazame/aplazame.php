@@ -90,7 +90,6 @@ class Aplazame extends PaymentModule
         Configuration::updateValue('APLAZAME_WIDGET_PROD', '0');
 
         return ($this->registerHook('actionOrderSlipAdd')
-            && $this->registerHook('actionOrderStatusPostUpdate')
             && $this->registerHook('displayAdminProductsExtra')
             && $this->registerHook('displayHeader')
             && $this->registerHook('displayPayment')
@@ -425,19 +424,6 @@ HTML;
         return $this->refundAmount($order, $lastOrderSlip->total_products_tax_incl + $lastOrderSlip->total_shipping_tax_incl);
     }
 
-    public function hookActionOrderStatusPostUpdate($params)
-    {
-        $statusObject = $params['newOrderStatus'];
-        switch ($statusObject->id) {
-            case Configuration::get('PS_OS_CANCELED'):
-                $order = new Order($params['id_order']);
-
-                return $this->cancelOrder($order->id_cart);
-            default:
-                return true;
-        }
-    }
-
     public function hookDisplayAdminProductsExtra()
     {
         $id_product = Tools::getValue('id_product');
@@ -674,24 +660,6 @@ HTML;
         }
 
         return $order->addOrderPayment(-$amount, $this->displayName);
-    }
-
-    /**
-     * @param string $mid
-     *
-     * @return bool
-     */
-    public function cancelOrder($mid)
-    {
-        try {
-            $this->callToRest('POST', '/orders/' . $mid . '/cancel');
-        } catch (Exception $e) {
-            $this->log(self::LOG_CRITICAL, 'Cannot cancel. Detail ' . $e->getMessage(), $mid);
-
-            return false;
-        }
-
-        return true;
     }
 
     private function registerController($className, $name)
