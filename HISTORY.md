@@ -1,5 +1,10 @@
 ## Change Log
 
+#### [v5.0.0](https://github.com/aplazame/prestashop/tree/v5.0.0) (2017-12-29)
+
+* **Mark an order as Cancel not longer cancel the order at Aplazame! If you want to refund the order please use "standard refund" way**
+* Many fixes and improvements.
+
 #### [v4.0.4](https://github.com/aplazame/prestashop/tree/v4.0.4) (2017-12-01)
 
 * Minor changes for PrestaShop Marketplace compliance.
