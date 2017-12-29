@@ -650,15 +650,6 @@ HTML;
         return $order->addOrderPayment(-$amount, $this->displayName);
     }
 
-    public function checkCurrency(Currency $currency)
-    {
-        if (!in_array($currency->iso_code, $this->limited_currencies)) {
-            return false;
-        }
-
-        return true;
-    }
-
     /**
      * @param string $mid
      *
