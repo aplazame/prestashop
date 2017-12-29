@@ -246,7 +246,7 @@ HTML;
         $link = Context::getContext()->link;
 
         $response = $client->patch('/me', array(
-            'confirmation_url' => $link->getModuleLink('aplazame', 'api', array('path' => '/confirm/')),
+            'confirmation_url' => $link->getModuleLink($this->name, 'api', array('path' => '/confirm/')),
         ));
 
         Configuration::updateValue('APLAZAME_PUBLIC_KEY', $response['public_api_key']);
@@ -530,7 +530,7 @@ HTML;
 
         $newOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
         $newOption->setCallToActionText($this->l('Pay with Aplazame'))
-            ->setAction($link->getModuleLink('aplazame', 'redirect'))
+            ->setAction($link->getModuleLink($this->name, 'redirect'))
             ->setAdditionalInformation($this->fetch('module:aplazame/views/templates/hook/payment_1.7.tpl'))
         ;
 
@@ -691,7 +691,7 @@ HTML;
             $tab->name[$lang['id_lang']] = $name;
         }
         $tab->id_parent = -1;
-        $tab->module = 'aplazame';
+        $tab->module = $this->name;
 
         return (boolean) $tab->add();
     }
