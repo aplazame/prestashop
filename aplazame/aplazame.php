@@ -85,7 +85,7 @@ class Aplazame extends PaymentModule
         }
 
         Configuration::updateValue('APLAZAME_SANDBOX', false);
-        Configuration::updateValue('APLAZAME_BUTTON_IMAGE', 'white-148x46');
+        Configuration::updateValue('APLAZAME_BUTTON_IMAGE', 'https://aplazame.com/static/img/buttons/white-148x46.png');
         if (_PS_VERSION_ >= 1.7) {
             Configuration::updateValue('APLAZAME_BUTTON', "div.payment-option:has(input[data-module-name='{$this->name}'])");
         } else {
@@ -524,10 +524,9 @@ HTML;
 
         /** @var Cart $cart */
         $cart = $params['cart'];
-        $button_image_uri = 'https://aplazame.com/static/img/buttons/' . Configuration::get('APLAZAME_BUTTON_IMAGE') . '.png';
 
         $this->context->smarty->assign($this->getButtonTemplateVars($cart));
-        $this->context->smarty->assign(array('aplazame_button_image_uri' => $button_image_uri));
+        $this->context->smarty->assign(array('aplazame_button_image_uri' => Configuration::get('APLAZAME_BUTTON_IMAGE')));
 
         return $this->display(__FILE__, 'payment_1.5.tpl');
     }
