@@ -86,7 +86,11 @@ class Aplazame extends PaymentModule
 
         Configuration::updateValue('APLAZAME_SANDBOX', false);
         Configuration::updateValue('APLAZAME_BUTTON_IMAGE', 'white-148x46');
-        Configuration::updateValue('APLAZAME_BUTTON', '#aplazame_payment_button');
+        if (_PS_VERSION_ >= 1.7) {
+            Configuration::updateValue('APLAZAME_BUTTON', "div.payment-option:has(input[data-module-name='{$this->name}'])");
+        } else {
+            Configuration::updateValue('APLAZAME_BUTTON', '#aplazame_payment_button');
+        }
         Configuration::updateValue('APLAZAME_WIDGET_PROD', '0');
 
         return ($this->registerHook('actionOrderSlipAdd')
@@ -542,6 +546,7 @@ HTML;
 
         $newOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
         $newOption->setCallToActionText($this->l('Pay with Aplazame'))
+            ->setModuleName($this->name)
             ->setAction($link->getModuleLink($this->name, 'redirect'))
             ->setAdditionalInformation($this->fetch('module:aplazame/views/templates/hook/payment_1.7.tpl'))
         ;
