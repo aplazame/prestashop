@@ -28,7 +28,7 @@ class Aplazame_Aplazame_BusinessModel_Checkout
         $merchant = new stdClass();
         $merchant->cancel_url = $link->getPageLink('order');
         $merchant->success_url = $link->getPageLink('order-confirmation', null, null, $successQuery);
-        $merchant->pending_url = $link->getModuleLink($aplazame->name, 'pending', $successQuery);
+        $merchant->pending_url = $merchant->success_url;
         $merchant->checkout_url = $link->getPageLink('order');
 
         $checkout = new self();

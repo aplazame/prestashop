@@ -83,6 +83,11 @@ final class AplazameApiConfirm
         switch ($payload['status']) {
             case 'pending':
                 switch ($payload['status_reason']) {
+                    case 'challenge_required':
+                        if (!$this->module->pending($cart, $fraud)) {
+                            return self::ko();
+                        }
+                        break;
                     case 'confirmation_required':
                         if (!$this->module->accept($cart, $fraud)) {
                             return self::ko();

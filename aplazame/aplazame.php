@@ -130,6 +130,32 @@ class Aplazame extends PaymentModule
         return true;
     }
 
+    public function pending(Cart $cart, $fraud)
+    {
+        if ($fraud) {
+            $this->deny($cart, $fraud);
+
+            return false;
+        }
+
+        $cartId = $cart->id;
+        $orderStateId = Configuration::get(self::ORDER_STATE_PENDING);
+
+        $customer = new Customer($cart->id_customer);
+
+        return !(false === $this->validateOrder(
+            $cartId,
+            $orderStateId,
+            $cart->getOrderTotal(true),
+            $this->displayName,
+            'Waiting for Aplazame review',
+            array(),
+            null,
+            false,
+            $customer->secure_key
+        ));
+    }
+
     public function accept(Cart $cart, $fraud)
     {
         if ($fraud) {
