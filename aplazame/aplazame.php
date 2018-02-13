@@ -85,13 +85,17 @@ class Aplazame extends PaymentModule
         }
 
         Configuration::updateValue('APLAZAME_SANDBOX', false);
+
+        Configuration::updateValue('APLAZAME_WIDGET_PROD', true);
+        Configuration::updateValue('APLAZAME_WIDGET_PROD', '0');
+
+        Configuration::updateValue('APLAZAME_CART_WIDGET_ENABLED', true);
         Configuration::updateValue('APLAZAME_BUTTON_IMAGE', 'https://aplazame.com/static/img/buttons/white-148x46.png');
         if (_PS_VERSION_ >= 1.7) {
             Configuration::updateValue('APLAZAME_BUTTON', "div.payment-option:has(input[data-module-name='{$this->name}'])");
         } else {
             Configuration::updateValue('APLAZAME_BUTTON', '#aplazame_payment_button');
         }
-        Configuration::updateValue('APLAZAME_WIDGET_PROD', '0');
 
         return ($this->registerHook('actionOrderSlipAdd')
             && $this->registerHook('displayAdminProductsExtra')
@@ -211,10 +215,12 @@ class Aplazame extends PaymentModule
         $settings = array();
         $settingsKeys = array(
             'APLAZAME_SANDBOX',
-            'APLAZAME_BUTTON',
             'APLAZAME_SECRET_KEY',
-            'APLAZAME_BUTTON_IMAGE',
+            'APLAZAME_PRODUCT_WIDGET_ENABLED',
             'APLAZAME_WIDGET_PROD',
+            'APLAZAME_CART_WIDGET_ENABLED',
+            'APLAZAME_BUTTON',
+            'APLAZAME_BUTTON_IMAGE',
         );
 
         if (Tools::isSubmit('submitAplazameModule')) {
@@ -307,7 +313,7 @@ HTML;
             'id_language' => $this->context->language->id,
         );
 
-        return $helper->generateForm(array($this->getConfigForm()));
+        return $helper->generateForm($this->getConfigForm());
     }
 
     /**
@@ -316,82 +322,134 @@ HTML;
     protected function getConfigForm()
     {
         return array(
-            'form' => array(
-                'legend' => array(
-                    'title' => $this->l('Settings'),
-                    'icon' => 'icon-cogs',
-                ),
-                'input' => array(
-                    array(
-                        'type' => (_PS_VERSION_ >= 1.6) ? 'switch' : 'radio',
-                        'label' => $this->l('Test Mode (Sandbox)'),
-                        'name' => 'APLAZAME_SANDBOX',
-                        'is_bool' => true,
-                        'desc' => $this->l('Determines if the module is on Sandbox mode'),
-                        'values' => array(
-                            array(
-                                'id' => 'active_on',
-                                'value' => true,
-                                'label' => $this->l('Yes'),
-                            ),
-                            array(
-                                'id' => 'active_off',
-                                'value' => false,
-                                'label' => $this->l('No'),
+            array(
+                'form' => array(
+                    'legend' => array(
+                        'title' => $this->l('Settings'),
+                        'icon' => 'icon-cogs',
+                    ),
+                    'input' => array(
+                        array(
+                            'type' => (_PS_VERSION_ >= 1.6) ? 'switch' : 'radio',
+                            'label' => $this->l('Test Mode (Sandbox)'),
+                            'name' => 'APLAZAME_SANDBOX',
+                            'is_bool' => true,
+                            'desc' => $this->l('Determines if the module is on Sandbox mode'),
+                            'values' => array(
+                                array(
+                                    'id' => 'active_on',
+                                    'value' => true,
+                                ),
+                                array(
+                                    'id' => 'active_off',
+                                    'value' => false,
+                                ),
                             ),
                         ),
-                    ),
-                    array(
-                        'name' => 'APLAZAME_SECRET_KEY',
-                        'type' => 'text',
-                        'label' => $this->l('Private API Key'),
-                        'desc' => $this->l('Aplazame API Private Key'),
-                        'prefix' => '<i class="icon icon-key"></i>',
-                        'col' => 4,
-                    ),
-                    array(
-                        'col' => 4,
-                        'type' => 'text',
-                        'prefix' => '<i class="icon icon-code"></i>',
-                        'desc' => $this->l('Aplazame Button CSS Selector'),
-                        'name' => 'APLAZAME_BUTTON',
-                        'label' => $this->l('Button'),
-                    ),
-                    array(
-                        'col' => 4,
-                        'type' => 'text',
-                        'prefix' => '<i class="icon icon-code"></i>',
-                        'desc' => $this->l('Aplazame Button Image that you want to show'),
-                        'name' => 'APLAZAME_BUTTON_IMAGE',
-                        'label' => $this->l('Button Image'),
-                    ),
-                    array(
-                        'type' => 'select',
-                        'label' => $this->l('Hook Product Widget'),
-                        'desc' => $this->l('Select the hook where you want to display the product widget'),
-                        'name' => 'APLAZAME_WIDGET_PROD',
-                        'options' => array(
-                            'query' => array(
-                                array(
-                                    'id_option' => 0,
-                                    'name' => $this->l('displayProductButtons'),
-                                ),
-                                array(
-                                    'id_option' => 1,
-                                    'name' => $this->l('displayRightColumnProduct'),
-                                ),
-                                array(
-                                    'id_option' => 2,
-                                    'name' => $this->l('displayRightColumn'),
-                                ),
-                            ),
-                            'id' => 'id_option',
-                            'name' => 'name',
+                        array(
+                            'name' => 'APLAZAME_SECRET_KEY',
+                            'type' => 'text',
+                            'label' => $this->l('Private API Key'),
+                            'desc' => $this->l('Aplazame API Private Key'),
+                            'prefix' => '<i class="icon icon-key"></i>',
+                            'col' => 4,
                         ),
                     ),
                 ),
-                'submit' => array(
-                    'title' => $this->l('Save'),
+            ),
+            array(
+                'form' => array(
+                    'legend' => array(
+                        'title' => $this->l('Product widget'),
+                        'icon' => 'icon-cogs',
+                    ),
+                    'input' => array(
+                        array(
+                            'type' => (_PS_VERSION_ >= 1.6) ? 'switch' : 'radio',
+                            'label' => $this->l('Show widget on product page'),
+                            'name' => 'APLAZAME_PRODUCT_WIDGET_ENABLED',
+                            'is_bool' => true,
+                            'values' => array(
+                                array(
+                                    'id' => 'active_on',
+                                    'value' => true,
+                                ),
+                                array(
+                                    'id' => 'active_off',
+                                    'value' => false,
+                                ),
+                            ),
+                        ),
+                        array(
+                            'type' => 'select',
+                            'label' => $this->l('Hook Product Widget'),
+                            'desc' => $this->l('Select the hook where you want to display the product widget'),
+                            'name' => 'APLAZAME_WIDGET_PROD',
+                            'options' => array(
+                                'query' => array(
+                                    array(
+                                        'id_option' => 0,
+                                        'name' => $this->l('displayProductButtons'),
+                                    ),
+                                    array(
+                                        'id_option' => 1,
+                                        'name' => $this->l('displayRightColumnProduct'),
+                                    ),
+                                    array(
+                                        'id_option' => 2,
+                                        'name' => $this->l('displayRightColumn'),
+                                    ),
+                                ),
+                                'id' => 'id_option',
+                                'name' => 'name',
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+            array(
+                'form' => array(
+                    'legend' => array(
+                        'title' => $this->l('Cart widget'),
+                        'icon' => 'icon-cogs',
+                    ),
+                    'input' => array(
+                        array(
+                            'type' => (_PS_VERSION_ >= 1.6) ? 'switch' : 'radio',
+                            'label' => $this->l('Show widget on cart page'),
+                            'name' => 'APLAZAME_CART_WIDGET_ENABLED',
+                            'is_bool' => true,
+                            'values' => array(
+                                array(
+                                    'id' => 'active_on',
+                                    'value' => true,
+                                ),
+                                array(
+                                    'id' => 'active_off',
+                                    'value' => false,
+                                ),
+                            ),
+                        ),
+                        array(
+                            'col' => 4,
+                            'type' => 'text',
+                            'prefix' => '<i class="icon icon-code"></i>',
+                            'desc' => $this->l('Aplazame Button CSS Selector'),
+                            'name' => 'APLAZAME_BUTTON',
+                            'label' => $this->l('Button'),
+                        ),
+                        array(
+                            'col' => 4,
+                            'type' => 'text',
+                            'prefix' => '<i class="icon icon-code"></i>',
+                            'desc' => $this->l('Aplazame Button Image that you want to show'),
+                            'name' => 'APLAZAME_BUTTON_IMAGE',
+                            'label' => $this->l('Button Image'),
+                        ),
+                    ),
+                    'submit' => array(
+                        'title' => $this->l('Save'),
+                    ),
                 ),
             ),
         );
@@ -499,6 +557,10 @@ HTML;
 
     public function hookDisplayShoppingCart($params)
     {
+        if (!$this->isAvailable() || ! Configuration::get('APLAZAME_CART_WIDGET_ENABLED')) {
+            return false;
+        }
+
         /** @var Cart $cart */
         $cart = $params['cart'];
 
@@ -583,7 +645,7 @@ HTML;
 
     public function getWidget($params)
     {
-        if (!$this->isAvailable()) {
+        if (!$this->isAvailable() || ! Configuration::get('APLAZAME_PRODUCT_WIDGET_ENABLED')) {
             return false;
         }
 
