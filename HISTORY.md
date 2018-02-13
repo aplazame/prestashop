@@ -1,5 +1,10 @@
 ## Change Log
 
+#### [v5.1.0](https://github.com/aplazame/prestashop/tree/v5.1.0) (2018-02-03)
+
+* [ADD] Added a new setting for toggle the rendering of Aplazame's widget on product page.
+* [ADD] Added a new setting for toggle the rendering of Aplazame's widget on cart page.
+
 #### [v5.0.0](https://github.com/aplazame/prestashop/tree/v5.0.0) (2017-12-29)
 
 * **Mark an order as Cancel not longer cancel the order at Aplazame! If you want to refund the order please use "standard refund" way**
