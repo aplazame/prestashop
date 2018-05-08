@@ -8,13 +8,17 @@ services:
     depends_on:
       - db
     environment:
+      - ADMIN_MAIL=demo@prestashop.com
+      - ADMIN_PASSWD=prestashop_demo
       - PS_DEV_MODE=1
-      - PS_COUNTRY=es
+      - PS_COUNTRY=ES
       - PS_DOMAIN=prestashop.aplazame
+      - PS_ERASE_DB=1
       - PS_FOLDER_ADMIN=adminTest
       - PS_FOLDER_INSTALL=installTest
       - PS_HANDLE_DYNAMIC_DOMAIN=1
       - PS_INSTALL_AUTO=1
+      - PS_LANGUAGE=es
       - DB_SERVER=db
       - DB_PASSWD=password
     volumes:
@@ -24,7 +28,7 @@ services:
       - "80:80"
 
   db:
-    image: mysql
+    image: mysql:5.7
     environment:
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_DATABASE=prestashop
