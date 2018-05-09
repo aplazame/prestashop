@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v5.1.1](https://github.com/aplazame/prestashop/tree/v5.1.1) (2018-05-09)
+
+* [FIX] Prevent status changes for not Aplazame's orders
+
 #### [v5.1.0](https://github.com/aplazame/prestashop/tree/v5.1.0) (2018-02-03)
 
 * [ADD] Added a new setting for toggle the rendering of Aplazame's widget on product page.
