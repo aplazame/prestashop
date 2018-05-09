@@ -71,6 +71,13 @@ final class AplazameApiConfirm
             return AplazameApiModuleFrontController::notFound();
         }
 
+        if ($cart->orderExists()) {
+            $order = Order::getByCartId($cartId);
+            if (Validate::isLoadedObject($cart) && ($order->module != $this->module->name)) {
+                return self::ko();
+            }
+        }
+
         $amount = $cart->getOrderTotal(true);
         $currency = new Currency($cart->id_currency);
         $fraud = false;
