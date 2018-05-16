@@ -86,7 +86,7 @@ class Aplazame extends PaymentModule
 
         Configuration::updateValue('APLAZAME_SANDBOX', false);
 
-        Configuration::updateValue('APLAZAME_WIDGET_PROD', true);
+        Configuration::updateValue('APLAZAME_PRODUCT_WIDGET_ENABLED', true);
         Configuration::updateValue('APLAZAME_WIDGET_PROD', '0');
 
         Configuration::updateValue('APLAZAME_CART_WIDGET_ENABLED', true);
