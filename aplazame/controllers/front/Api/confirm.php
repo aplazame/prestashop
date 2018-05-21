@@ -72,7 +72,7 @@ final class AplazameApiConfirm
         }
 
         if ($cart->orderExists()) {
-            $order = Order::getByCartId($cartId);
+            $order = new Order((int) Order::getOrderByCartId((int) $cartId));
             if (Validate::isLoadedObject($cart) && ($order->module != $this->module->name)) {
                 return self::ko();
             }
