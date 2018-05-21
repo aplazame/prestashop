@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v5.1.2](https://github.com/aplazame/prestashop/tree/v5.1.2) (2018-05-21)
+
+* [FIX] compatibility with PS <1.7.1
+
 #### [v5.1.1](https://github.com/aplazame/prestashop/tree/v5.1.1) (2018-05-09)
 
 * [FIX] Prevent status changes for not Aplazame's orders
