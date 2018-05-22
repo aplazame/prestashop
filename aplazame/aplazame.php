@@ -509,9 +509,11 @@ HTML;
 
         $this->context->smarty->assign(array(
             'aplazame_js_uri' => $aplazameJsUri,
-            'aplazame_api_base_uri' => $this->apiBaseUri,
-            'aplazame_public_key' => Configuration::get('APLAZAME_PUBLIC_KEY'),
-            'aplazame_is_sandbox' => Configuration::get('APLAZAME_SANDBOX'),
+            'aplazame_init' => array(
+                'host' => $this->apiBaseUri,
+                'publicKey' => Configuration::get('APLAZAME_PUBLIC_KEY'),
+                'sandbox' => (bool) Configuration::get('APLAZAME_SANDBOX'),
+            ),
         ));
 
         return $this->display(__FILE__, 'header.tpl');
@@ -752,9 +754,11 @@ HTML;
         $currency = new Currency((int) ($cart->id_currency));
 
         return array(
-            'aplazame_button' => Configuration::get('APLAZAME_BUTTON'),
-            'aplazame_currency_iso' => $currency->iso_code,
-            'aplazame_cart_total' => Aplazame_Sdk_Serializer_Decimal::fromFloat($cart->getOrderTotal())->value,
+            'aplazame_button' => array(
+                'selector' => Configuration::get('APLAZAME_BUTTON'),
+                'currency' => $currency->iso_code,
+                'amount' => Aplazame_Sdk_Serializer_Decimal::fromFloat($cart->getOrderTotal())->value,
+            ),
         );
     }
 
