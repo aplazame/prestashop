@@ -559,7 +559,7 @@ HTML;
 
     public function hookDisplayShoppingCart($params)
     {
-        if (!$this->isAvailable() || ! Configuration::get('APLAZAME_CART_WIDGET_ENABLED')) {
+        if (!$this->isAvailable() || !Configuration::get('APLAZAME_CART_WIDGET_ENABLED')) {
             return false;
         }
 
@@ -647,7 +647,7 @@ HTML;
 
     public function getWidget($params)
     {
-        if (!$this->isAvailable() || ! Configuration::get('APLAZAME_PRODUCT_WIDGET_ENABLED')) {
+        if (!$this->isAvailable() || !Configuration::get('APLAZAME_PRODUCT_WIDGET_ENABLED')) {
             return false;
         }
 
