@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v5.2.0](https://github.com/aplazame/prestashop/tree/v5.2.0) (2018-05-23)
+
+* [ADD] Button image is not longer required
+
 #### [v5.1.2](https://github.com/aplazame/prestashop/tree/v5.1.2) (2018-05-21)
 
 * [FIX] compatibility with PS <1.7.1
