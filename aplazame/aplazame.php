@@ -730,6 +730,20 @@ HTML;
         return $order->addOrderPayment(-$amount, $this->displayName);
     }
 
+    /**
+     * @return array
+     *
+     * @throws Exception
+     */
+    public function createCheckoutOnAplazame(Cart $cart)
+    {
+        $checkout = Aplazame_Aplazame_BusinessModel_Checkout::createFromCart($cart, (int) $this->id, $this->currentOrder);
+
+        $response = $this->callToRest('POST', '/checkout', Aplazame_Sdk_Serializer_JsonSerializer::serializeValue($checkout));
+
+        return $response;
+    }
+
     private function registerController($className, $name)
     {
         if (Tab::getIdFromClassName($className)) {
