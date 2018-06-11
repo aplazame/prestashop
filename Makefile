@@ -10,6 +10,6 @@ style:
 	@vendor/bin/php-cs-fixer fix -v
 
 zip:
-	@rm -f aplazame/config*.xml
+	@rm -f aplazame/config*.xml || true
 	@rm -f aplazame.latest.zip
 	@zip -r aplazame.latest.zip aplazame
