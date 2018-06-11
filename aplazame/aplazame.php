@@ -689,7 +689,7 @@ HTML;
         return $this->apiClient;
     }
 
-    public function callToRest($method, $path, array $values = null)
+    public function callToRest($method, $path, $values = null)
     {
         $client = $this->getApiClient();
 
