@@ -278,11 +278,7 @@ HTML;
             $privateKey
         );
 
-        $link = Context::getContext()->link;
-
-        $response = $client->patch('/me', array(
-            'confirmation_url' => $link->getModuleLink($this->name, 'api', array('path' => '/confirm/')),
-        ));
+        $response = $client->get('/me');
 
         Configuration::updateValue('APLAZAME_PUBLIC_KEY', $response['public_api_key']);
 
