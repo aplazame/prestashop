@@ -30,6 +30,7 @@ class Aplazame_Aplazame_BusinessModel_Checkout
         $merchant->success_url = $link->getPageLink('order-confirmation', null, null, $successQuery);
         $merchant->pending_url = $merchant->success_url;
         $merchant->checkout_url = $link->getPageLink('order');
+        $merchant->notification_url = $link->getModuleLink($aplazame->name, 'api', array('path' => '/confirm/'));
 
         $checkout = new self();
         $checkout->toc = true;
