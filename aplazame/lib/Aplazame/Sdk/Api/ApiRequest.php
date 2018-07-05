@@ -68,6 +68,7 @@ class Aplazame_Sdk_Api_ApiRequest extends Aplazame_Sdk_Http_Request
                 'Prestashop/' . _PS_VERSION_,
                 'AplazamePrestashop/' . $aplazame->version,
             ),
+            'Accept-Language' => array('es'),
         );
 
         if ($data && !is_string($data)) {
