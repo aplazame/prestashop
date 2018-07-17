@@ -108,7 +108,7 @@ class AplazameApiModuleFrontController extends ModuleFrontController
                 include_once _PS_MODULE_DIR_ . 'aplazame/controllers/front/Api/order.php';
                 $controller = new AplazameApiOrder(Db::getInstance());
 
-                return $controller->history($pathArguments, $queryArguments);
+                return $controller->history($pathArguments);
             default:
                 return self::notFound();
         }
