@@ -14,60 +14,64 @@ class AplazameApiModuleFrontController extends ModuleFrontController
 {
     public static function forbidden()
     {
-        return array(
+        return [
             'status_code' => 403,
-            'payload' => array(
+            'payload' => [
                 'status' => 403,
                 'type' => 'FORBIDDEN',
-            ),
-        );
+            ],
+        ];
     }
 
-    public static function notFound()
+    public static function not_found()
     {
-        return array(
+        return [
             'status_code' => 404,
-            'payload' => array(
+            'payload' => [
                 'status' => 404,
                 'type' => 'NOT_FOUND',
-            ),
-        );
+            ],
+        ];
     }
 
-    public static function clientError($detail)
+    public static function client_error($detail)
     {
-        return array(
+        return [
             'status_code' => 400,
-            'payload' => array(
+            'payload' => [
                 'status' => 400,
                 'type' => 'CLIENT_ERROR',
                 'detail' => $detail,
-            ),
-        );
+            ],
+        ];
+    }
+
+    public static function success(array $payload)
+    {
+        return [
+            'status_code' => 200,
+            'payload' => $payload,
+        ];
     }
 
     public static function collection($page, $page_size, array $elements)
     {
-        return array(
-            'status_code' => 200,
-            'payload' => array(
-                'query' => array(
+        return self::success([
+                'query' => [
                     'page' => $page,
                     'page_size' => $page_size,
-                ),
+                ],
                 'elements' => $elements,
-            ),
-        );
+            ]);
     }
 
     public function postProcess()
     {
         $path = Tools::getValue('path', '');
-        $pathArguments = Tools::jsonDecode(Tools::getValue('path_arguments', '[]'), true);
-        $queryArguments = Tools::jsonDecode(Tools::getValue('query_arguments', '[]'), true);
+        $queryArguments = Tools::getAllValues();
         $payload = Tools::jsonDecode(Tools::file_get_contents('php://input'), true);
 
-        $response = $this->route($path, $pathArguments, $queryArguments, $payload);
+        $response = $this->route($path, $queryArguments, $payload);
 
         $this->http_response_code($response['status_code']);
         header('Content-Type: application/json');
@@ -77,13 +81,12 @@ class AplazameApiModuleFrontController extends ModuleFrontController
 
     /**
      * @param string $path
-     * @param array $pathArguments
      * @param array $queryArguments
      * @param null|array $payload
      *
      * @return array
      */
-    public function route($path, array $pathArguments, array $queryArguments, $payload)
+    public function route($path, array $queryArguments, $payload)
     {
         if (!$this->verifyAuthentication()) {
             return self::forbidden();
@@ -108,7 +111,7 @@ class AplazameApiModuleFrontController extends ModuleFrontController
                 include_once _PS_MODULE_DIR_ . 'aplazame/controllers/front/Api/order.php';
                 $controller = new AplazameApiOrder(Db::getInstance());
 
-                return $controller->history($pathArguments);
+                return $controller->history($queryArguments);
             default:
                 return self::notFound();
         }

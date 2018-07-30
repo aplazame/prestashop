@@ -42,6 +42,6 @@ final class AplazameApiOrder
             $historyOrders[] = Aplazame_Aplazame_Api_BusinessModel_HistoricalOrder::createFromOrder(new Order($orderData['id_order']));
         }
 
-        return $historyOrders;
+        return AplazameApiModuleFrontController::success(Aplazame_Sdk_Serializer_JsonSerializer::serializeValue($historyOrders));
     }
 }
