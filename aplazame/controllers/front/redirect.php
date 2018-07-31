@@ -19,9 +19,18 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
             Tools::redirect('index.php?controller=order');
         }
 
-        $checkout = Aplazame_Aplazame_BusinessModel_Checkout::createFromCart($cart, (int) $this->module->id, $this->module->currentOrder);
+        try {
+            $payload = $this->module->createCheckoutOnAplazame($cart);
+        } catch (Aplazame_Sdk_Api_ApiClientException $e) {
+            $this->errors[] = 'Aplazame Error: ' . $e->getMessage();
+
+            $this->redirectWithNotifications('index.php?controller=order');
+
+            return '';
+        }
+
         $this->context->smarty->assign(array(
-            'aplazame_order' => Aplazame_Sdk_Serializer_JsonSerializer::serializeValue($checkout),
+            'aplazame_order' => $payload,
         ));
 
         if (_PS_VERSION_ < 1.7) {

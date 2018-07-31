@@ -19,7 +19,7 @@ final class AplazameApiOrder
         $this->db = $db;
     }
 
-    public function history(array $params, array $queryArguments)
+    public function history(array $params)
     {
         if (!isset($params['order_id'])) {
             return AplazameApiModuleFrontController::notFound();
@@ -31,14 +31,9 @@ final class AplazameApiOrder
             return AplazameApiModuleFrontController::notFound();
         }
 
-        $page = (isset($queryArguments['page'])) ? (int) $queryArguments['page'] : 1;
-        $page_size = (isset($queryArguments['page_size'])) ? (int) $queryArguments['page_size'] : 10;
-        $offset = ($page - 1) * $page_size;
-
         $orders = $this->db->executeS(
             'SELECT id_order FROM ' . _DB_PREFIX_ . 'orders'
             . ' WHERE id_customer = ' . (int) $order->id_customer
-            . ' LIMIT ' . (int) $offset . ', ' . (int) $page_size
         );
 
         $historyOrders = array();
@@ -47,6 +42,6 @@ final class AplazameApiOrder
             $historyOrders[] = Aplazame_Aplazame_Api_BusinessModel_HistoricalOrder::createFromOrder(new Order($orderData['id_order']));
         }
 
-        return AplazameApiModuleFrontController::collection($page, $page_size, $historyOrders);
+        return AplazameApiModuleFrontController::success(Aplazame_Sdk_Serializer_JsonSerializer::serializeValue($historyOrders));
     }
 }

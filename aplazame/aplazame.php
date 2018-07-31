@@ -278,11 +278,7 @@ HTML;
             $privateKey
         );
 
-        $link = Context::getContext()->link;
-
-        $response = $client->patch('/me', array(
-            'confirmation_url' => $link->getModuleLink($this->name, 'api', array('path' => '/confirm/')),
-        ));
+        $response = $client->get('/me');
 
         Configuration::updateValue('APLAZAME_PUBLIC_KEY', $response['public_api_key']);
 
@@ -728,6 +724,20 @@ HTML;
         }
 
         return $order->addOrderPayment(-$amount, $this->displayName);
+    }
+
+    /**
+     * @return array
+     *
+     * @throws Exception
+     */
+    public function createCheckoutOnAplazame(Cart $cart)
+    {
+        $checkout = Aplazame_Aplazame_BusinessModel_Checkout::createFromCart($cart, (int) $this->id, $this->currentOrder);
+
+        $response = $this->callToRest('POST', '/checkout', Aplazame_Sdk_Serializer_JsonSerializer::serializeValue($checkout));
+
+        return $response;
     }
 
     private function registerController($className, $name)
