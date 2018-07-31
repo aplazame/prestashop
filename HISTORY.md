@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v5.3.0](https://github.com/aplazame/prestashop/tree/v5.3.0) (2018-07-31)
+
+* Improve Checkout creation
+
 #### [v5.2.0](https://github.com/aplazame/prestashop/tree/v5.2.0) (2018-05-23)
 
 * [ADD] Button image is not longer required
