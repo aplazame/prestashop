@@ -14,55 +14,55 @@ class AplazameApiModuleFrontController extends ModuleFrontController
 {
     public static function forbidden()
     {
-        return [
+        return array(
             'status_code' => 403,
-            'payload' => [
+            'payload' => array(
                 'status' => 403,
                 'type' => 'FORBIDDEN',
-            ],
-        ];
+            ),
+        );
     }
 
     public static function not_found()
     {
-        return [
+        return array(
             'status_code' => 404,
-            'payload' => [
+            'payload' => array(
                 'status' => 404,
                 'type' => 'NOT_FOUND',
-            ],
-        ];
+            ),
+        );
     }
 
     public static function client_error($detail)
     {
-        return [
+        return array(
             'status_code' => 400,
-            'payload' => [
+            'payload' => array(
                 'status' => 400,
                 'type' => 'CLIENT_ERROR',
                 'detail' => $detail,
-            ],
-        ];
+            ),
+        );
     }
 
     public static function success(array $payload)
     {
-        return [
+        return array(
             'status_code' => 200,
             'payload' => $payload,
-        ];
+        );
     }
 
     public static function collection($page, $page_size, array $elements)
     {
-        return self::success([
-                'query' => [
+        return self::success(array(
+                'query' => array(
                     'page' => $page,
                     'page_size' => $page_size,
-                ],
+                ),
                 'elements' => $elements,
-            ]);
+            ));
     }
 
     public function postProcess()
