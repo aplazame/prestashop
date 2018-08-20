@@ -11,7 +11,9 @@ jobs:
           - v1-dependencies-{{ checksum "composer.json" }}
           - v1-dependencies-
 
-      - run: composer install -n --prefer-dist
+      - run:
+          name: Install dependencies
+          command: composer install -n --prefer-dist
 
       - save_cache:
           paths:
@@ -26,29 +28,34 @@ jobs:
           name: CS
           command: make style
 
-  deploy:
+  deploy_to_s3:
     machine:
       enabled: true
     working_directory: ~/aplazame
     steps:
+      - checkout
+
       - run:
           name: Create bundle
           command: make zip
 
       - run:
           name: Deploy to S3 when release
-          command: aws s3 sync aplazame.latest.zip s3://aplazame/modules/prestashop/ --delete
+          command: aws s3 cp aplazame.latest.zip s3://aplazame/modules/prestashop/
 
 workflows:
   version: 2
   build-deploy:
     jobs:
-      - build
-      - deploy:
-          requires:
-            - build
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
+    - build:
+        filters:
+          tags:
+            only: /.*/
+    - deploy_to_s3:
+        requires:
+        - build
+        filters:
+          tags:
+            only: /^v.*/
+          branches:
+            ignore: /.*/
