@@ -30,7 +30,7 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
         }
 
         $this->context->smarty->assign(array(
-            'aplazame_order' => $payload,
+            'aid' => $payload['id'],
         ));
 
         if (_PS_VERSION_ < 1.7) {

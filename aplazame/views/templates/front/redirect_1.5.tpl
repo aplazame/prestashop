@@ -15,7 +15,7 @@
   <h3>{l s='Processing payment with Aplazame' mod='aplazame'}</h3>
 
   <script>
-    aplazame.checkout({$aplazame_order|@json_encode});
+    aplazame.checkout("{$aid|escape:'htmlall':'UTF-8'}");
   </script>
 
   <iframe src="" style="position:fixed; top:0; left:0; bottom:0; right:0; width:100%; height:100%; border:none; margin:0; padding:0; overflow:hidden;">
