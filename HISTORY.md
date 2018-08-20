@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v5.4.0](https://github.com/aplazame/prestashop/tree/v5.4.0) (2018-08-20)
+
+* Prevent conflicts with 3rd party systems who perform unsafe filtering 
+
 #### [v5.3.0](https://github.com/aplazame/prestashop/tree/v5.3.0) (2018-07-31)
 
 * Improve Checkout creation
