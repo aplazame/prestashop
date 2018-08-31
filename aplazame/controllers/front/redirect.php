@@ -22,9 +22,12 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
         try {
             $payload = $this->module->createCheckoutOnAplazame($cart);
         } catch (Aplazame_Sdk_Api_ApiClientException $e) {
-            $this->errors[] = 'Aplazame Error: ' . $e->getMessage();
-
-            $this->redirectWithNotifications('index.php?controller=order');
+            if (method_exists($this, 'redirectWithNotifications')) {
+                $this->errors[] = 'Aplazame Error: ' . $e->getMessage();
+                $this->redirectWithNotifications('index.php?controller=order');
+            } else {
+                Tools::redirect('index.php?controller=order');
+            }
 
             return '';
         }
