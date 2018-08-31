@@ -22,14 +22,15 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
         try {
             $payload = $this->module->createCheckoutOnAplazame($cart);
         } catch (Aplazame_Sdk_Api_ApiClientException $e) {
+            $this->errors[] = 'Aplazame Error: ' . $e->getMessage();
+
             if (method_exists($this, 'redirectWithNotifications')) {
-                $this->errors[] = 'Aplazame Error: ' . $e->getMessage();
                 $this->redirectWithNotifications('index.php?controller=order');
-            } else {
-                Tools::redirect('index.php?controller=order');
+                return;
             }
 
-            return '';
+            $this->setTemplate('display_errors.tpl');
+            return;
         }
 
         $this->context->smarty->assign(array(
@@ -37,9 +38,9 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
         ));
 
         if (_PS_VERSION_ < 1.7) {
-            return $this->setTemplate('redirect_1.5.tpl');
+            $this->setTemplate('redirect_1.5.tpl');
         }
 
-        return $this->setTemplate('module:aplazame/views/templates/front/redirect_1.7.tpl');
+        $this->setTemplate('module:aplazame/views/templates/front/redirect_1.7.tpl');
     }
 }
