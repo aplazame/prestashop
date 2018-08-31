@@ -42,7 +42,7 @@ class Aplazame_Aplazame_BusinessModel_Customer
         $aCustomer->first_name = $customer->firstname;
         $aCustomer->last_name = $customer->lastname;
         if ($customer->birthday && $customer->birthday != '0000-00-00') {
-            $aCustomer->birthday = Aplazame_Sdk_Serializer_Date::fromDateTime(new DateTime($customer->birthday));
+            $aCustomer->birthday = $customer->birthday;
         }
         $aCustomer->date_joined = Aplazame_Sdk_Serializer_Date::fromDateTime(new DateTime($customer->date_add));
 
