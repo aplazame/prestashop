@@ -26,10 +26,12 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
 
             if (method_exists($this, 'redirectWithNotifications')) {
                 $this->redirectWithNotifications('index.php?controller=order');
+
                 return;
             }
 
             $this->setTemplate('display_errors.tpl');
+
             return;
         }
 
