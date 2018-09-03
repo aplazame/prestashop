@@ -15,7 +15,7 @@ class Aplazame_Aplazame_BusinessModel_Article
     public static function crateFromProductData(array $productData)
     {
         $link = Context::getContext()->link;
-        $discount = $productData['reduction'] / (1 + $productData['rate'] / 100);
+        $discount = ($productData['price_without_reduction'] - $productData['price_with_reduction']) / (1 + $productData['rate'] / 100);
 
         $aArticle = new self();
         $aArticle->id = $productData['id_product'];
