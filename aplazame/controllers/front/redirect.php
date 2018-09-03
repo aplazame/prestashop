@@ -41,6 +41,8 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
 
         if (_PS_VERSION_ < 1.7) {
             $this->setTemplate('redirect_1.5.tpl');
+
+            return;
         }
 
         $this->setTemplate('module:aplazame/views/templates/front/redirect_1.7.tpl');
