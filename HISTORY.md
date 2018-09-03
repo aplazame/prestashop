@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v5.4.1](https://github.com/aplazame/prestashop/tree/v5.4.1) (2018-09-03)
+
+* Fix compatibility with PS <1.7
+
 #### [v5.4.0](https://github.com/aplazame/prestashop/tree/v5.4.0) (2018-08-20)
 
 * Prevent conflicts with 3rd party systems who perform unsafe filtering 
