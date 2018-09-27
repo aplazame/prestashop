@@ -68,7 +68,7 @@ class AplazameApiModuleFrontController extends ModuleFrontController
     public function postProcess()
     {
         $path = Tools::getValue('path', '');
-        $queryArguments = Tools::getAllValues();
+        $queryArguments = $_GET;
         $payload = Tools::jsonDecode(Tools::file_get_contents('php://input'), true);
 
         $response = $this->route($path, $queryArguments, $payload);
