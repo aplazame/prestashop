@@ -1,3 +1,11 @@
+{*
+ * This file is part of the official Aplazame module for PrestaShop.
+ *
+ * @author    Aplazame <soporte@aplazame.com>
+ * @copyright 2015-2018 Aplazame
+ * @license   see file: LICENSE
+ *}
+
 {if isset($errors) && $errors}
 	<div class="alert alert-danger">
 		<p>{if $errors|@count > 1}{l s='There are %d errors' sprintf=$errors|@count}{else}{l s='There is %d error' sprintf=$errors|@count}{/if}</p>
