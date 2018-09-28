@@ -15,13 +15,22 @@ class Aplazame_Aplazame_BusinessModel_Article
     public static function crateFromProductData(array $productData)
     {
         $link = Context::getContext()->link;
-        $discount = ($productData['price_without_reduction'] - $productData['price_with_reduction']) / (1 + $productData['rate'] / 100);
+        $id = $productData['id_product'];
+        $sku = isset($productData['id_product_attribute']) ? (int)$productData['id_product_attribute'] : null;
+        $discount = Product::getPriceStatic(
+            $id,
+            false,
+            $sku,
+            2,
+            null,
+            true
+        );
 
         $aArticle = new self();
-        $aArticle->id = $productData['id_product'];
-        $aArticle->sku = $productData['id_product_attribute'];
+        $aArticle->id = $id;
+        $aArticle->sku = $sku;
         $aArticle->name = $productData['name'];
-        $aArticle->url = $link->getProductLink($productData['id_product']);
+        $aArticle->url = $link->getProductLink($id);
         $aArticle->image_url = $link->getImageLink('product', $productData['id_image']);
         $aArticle->quantity = (int) $productData['cart_quantity'];
         $aArticle->price = Aplazame_Sdk_Serializer_Decimal::fromFloat($productData['price'] + $discount);
