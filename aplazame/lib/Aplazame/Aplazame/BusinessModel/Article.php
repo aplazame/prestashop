@@ -16,7 +16,7 @@ class Aplazame_Aplazame_BusinessModel_Article
     {
         $link = Context::getContext()->link;
         $id = $productData['id_product'];
-        $sku = isset($productData['id_product_attribute']) ? (int)$productData['id_product_attribute'] : null;
+        $sku = isset($productData['id_product_attribute']) ? (int) $productData['id_product_attribute'] : null;
         $discount = Product::getPriceStatic(
             $id,
             false,
