@@ -21,6 +21,7 @@ services:
       - PS_LANGUAGE=es
       - DB_SERVER=db
       - DB_PASSWD=password
+      - XDEBUG_CONFIG
     volumes:
       - prestashop:/var/www/html
       - ./aplazame:/var/www/html/modules/aplazame
