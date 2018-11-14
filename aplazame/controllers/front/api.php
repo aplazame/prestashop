@@ -113,7 +113,7 @@ class AplazameApiModuleFrontController extends ModuleFrontController
 
                 return $controller->history($queryArguments);
             default:
-                return self::notFound();
+                return self::not_found();
         }
     }
 

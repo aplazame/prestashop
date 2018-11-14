@@ -68,7 +68,7 @@ final class AplazameApiConfirm
 
         $cart = new Cart($cartId);
         if (!Validate::isLoadedObject($cart)) {
-            return AplazameApiModuleFrontController::notFound();
+            return AplazameApiModuleFrontController::not_found();
         }
 
         if ($cart->orderExists()) {

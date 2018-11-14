@@ -22,13 +22,13 @@ final class AplazameApiOrder
     public function history(array $params)
     {
         if (!isset($params['order_id'])) {
-            return AplazameApiModuleFrontController::notFound();
+            return AplazameApiModuleFrontController::not_found();
         }
 
         $orderId = Order::getOrderByCartId($params['order_id']);
         $order = new Order($orderId);
         if (!Validate::isLoadedObject($order)) {
-            return AplazameApiModuleFrontController::notFound();
+            return AplazameApiModuleFrontController::not_found();
         }
 
         $orders = $this->db->executeS(
