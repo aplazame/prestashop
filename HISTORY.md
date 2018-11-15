@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v5.4.3](https://github.com/aplazame/prestashop/tree/v5.4.3) (2018-11-15)
+
+* Don't display finished campaigns
+
 #### [v5.4.2](https://github.com/aplazame/prestashop/tree/v5.4.2) (2018-09-28)
 
 * Fix compatibility with PS <1.6.1
