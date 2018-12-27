@@ -482,9 +482,13 @@ HTML;
         return $this->refundAmount($order, $lastOrderSlip->total_products_tax_incl + $lastOrderSlip->total_shipping_tax_incl);
     }
 
-    public function hookDisplayAdminProductsExtra()
+    public function hookDisplayAdminProductsExtra($params)
     {
-        $id_product = Tools::getValue('id_product');
+        if ($params && isset($params['id_product'])) {
+            $id_product = $params['id_product'];
+        } else {
+            $id_product = Tools::getValue('id_product');
+        }
 
         $articles = array(Aplazame_Aplazame_Api_BusinessModel_Article::createFromProduct(new Product($id_product, false, $this->context->language->id)));
 
