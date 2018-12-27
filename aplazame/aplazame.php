@@ -484,7 +484,7 @@ HTML;
 
     public function hookDisplayAdminProductsExtra($params)
     {
-        if ( $params && isset( $params['id_product'] ) ) {
+        if ($params && isset($params['id_product'])) {
             $id_product = $params['id_product'];
         } else {
             $id_product = Tools::getValue('id_product');
