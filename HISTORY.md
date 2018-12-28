@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v5.4.4](https://github.com/aplazame/prestashop/tree/v5.4.4) (2018-12-28)
+
+* [FIX] Add campaign to a product with PS 1.7.x versions.
+
 #### [v5.4.3](https://github.com/aplazame/prestashop/tree/v5.4.3) (2018-11-15)
 
 * Don't display finished campaigns
@@ -14,7 +18,7 @@
 
 #### [v5.4.0](https://github.com/aplazame/prestashop/tree/v5.4.0) (2018-08-20)
 
-* Prevent conflicts with 3rd party systems who perform unsafe filtering 
+* Prevent conflicts with 3rd party systems who perform unsafe filtering
 
 #### [v5.3.0](https://github.com/aplazame/prestashop/tree/v5.3.0) (2018-07-31)
 
@@ -122,7 +126,7 @@
 
 #### [v2.0.0](https://github.com/aplazame/prestashop/tree/v2.0.0) (2016-07-26)
 
-IMPORTANT: Credit slips are the way of issue refunds to Aplazame. For `partial 
+IMPORTANT: Credit slips are the way of issue refunds to Aplazame. For `partial
 refunds` this is automatic, for `standard refunds` you must to check the option.
 
 * Module refactor
@@ -159,14 +163,14 @@ refunds` this is automatic, for `standard refunds` you must to check the option.
 
 * Campaigns
 * 400 status code when order is invalid
-* Widget data view 
+* Widget data view
 
 #### [v1.0.5](https://github.com/aplazame/prestashop/tree/v1.0.5) (2016-02-12)
 
 [Full Changelog v1.0.5](https://github.com/aplazame/prestashop/compare/v1.0.4...v1.0.5)
 
 * Widget hook configurable
-* Display widget when a product is available 
+* Display widget when a product is available
 
 #### [v1.0.4](https://github.com/aplazame/prestashop/tree/v1.0.4) (2015-12-23)
 
