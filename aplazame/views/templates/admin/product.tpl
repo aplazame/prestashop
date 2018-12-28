@@ -71,7 +71,7 @@
         label.htmlFor = inputId;
 
         label.appendChild(checkbox);
-        label.appendChild(document.createTextNode(campaign.name));
+        label.appendChild(document.createTextNode(" " + campaign.name));
 
         var div = document.createElement("div");
         div.className = "checkbox";
