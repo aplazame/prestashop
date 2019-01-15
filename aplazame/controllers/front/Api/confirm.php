@@ -19,12 +19,13 @@ final class AplazameApiConfirm
         );
     }
 
-    private static function ko()
+    private static function ko($reason)
     {
         return array(
             'status_code' => 200,
             'payload' => array(
                 'status' => 'ko',
+                'reason' => $reason,
             ),
         );
     }
@@ -74,7 +75,7 @@ final class AplazameApiConfirm
         if ($cart->orderExists()) {
             $order = new Order((int) Order::getOrderByCartId((int) $cartId));
             if (Validate::isLoadedObject($cart) && ($order->module != $this->module->name)) {
-                return self::ko();
+                return self::ko('Aplazame is not the payment method');
             }
         }
 
@@ -92,25 +93,25 @@ final class AplazameApiConfirm
                 switch ($payload['status_reason']) {
                     case 'challenge_required':
                         if (!$this->module->pending($cart, $fraud)) {
-                            return self::ko();
+                            return self::ko("'pending' function failed");
                         }
                         break;
                     case 'confirmation_required':
                         if (!$this->module->accept($cart, $fraud)) {
-                            return self::ko();
+                            return self::ko("'accept' function failed");
                         }
                         break;
                 }
                 break;
             case 'ko':
                 if (!$this->module->deny($cart, $fraud)) {
-                    return self::ko();
+                    return self::ko("'deny' function failed");
                 }
                 break;
         }
 
         if ($fraud) {
-            return self::ko();
+            return self::ko('Fraud detected');
         }
 
         return self::ok();
