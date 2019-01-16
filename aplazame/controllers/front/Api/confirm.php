@@ -81,37 +81,36 @@ final class AplazameApiConfirm
 
         $amount = $cart->getOrderTotal(true);
         $currency = new Currency($cart->id_currency);
-        $fraud = false;
         if ($payload['total_amount'] !== Aplazame_Sdk_Serializer_Decimal::fromFloat($amount)->jsonSerialize() ||
             $payload['currency']['code'] !== $currency->iso_code
         ) {
-            $fraud = true;
+            if (!$this->module->deny($cart)) {
+                return self::ko("'deny' function failed (at fraud)");
+            }
+
+            return self::ko('Fraud detected');
         }
 
         switch ($payload['status']) {
             case 'pending':
                 switch ($payload['status_reason']) {
                     case 'challenge_required':
-                        if (!$this->module->pending($cart, $fraud)) {
+                        if (!$this->module->pending($cart)) {
                             return self::ko("'pending' function failed");
                         }
                         break;
                     case 'confirmation_required':
-                        if (!$this->module->accept($cart, $fraud)) {
+                        if (!$this->module->accept($cart)) {
                             return self::ko("'accept' function failed");
                         }
                         break;
                 }
                 break;
             case 'ko':
-                if (!$this->module->deny($cart, $fraud)) {
+                if (!$this->module->deny($cart)) {
                     return self::ko("'deny' function failed");
                 }
                 break;
-        }
-
-        if ($fraud) {
-            return self::ko('Fraud detected');
         }
 
         return self::ok();
