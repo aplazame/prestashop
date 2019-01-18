@@ -137,14 +137,8 @@ class Aplazame extends PaymentModule
         return true;
     }
 
-    public function pending(Cart $cart, $fraud)
+    public function pending(Cart $cart)
     {
-        if ($fraud) {
-            $this->deny($cart, $fraud);
-
-            return false;
-        }
-
         $cartId = $cart->id;
         $orderStateId = Configuration::get(self::ORDER_STATE_PENDING);
 
@@ -163,14 +157,8 @@ class Aplazame extends PaymentModule
         ));
     }
 
-    public function accept(Cart $cart, $fraud)
+    public function accept(Cart $cart)
     {
-        if ($fraud) {
-            $this->deny($cart, $fraud);
-
-            return false;
-        }
-
         $cartId = $cart->id;
         $orderStateId = Configuration::get('PS_OS_PAYMENT');
 
@@ -186,7 +174,7 @@ class Aplazame extends PaymentModule
         return $this->setOrderStateToOrderByCartId($cartId, $orderStateId);
     }
 
-    public function deny(Cart $cart, $fraud)
+    public function deny(Cart $cart)
     {
         if (!$cart->orderExists()) {
             return true;
