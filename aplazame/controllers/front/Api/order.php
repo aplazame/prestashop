@@ -27,13 +27,22 @@ final class AplazameApiOrder
 
         $orderId = Order::getOrderByCartId($params['order_id']);
         $order = new Order($orderId);
-        if (!Validate::isLoadedObject($order)) {
-            return AplazameApiModuleFrontController::not_found();
+
+        if (Validate::isLoadedObject($order)) {
+            $customerId = (int) $order->id_customer;
+        } else {
+            $cart = new Cart($params['order_id']);
+
+            if (Validate::isLoadedObject($cart)) {
+                $customerId = (int) $cart->id_customer;
+            } else {
+                return AplazameApiModuleFrontController::not_found();
+            }
         }
 
         $orders = $this->db->executeS(
             'SELECT id_order FROM ' . _DB_PREFIX_ . 'orders'
-            . ' WHERE id_customer = ' . (int) $order->id_customer
+            . ' WHERE id_customer = ' . $customerId
         );
 
         $historyOrders = array();
