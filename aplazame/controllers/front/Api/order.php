@@ -28,7 +28,28 @@ final class AplazameApiOrder
         $orderId = Order::getOrderByCartId($params['order_id']);
         $order = new Order($orderId);
         if (!Validate::isLoadedObject($order)) {
-            return AplazameApiModuleFrontController::not_found();
+            $cart = new Cart($params['order_id']);
+
+            if (!Validate::isLoadedObject($cart)) {
+                return AplazameApiModuleFrontController::not_found();
+            }
+
+            $carts = $this->db->executeS(
+                'SELECT id_cart FROM ' . _DB_PREFIX_ . 'cart'
+                . ' WHERE id_customer = ' . (int) $cart->id_customer
+            );
+
+            $historyCarts = array();
+
+            foreach ($carts as $cartData) {
+                $cart = new Cart($cartData['id_cart']);
+                if ($cart->OrderExists()) {
+                    continue;
+                }
+                $historyCarts[] = Aplazame_Aplazame_Api_BusinessModel_HistoricalOrder::createFromCart($cart);
+            }
+
+            return AplazameApiModuleFrontController::success(Aplazame_Sdk_Serializer_JsonSerializer::serializeValue($historyCarts));
         }
 
         $orders = $this->db->executeS(

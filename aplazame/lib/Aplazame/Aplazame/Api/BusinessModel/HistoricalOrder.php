@@ -32,4 +32,26 @@ class Aplazame_Aplazame_Api_BusinessModel_HistoricalOrder
 
         return $serialized;
     }
+
+    public static function createFromCart(Cart $cart)
+    {
+        $currency = new Currency($cart->id_currency);
+
+        $serialized = array(
+            'id' => $cart->id,
+            'amount' => Aplazame_Sdk_Serializer_Decimal::fromFloat($cart->getOrderTotal(true)),
+            'due' => 0,
+            'status' => 'pending',
+            'type' => 'cart',
+            'order_date' => Aplazame_Sdk_Serializer_Date::fromDateTime(new DateTime($cart->date_add)),
+            'currency' => $currency->iso_code,
+            'billing' => Aplazame_Aplazame_BusinessModel_Address::createFromAddress(new Address($cart->id_address_invoice)),
+        );
+
+        if (!$cart->isVirtualCart()) {
+            $serialized['shipping'] = Aplazame_Aplazame_BusinessModel_ShippingInfo::createFromCart($cart);
+        }
+
+        return $serialized;
+    }
 }
