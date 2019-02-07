@@ -17,6 +17,8 @@ class Aplazame_Aplazame_BusinessModel_Article
         $link = Context::getContext()->link;
         $id = $productData['id_product'];
         $sku = isset($productData['id_product_attribute']) ? (int) $productData['id_product_attribute'] : null;
+
+        // This is to consider the price when customer rules are applied.
         $discount = Product::getPriceStatic(
             $id,
             false,
@@ -31,6 +33,8 @@ class Aplazame_Aplazame_BusinessModel_Article
             $cart->id
         );
 
+        // $productData['rate'] contains default tax rate of the product but ignores the custom tax rules for each state/province (for example: Canary Islands).
+        // Instead, we use the following:
         $address_id = (int) $productData['id_address_delivery'];
         $ratio_tax = Tax::getProductTaxRate(
                 (int) $productData['id_product'],
