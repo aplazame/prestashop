@@ -29,7 +29,9 @@ class Aplazame_Aplazame_BusinessModel_Order
         $aOrder->currency = $currency->iso_code;
         $aOrder->total_amount = Aplazame_Sdk_Serializer_Decimal::fromFloat($base_total_tax_inc);
         $aOrder->tax_rate = Aplazame_Sdk_Serializer_Decimal::fromFloat(100 * $order_tax / $base_total_tax_exc);
-        $aOrder->articles = array_map(array('Aplazame_Aplazame_BusinessModel_Article', 'crateFromProductData'), $cart->getProducts());
+        $aOrder->articles = array_map(function (array $productData) use ($cart) {
+            return Aplazame_Aplazame_BusinessModel_Article::createFromProductData($cart, $productData);
+        }, $cart->getProducts());
         $aOrder->discount = Aplazame_Sdk_Serializer_Decimal::fromFloat($cart->getOrderTotal(true, Cart::ONLY_DISCOUNTS));
 
         return $aOrder;
