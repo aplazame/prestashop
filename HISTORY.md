@@ -1,5 +1,12 @@
 ## Change Log
 
+#### [v5.4.5](https://github.com/aplazame/prestashop/tree/v5.4.5) (2019-02-08)
+
+* [ADD] Added 'tax_rate' parameter to 'order' and 'shipping'.
+* [FIX] Article 'discount' fixed when customer rules are applied.
+* [FIX] Article 'tax_rate' fixed when address rules are applied.
+* [FIX] Many code fixes and improvements.
+
 #### [v5.4.4](https://github.com/aplazame/prestashop/tree/v5.4.4) (2018-12-28)
 
 * [FIX] Add campaign to a product with PS 1.7.x versions.
