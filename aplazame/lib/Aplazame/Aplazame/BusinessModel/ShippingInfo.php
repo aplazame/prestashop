@@ -28,7 +28,15 @@ class Aplazame_Aplazame_BusinessModel_ShippingInfo
         $shippingInfo->alt_phone = $address->phone_mobile;
         $shippingInfo->address_addition = $address->address2;
         $shippingInfo->name = implode(self::compileCarriersName($cart), ';');
-        $shippingInfo->price = Aplazame_Sdk_Serializer_Decimal::fromFloat($cart->getOrderTotal(false, Cart::ONLY_SHIPPING));
+
+        $total_shipping_tax_exc = $cart->getTotalShippingCost(null, false);
+        $shippingInfo->price = Aplazame_Sdk_Serializer_Decimal::fromFloat($total_shipping_tax_exc);
+
+        if ($total_shipping_tax_exc > 0) {
+            $total_shipping = $cart->getTotalShippingCost();
+            $shipping_tax = $total_shipping - $total_shipping_tax_exc;
+            $shippingInfo->tax_rate = Aplazame_Sdk_Serializer_Decimal::fromFloat(100 * $shipping_tax / $total_shipping_tax_exc);
+        }
 
         return $shippingInfo;
     }
