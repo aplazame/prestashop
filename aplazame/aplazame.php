@@ -493,7 +493,7 @@ HTML;
             return false;
         }
 
-        $aplazameJsUri = getenv('APLAZAME_JS_URI') ? getenv('APLAZAME_JS_URI') : 'https://aplazame.com/static/aplazame.js';
+        $aplazameJsUri = getenv('APLAZAME_JS_URI') ? getenv('APLAZAME_JS_URI') : 'https://cdn.aplazame.com/aplazame.js';
 
         $this->context->smarty->assign(array(
             'aplazame_js_uri' => $aplazameJsUri,
