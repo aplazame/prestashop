@@ -15,12 +15,7 @@ class Aplazame_Aplazame_Api_BusinessModel_HistoricalOrder
         $currency = new Currency($order->id_currency);
         $status = $order->getCurrentStateFull(Context::getContext()->language->id);
         $amount = $order->getTotalPaid();
-
-        if ($amount == 0) {
-            $due = $cart->getOrderTotal(true);
-        } else {
-            $due = 0;
-        }
+        $due = (!$amount) ? $cart->getOrderTotal(true) : 0;
 
         $serialized = array(
             'id' => $order->id_cart,
