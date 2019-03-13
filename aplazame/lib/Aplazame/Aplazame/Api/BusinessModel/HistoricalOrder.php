@@ -14,11 +14,13 @@ class Aplazame_Aplazame_Api_BusinessModel_HistoricalOrder
         $cart = new Cart($order->id_cart);
         $currency = new Currency($order->id_currency);
         $status = $order->getCurrentStateFull(Context::getContext()->language->id);
+        $amount = $order->getTotalPaid();
+        $due = (!$amount) ? $cart->getOrderTotal(true) : 0;
 
         $serialized = array(
             'id' => $order->id_cart,
-            'amount' => Aplazame_Sdk_Serializer_Decimal::fromFloat($order->getTotalPaid()),
-            'due' => Aplazame_Sdk_Serializer_Decimal::fromFloat($order->getTotalPaid()),
+            'amount' => Aplazame_Sdk_Serializer_Decimal::fromFloat($amount),
+            'due' => Aplazame_Sdk_Serializer_Decimal::fromFloat($due),
             'status' => $status['name'],
             'type' => $order->module,
             'order_date' => Aplazame_Sdk_Serializer_Date::fromDateTime(new DateTime($order->date_add)),
