@@ -1,5 +1,10 @@
 ## Change Log
 
+#### [v5.4.6](https://github.com/aplazame/prestashop/tree/v5.4.6) (2019-03-15)
+
+* [ADD] API improvements.
+* [FIX] Minor changes for PrestaShop Marketplace compliance.
+
 #### [v5.4.5](https://github.com/aplazame/prestashop/tree/v5.4.5) (2019-02-08)
 
 * [ADD] Added 'tax_rate' parameter to 'order' and 'shipping'.
