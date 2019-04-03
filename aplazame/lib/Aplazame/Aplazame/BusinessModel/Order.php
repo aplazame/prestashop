@@ -32,7 +32,7 @@ class Aplazame_Aplazame_BusinessModel_Order
         $aOrder->articles = array_map(function (array $productData) use ($cart) {
             return Aplazame_Aplazame_BusinessModel_Article::createFromProductData($cart, $productData);
         }, $cart->getProducts());
-        $aOrder->discount = Aplazame_Sdk_Serializer_Decimal::fromFloat($cart->getOrderTotal(true, Cart::ONLY_DISCOUNTS));
+        $aOrder->discount = Aplazame_Sdk_Serializer_Decimal::fromFloat($cart->getOrderTotal(false, Cart::ONLY_DISCOUNTS));
 
         return $aOrder;
     }
