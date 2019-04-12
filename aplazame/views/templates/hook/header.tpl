@@ -6,4 +6,9 @@
  * @license   see file: LICENSE
  *}
 
-<script type="text/javascript" src="{$aplazame_js_uri|escape:'htmlall':'UTF-8'}" async defer></script>
+<script
+    type="text/javascript"
+    src="{$aplazame_js_uri|escape:'htmlall':'UTF-8'}?{$aplazame_js_params|escape:'htmlall':'UTF-8'}"
+    data-api-host="{$aplazame_api_host|escape:'htmlall':'UTF-8'}"
+    async defer
+></script>

@@ -493,11 +493,17 @@ HTML;
             return false;
         }
 
-        $aplazameJsUri = getenv('APLAZAME_JS_URI') ? getenv('APLAZAME_JS_URI') : 'https://cdn.aplazame.com/aplazame.js?public_key='
-            . Configuration::get('APLAZAME_PUBLIC_KEY') . '&sandbox=' . (Configuration::get('APLAZAME_SANDBOX') ? 'true' : 'false');
+        $aplazameJsUri = getenv('APLAZAME_JS_URI') ? getenv('APLAZAME_JS_URI') : 'https://cdn.aplazame.com/aplazame.js';
+
+        $aplazameJsParams = http_build_query(array(
+            'public_key' => Configuration::get('APLAZAME_PUBLIC_KEY'),
+            'sandbox' => Configuration::get('APLAZAME_SANDBOX') ? 'true' : 'false'
+        ));
 
         $this->context->smarty->assign(array(
             'aplazame_js_uri' => $aplazameJsUri,
+            'aplazame_js_params' => $aplazameJsParams,
+            'aplazame_api_host' => $this->apiBaseUri
         ));
 
         return $this->display(__FILE__, 'header.tpl');
