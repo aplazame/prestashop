@@ -7,5 +7,7 @@
  *}
 
 <script>
-aplazame.button({$aplazame_button|@json_encode nofilter});
+    (window.aplazame = window.aplazame || []).push(function (aplazame) {
+        aplazame.button({$aplazame_button|@json_encode nofilter})
+    })
 </script>

@@ -10,6 +10,8 @@
   <h3>{l s='Processing payment with Aplazame' mod='aplazame'}</h3>
 
   <script>
-    aplazame.checkout("{$aid|escape:'htmlall':'UTF-8'}");
+    (window.aplazame = window.aplazame || []).push(function (aplazame) {
+      aplazame.checkout("{$aid|escape:'htmlall':'UTF-8'}")
+    })
   </script>
 </div>
