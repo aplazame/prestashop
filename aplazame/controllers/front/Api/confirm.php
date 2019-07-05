@@ -9,14 +9,20 @@
 
 final class AplazameApiConfirm
 {
-    private static function ok()
+    private static function ok($newMid)
     {
-        return array(
+        $response = array(
             'status_code' => 200,
             'payload' => array(
                 'status' => 'ok',
             ),
         );
+
+        if ($newMid) {
+            $response['payload'] += $newMid;
+        }
+
+        return $response;
     }
 
     private static function ko($reason)
@@ -65,7 +71,7 @@ final class AplazameApiConfirm
         if (!isset($payload['mid'])) {
             return AplazameApiModuleFrontController::clientError('"mid" not provided');
         }
-        $cartId = (int) $payload['mid'];
+        $cartId = (int) explode(' ', $payload['mid'], 1)[0];
 
         $cart = new Cart($cartId);
         if (!Validate::isLoadedObject($cart)) {
@@ -73,7 +79,7 @@ final class AplazameApiConfirm
         }
 
         if ($cart->orderExists()) {
-            $order = new Order((int) Order::getOrderByCartId((int) $cartId));
+            $order = $this->getOrder($cartId);
             if (Validate::isLoadedObject($cart) && ($order->module != $this->module->name)) {
                 return self::ko('Aplazame is not the payment method');
             }
@@ -91,6 +97,8 @@ final class AplazameApiConfirm
             return self::ko('Fraud detected');
         }
 
+        $newMid = null;
+
         switch ($payload['status']) {
             case 'pending':
                 switch ($payload['status_reason']) {
@@ -98,11 +106,13 @@ final class AplazameApiConfirm
                         if (!$this->module->pending($cart)) {
                             return self::ko("'pending' function failed");
                         }
+                        $newMid = $this->buildMid($cartId);
                         break;
                     case 'confirmation_required':
                         if (!$this->module->accept($cart)) {
                             return self::ko("'accept' function failed");
                         }
+                        $newMid = $this->buildMid($cartId);
                         break;
                 }
                 break;
@@ -113,6 +123,21 @@ final class AplazameApiConfirm
                 break;
         }
 
-        return self::ok();
+        return self::ok($newMid);
+    }
+
+    public function getOrder($cartId)
+    {
+        $order = new Order((int) Order::getOrderByCartId((int) $cartId));
+
+        return $order;
+    }
+
+    public function buildMid($cartId)
+    {
+        $order = $this->getOrder($cartId);
+        $newMid = array('order_id' => $cartId . ' (' . $order->reference . ')');
+
+        return $newMid;
     }
 }
