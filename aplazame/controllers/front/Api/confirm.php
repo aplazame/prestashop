@@ -58,7 +58,7 @@ final class AplazameApiConfirm
         $this->module = $module;
     }
 
-    public function confirm($payload)
+    public function confirm($payload, $id_cart)
     {
         if (!$payload) {
             return AplazameApiModuleFrontController::clientError('Payload is malformed');
@@ -71,7 +71,7 @@ final class AplazameApiConfirm
         if (!isset($payload['mid'])) {
             return AplazameApiModuleFrontController::clientError('"mid" not provided');
         }
-        $cartId = (int) explode(' ', $payload['mid'], 1)[0];
+        $cartId = $id_cart ? (int) $id_cart : (int) $payload['mid'];
 
         $cart = new Cart($cartId);
         if (!Validate::isLoadedObject($cart)) {
@@ -106,13 +106,13 @@ final class AplazameApiConfirm
                         if (!$this->module->pending($cart)) {
                             return self::ko("'pending' function failed");
                         }
-                        $newMid = $this->buildMid($cartId);
+                        $newMid = $id_cart ? $this->buildMid($cartId) : null;
                         break;
                     case 'confirmation_required':
                         if (!$this->module->accept($cart)) {
                             return self::ko("'accept' function failed");
                         }
-                        $newMid = $this->buildMid($cartId);
+                        $newMid = $id_cart ? $this->buildMid($cartId) : null;
                         break;
                 }
                 break;
@@ -136,7 +136,7 @@ final class AplazameApiConfirm
     public function buildMid($cartId)
     {
         $order = $this->getOrder($cartId);
-        $newMid = array('order_id' => $cartId . ' (' . $order->reference . ')');
+        $newMid = array('order_id' => $order->reference);
 
         return $newMid;
     }
