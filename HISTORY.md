@@ -1,5 +1,11 @@
 ## Change Log
 
+#### [v5.4.7](https://github.com/aplazame/prestashop/tree/v5.4.7) (2019-07-16)
+
+* [ADD] JS async load.
+* [FIX] Discount properly applied if tax included.
+* [CHANGE] Order id is now PrestaShop order reference instead cart id.
+
 #### [v5.4.6](https://github.com/aplazame/prestashop/tree/v5.4.6) (2019-03-15)
 
 * [ADD] API improvements.
