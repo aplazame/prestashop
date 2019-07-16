@@ -9,14 +9,20 @@
 
 final class AplazameApiConfirm
 {
-    private static function ok()
+    private static function ok(array $extra = null)
     {
-        return array(
+        $response = array(
             'status_code' => 200,
             'payload' => array(
                 'status' => 'ok',
             ),
         );
+
+        if ($extra) {
+            $response['payload'] += $extra;
+        }
+
+        return $response;
     }
 
     private static function ko($reason)
@@ -52,7 +58,7 @@ final class AplazameApiConfirm
         $this->module = $module;
     }
 
-    public function confirm($payload)
+    public function confirm(array $queryArguments, $payload)
     {
         if (!$payload) {
             return AplazameApiModuleFrontController::clientError('Payload is malformed');
@@ -65,7 +71,14 @@ final class AplazameApiConfirm
         if (!isset($payload['mid'])) {
             return AplazameApiModuleFrontController::clientError('"mid" not provided');
         }
-        $cartId = (int) $payload['mid'];
+
+        if (isset($queryArguments['cart_id'])) {
+            $isCartIdQueryParamSet = true;
+            $cartId = (int) $queryArguments['cart_id'];
+        } else {
+            $isCartIdQueryParamSet = false;
+            $cartId = (int) $payload['mid'];
+        }
 
         $cart = new Cart($cartId);
         if (!Validate::isLoadedObject($cart)) {
@@ -73,7 +86,7 @@ final class AplazameApiConfirm
         }
 
         if ($cart->orderExists()) {
-            $order = new Order((int) Order::getOrderByCartId((int) $cartId));
+            $order = $this->getOrder($cartId);
             if (Validate::isLoadedObject($cart) && ($order->module != $this->module->name)) {
                 return self::ko('Aplazame is not the payment method');
             }
@@ -98,12 +111,14 @@ final class AplazameApiConfirm
                         if (!$this->module->pending($cart)) {
                             return self::ko("'pending' function failed");
                         }
-                        break;
+
+                        return self::ok($this->buildMid($isCartIdQueryParamSet, $cartId));
                     case 'confirmation_required':
                         if (!$this->module->accept($cart)) {
                             return self::ko("'accept' function failed");
                         }
-                        break;
+
+                        return self::ok($this->buildMid($isCartIdQueryParamSet, $cartId));
                 }
                 break;
             case 'ko':
@@ -114,5 +129,23 @@ final class AplazameApiConfirm
         }
 
         return self::ok();
+    }
+
+    public function getOrder($cartId)
+    {
+        $order = new Order((int) Order::getOrderByCartId((int) $cartId));
+
+        return $order;
+    }
+
+    public function buildMid($isCartIdQueryParamSet, $cartId)
+    {
+        if (!$isCartIdQueryParamSet) {
+            return null;
+        }
+        $order = $this->getOrder($cartId);
+        $newMid = array('order_id' => $order->reference);
+
+        return $newMid;
     }
 }
