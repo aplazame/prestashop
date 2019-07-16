@@ -9,7 +9,7 @@
 
 final class AplazameApiConfirm
 {
-    private static function ok($newMid)
+    private static function ok(array $extra = null)
     {
         $response = array(
             'status_code' => 200,
@@ -18,8 +18,8 @@ final class AplazameApiConfirm
             ),
         );
 
-        if ($newMid) {
-            $response['payload'] += $newMid;
+        if ($extra) {
+            $response['payload'] += $extra;
         }
 
         return $response;
@@ -71,7 +71,14 @@ final class AplazameApiConfirm
         if (!isset($payload['mid'])) {
             return AplazameApiModuleFrontController::clientError('"mid" not provided');
         }
-        $cartId = (isset($queryArguments['cart_id'])) ? (int) $queryArguments['cart_id'] : (int) $payload['mid'];
+
+        if (isset($queryArguments['cart_id'])) {
+            $isCartIdQueryParamSet = true;
+            $cartId = (int) $queryArguments['cart_id'];
+        } else {
+            $isCartIdQueryParamSet = false;
+            $cartId = (int) $payload['mid'];
+        }
 
         $cart = new Cart($cartId);
         if (!Validate::isLoadedObject($cart)) {
@@ -105,13 +112,13 @@ final class AplazameApiConfirm
                             return self::ko("'pending' function failed");
                         }
 
-                        return self::ok($this->buildMid($queryArguments, $cartId));
+                        return self::ok($this->buildMid($isCartIdQueryParamSet, $cartId));
                     case 'confirmation_required':
                         if (!$this->module->accept($cart)) {
                             return self::ko("'accept' function failed");
                         }
 
-                        return self::ok($this->buildMid($queryArguments, $cartId));
+                        return self::ok($this->buildMid($isCartIdQueryParamSet, $cartId));
                 }
                 break;
             case 'ko':
@@ -121,7 +128,7 @@ final class AplazameApiConfirm
                 break;
         }
 
-        return self::ok(null);
+        return self::ok();
     }
 
     public function getOrder($cartId)
@@ -131,9 +138,9 @@ final class AplazameApiConfirm
         return $order;
     }
 
-    public function buildMid(array $queryArguments, $cartId)
+    public function buildMid($isCartIdQueryParamSet, $cartId)
     {
-        if (!isset($queryArguments['cart_id'])) {
+        if (!$isCartIdQueryParamSet) {
             return null;
         }
         $order = $this->getOrder($cartId);
