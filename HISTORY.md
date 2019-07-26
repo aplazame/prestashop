@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v5.4.8](https://github.com/aplazame/prestashop/tree/v5.4.8) (2019-07-26)
+
+* [FIX] Refund when order id is Prestashop order reference.
+
 #### [v5.4.7](https://github.com/aplazame/prestashop/tree/v5.4.7) (2019-07-16)
 
 * [ADD] JS async load.

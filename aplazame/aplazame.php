@@ -46,7 +46,7 @@ class Aplazame extends PaymentModule
     {
         $this->name = 'aplazame';
         $this->tab = 'payments_gateways';
-        $this->version = '5.4.7';
+        $this->version = '5.4.8';
         $this->author = 'Aplazame';
         $this->author_uri = 'https://aplazame.com';
         $this->module_key = '64b13ea3527b4df3fe2e3fc1526ce515';
