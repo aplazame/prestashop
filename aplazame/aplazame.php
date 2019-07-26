@@ -703,17 +703,31 @@ HTML;
         PrestaShopLogger::addLog($message, $severity, null, $objectType, $objectId);
     }
 
-    public function refundAmount(Order $order, $amount)
+    public function postRefund($mid, $amount)
     {
-        $mid = $order->id_cart;
-
         $decimal = Aplazame_Sdk_Serializer_Decimal::fromFloat($amount)->value;
+
         try {
-            $this->callToRest('POST', '/orders/' . $mid . '/refund', array('amount' => $decimal));
+            $response = $this->callToRest('POST', '/orders/' . $mid . '/refund', array('amount' => $decimal));
         } catch (Exception $e) {
             $this->log(self::LOG_CRITICAL, 'Cannot refund. Detail ' . $e->getMessage(), $mid);
 
             return false;
+        }
+
+        return $response;
+    }
+
+    public function refundAmount(Order $order, $amount)
+    {
+        $mid = $order->reference;
+
+        if (!$this->postRefund($mid, $amount)) {
+            $mid = $order->id_cart;
+
+            if (!$this->postRefund($mid, $amount)) {
+                return false;
+            }
         }
 
         return $order->addOrderPayment(-$amount, $this->displayName);
