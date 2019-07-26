@@ -703,15 +703,26 @@ HTML;
         PrestaShopLogger::addLog($message, $severity, null, $objectType, $objectId);
     }
 
+    public function doRefund(Order $order, $amount)
+    {
+        $refund = function ($mid) use ($amount) {
+            $decimal = Aplazame_Sdk_Serializer_Decimal::fromFloat($amount)->value;
+            $this->callToRest('POST', '/orders/' . $mid . '/refund', array('amount' => $decimal));
+        };
+
+        try {
+            $refund($order->reference);
+        } catch (Aplazame_Sdk_Api_ApiClientException $e) {
+            $refund($order->id_cart);
+        }
+    }
+
     public function refundAmount(Order $order, $amount)
     {
-        $mid = $order->id_cart;
-
-        $decimal = Aplazame_Sdk_Serializer_Decimal::fromFloat($amount)->value;
         try {
-            $this->callToRest('POST', '/orders/' . $mid . '/refund', array('amount' => $decimal));
+            $this->doRefund($order, $amount);
         } catch (Exception $e) {
-            $this->log(self::LOG_CRITICAL, 'Cannot refund. Detail ' . $e->getMessage(), $mid);
+            $this->log(self::LOG_CRITICAL, 'Cannot refund. Detail ' . $e->getMessage(), $order->id_cart);
 
             return false;
         }
