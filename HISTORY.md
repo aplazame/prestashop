@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v6.0.0](https://github.com/aplazame/prestashop/tree/v6.0.0) (2019-10-24)
+
+* [ADD] 'Pay in 15 days' as payment method.
+
 #### [v5.4.8](https://github.com/aplazame/prestashop/tree/v5.4.8) (2019-07-26)
 
 * [FIX] Refund when order id is Prestashop order reference.
