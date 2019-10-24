@@ -2,7 +2,7 @@
  * This file is part of the official Aplazame module for PrestaShop.
  *
  * @author    Aplazame <soporte@aplazame.com>
- * @copyright 2015-2018 Aplazame
+ * @copyright 2015-2019 Aplazame
  * @license   see file: LICENSE
  *}
 
