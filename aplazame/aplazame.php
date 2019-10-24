@@ -47,13 +47,13 @@ class Aplazame extends PaymentModule
         $this->name = 'aplazame';
         $this->tab = 'payments_gateways';
         $this->version = '5.4.8';
-        $this->author = 'Aplazame';
+        $this->author = 'Aplazame SL';
         $this->author_uri = 'https://aplazame.com';
         $this->module_key = '64b13ea3527b4df3fe2e3fc1526ce515';
 
         parent::__construct();
 
-        $this->displayName = $this->l('Aplazame: buy now, pay later');
+        $this->displayName = $this->l('Aplazame');
         $this->description = $this->l('Boost sales by 50% with Aplazame, a risk free payment method that offers instant credit for online purchases.');
         $this->confirmUninstall = $this->l('Are you sure about removing these details?');
 
@@ -90,14 +90,23 @@ class Aplazame extends PaymentModule
         Configuration::updateValue('APLAZAME_WIDGET_PROD', '0');
 
         Configuration::updateValue('APLAZAME_CART_WIDGET_ENABLED', true);
-        Configuration::updateValue('APLAZAME_BUTTON_IMAGE', 'https://aplazame.com/static/img/buttons/white-148x46.png');
         if (_PS_VERSION_ >= 1.7) {
-            Configuration::updateValue('APLAZAME_BUTTON', "div.payment-option:has(input[data-module-name='{$this->name}'])");
+            Configuration::updateValue('APLAZAME_BUTTON_IMAGE', '');
+            Configuration::updateValue('APLAZAME_BUTTON_IMAGE_PAY_LATER', '');
+            Configuration::updateValue('APLAZAME_BUTTON_INSTALMENTS', "div.payment-option:has(input[data-module-name='{$this->name}'])");
+            Configuration::updateValue('APLAZAME_BUTTON_PAY_LATER', "div.payment-option:has(input[data-module-name='{$this->name}_pay_later'])");
         } else {
-            Configuration::updateValue('APLAZAME_BUTTON', '#aplazame_payment_button');
+            Configuration::updateValue('APLAZAME_BUTTON_IMAGE', 'https://aplazame.com/static/img/buttons/white-148x46.png');
+            Configuration::updateValue('APLAZAME_BUTTON_IMAGE_PAY_LATER', 'https://aplazame.com/static/img/buttons/pay-later-227x46.png');
+            Configuration::updateValue('APLAZAME_BUTTON_INSTALMENTS', '#aplazame_payment_button');
+            Configuration::updateValue('APLAZAME_BUTTON_PAY_LATER', '#aplazame_pay_later_payment_button');
         }
 
+        Configuration::updateValue('APLAZAME_PAYMENT_INSTALMENTS', true);
+        Configuration::updateValue('APLAZAME_PAYMENT_PAY_LATER', false);
+
         return ($this->registerHook('actionOrderSlipAdd')
+            && $this->registerHook('actionOrderStatusUpdate')
             && $this->registerHook('displayAdminProductsExtra')
             && $this->registerHook('displayHeader')
             && $this->registerHook('displayPayment')
@@ -204,11 +213,15 @@ class Aplazame extends PaymentModule
         $settingsKeys = array(
             'APLAZAME_SANDBOX',
             'APLAZAME_SECRET_KEY',
+            'APLAZAME_PAYMENT_INSTALMENTS',
+            'APLAZAME_PAYMENT_PAY_LATER',
             'APLAZAME_PRODUCT_WIDGET_ENABLED',
             'APLAZAME_WIDGET_PROD',
             'APLAZAME_CART_WIDGET_ENABLED',
-            'APLAZAME_BUTTON',
+            'APLAZAME_BUTTON_INSTALMENTS',
+            'APLAZAME_BUTTON_PAY_LATER',
             'APLAZAME_BUTTON_IMAGE',
+            'APLAZAME_BUTTON_IMAGE_PAY_LATER',
         );
 
         if (Tools::isSubmit('submitAplazameModule')) {
@@ -344,6 +357,50 @@ HTML;
             array(
                 'form' => array(
                     'legend' => array(
+                        'title' => $this->l('Payment methods'),
+                        'icon' => 'icon-cogs',
+                    ),
+                    'input' => array(
+                        array(
+                            'type' => (_PS_VERSION_ >= 1.6) ? 'switch' : 'radio',
+                            'label' => $this->l('Flexible financing'),
+                            'name' => 'APLAZAME_PAYMENT_INSTALMENTS',
+                            'is_bool' => true,
+                            'desc' => $this->l('Enable "Flexible financing" payment method'),
+                            'values' => array(
+                                array(
+                                    'id' => 'active_on',
+                                    'value' => true,
+                                ),
+                                array(
+                                    'id' => 'active_off',
+                                    'value' => false,
+                                ),
+                            ),
+                        ),
+                        array(
+                            'type' => (_PS_VERSION_ >= 1.6) ? 'switch' : 'radio',
+                            'label' => $this->l('Pay in 15 days'),
+                            'name' => 'APLAZAME_PAYMENT_PAY_LATER',
+                            'is_bool' => true,
+                            'desc' => $this->l('Enable "Pay in 15 days" payment method'),
+                            'values' => array(
+                                array(
+                                    'id' => 'active_on',
+                                    'value' => true,
+                                ),
+                                array(
+                                    'id' => 'active_off',
+                                    'value' => false,
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+            array(
+                'form' => array(
+                    'legend' => array(
                         'title' => $this->l('Product widget'),
                         'icon' => 'icon-cogs',
                     ),
@@ -418,17 +475,33 @@ HTML;
                             'col' => 4,
                             'type' => 'text',
                             'prefix' => '<i class="icon icon-code"></i>',
-                            'desc' => $this->l('Aplazame Button CSS Selector'),
-                            'name' => 'APLAZAME_BUTTON',
-                            'label' => $this->l('Button'),
+                            'desc' => $this->l('Aplazame "Flexible financing" Button CSS Selector'),
+                            'name' => 'APLAZAME_BUTTON_INSTALMENTS',
+                            'label' => $this->l('"Flexible financing" Button'),
                         ),
                         array(
                             'col' => 4,
                             'type' => 'text',
                             'prefix' => '<i class="icon icon-code"></i>',
-                            'desc' => $this->l('Aplazame Button Image that you want to show'),
+                            'desc' => $this->l('Aplazame "Pay in 15 days" Button CSS Selector'),
+                            'name' => 'APLAZAME_BUTTON_PAY_LATER',
+                            'label' => $this->l('"Pay in 15 days" Button'),
+                        ),
+                        array(
+                            'col' => 4,
+                            'type' => 'text',
+                            'prefix' => '<i class="icon icon-code"></i>',
+                            'desc' => $this->l('Aplazame "Flexible financing" Button Image that you want to show'),
                             'name' => 'APLAZAME_BUTTON_IMAGE',
-                            'label' => $this->l('Button Image'),
+                            'label' => $this->l('"Flexible financing" Button Image'),
+                        ),
+                        array(
+                            'col' => 4,
+                            'type' => 'text',
+                            'prefix' => '<i class="icon icon-code"></i>',
+                            'desc' => $this->l('Aplazame "Pay in 15 days" Button Image that you want to show'),
+                            'name' => 'APLAZAME_BUTTON_IMAGE_PAY_LATER',
+                            'label' => $this->l('"Pay in 15 days" Button Image'),
                         ),
                     ),
                     'submit' => array(
@@ -470,6 +543,23 @@ HTML;
         return $this->refundAmount($order, $lastOrderSlip->total_products_tax_incl + $lastOrderSlip->total_shipping_tax_incl);
     }
 
+    public function hookActionOrderStatusUpdate($params)
+    {
+        $shipped = $params['newOrderStatus']->shipped;
+
+        if ($shipped) {
+
+            /** @var Order $order */
+            $order = new Order($params['id_order']);
+
+            if ($order->module == $this->name) {
+                return $this->captureOrder($order);
+            }
+        }
+
+        return false;
+    }
+
     public function hookDisplayAdminProductsExtra($params)
     {
         if ($params && isset($params['id_product'])) {
@@ -508,11 +598,6 @@ HTML;
         return $this->display(__FILE__, 'header.tpl');
     }
 
-    public function hookDisplayPayment($params)
-    {
-        return $this->hookPayment($params);
-    }
-
     public function hookDisplayProductButtons($params)
     {
         $displayWidget = (int) Configuration::get('APLAZAME_WIDGET_PROD');
@@ -548,7 +633,7 @@ HTML;
 
     public function hookDisplayShoppingCart($params)
     {
-        if (!$this->isAvailable() || !Configuration::get('APLAZAME_CART_WIDGET_ENABLED')) {
+        if (!$this->isAvailable() || !Configuration::get('APLAZAME_CART_WIDGET_ENABLED') || !Configuration::get('APLAZAME_PAYMENT_INSTALMENTS')) {
             return false;
         }
 
@@ -569,7 +654,7 @@ HTML;
      * This method is used to render the payment button,
      * Take care if the button should be displayed or not.
      */
-    public function hookPayment($params)
+    public function hookDisplayPayment($params)
     {
         if (!$this->isAvailable()) {
             return false;
@@ -578,8 +663,18 @@ HTML;
         /** @var Cart $cart */
         $cart = $params['cart'];
 
-        $this->context->smarty->assign($this->getButtonTemplateVars($cart));
-        $this->context->smarty->assign(array('aplazame_button_image_uri' => Configuration::get('APLAZAME_BUTTON_IMAGE')));
+        $this->context->smarty->assign(array(
+            'aplazame_instalments' => array(
+                'is_enabled' => Configuration::get('APLAZAME_PAYMENT_INSTALMENTS'),
+                'button_image' => Configuration::get('APLAZAME_BUTTON_IMAGE'),
+                'button' => $this->getButtonTemplateVars($cart, 'instalments'),
+            ),
+            'aplazame_pay_later' => array(
+                'is_enabled' => Configuration::get('APLAZAME_PAYMENT_PAY_LATER'),
+                'button_image' => Configuration::get('APLAZAME_BUTTON_IMAGE_PAY_LATER'),
+                'button' => $this->getButtonTemplateVars($cart, 'pay_later'),
+            ),
+        ));
 
         return $this->display(__FILE__, 'payment_1.5.tpl');
     }
@@ -594,18 +689,34 @@ HTML;
         $cart = $params['cart'];
 
         $link = $this->context->link;
-        $this->context->smarty->assign($this->getButtonTemplateVars($cart));
 
-        $newOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
-        $newOption->setCallToActionText($this->l('Pay with Aplazame'))
-            ->setModuleName($this->name)
-            ->setAction($link->getModuleLink($this->name, 'redirect'))
-            ->setAdditionalInformation($this->fetch('module:aplazame/views/templates/hook/payment_1.7.tpl'))
-        ;
+        $options = array();
 
-        return array(
-            $newOption,
-        );
+        if (Configuration::get('APLAZAME_PAYMENT_INSTALMENTS')) {
+            $this->context->smarty->assign(array('aplazame_button' => $this->getButtonTemplateVars($cart, 'instalments')));
+            $newOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
+            $newOption->setCallToActionText($this->l('Aplazame - Flexible financing'))
+                ->setModuleName($this->name)
+                ->setAction($link->getModuleLink($this->name, 'redirect', array('type' => 'instalments')))
+                ->setAdditionalInformation($this->fetch('module:aplazame/views/templates/hook/payment_1.7.tpl'))
+                ->setLogo(Configuration::get('APLAZAME_BUTTON_IMAGE'))
+            ;
+            $options[] = $newOption;
+        }
+
+        if (Configuration::get('APLAZAME_PAYMENT_PAY_LATER')) {
+            $this->context->smarty->assign(array('aplazame_button' => $this->getButtonTemplateVars($cart, 'pay_later')));
+            $newOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
+            $newOption->setCallToActionText($this->l('Aplazame - Pay in 15 days'))
+                ->setModuleName($this->name . '_pay_later')
+                ->setAction($link->getModuleLink($this->name, 'redirect', array('type' => 'pay_later')))
+                ->setAdditionalInformation($this->fetch('module:aplazame/views/templates/hook/payment_1.7.tpl'))
+                ->setLogo(Configuration::get('APLAZAME_BUTTON_IMAGE_PAY_LATER'))
+            ;
+            $options[] = $newOption;
+        }
+
+        return $options;
     }
 
     public function hookPaymentReturn($params)
@@ -636,7 +747,7 @@ HTML;
 
     public function getWidget($params)
     {
-        if (!$this->isAvailable() || !Configuration::get('APLAZAME_PRODUCT_WIDGET_ENABLED')) {
+        if (!$this->isAvailable() || !Configuration::get('APLAZAME_PRODUCT_WIDGET_ENABLED') || !Configuration::get('APLAZAME_PAYMENT_INSTALMENTS')) {
             return false;
         }
 
@@ -707,7 +818,7 @@ HTML;
     {
         $refund = function ($mid) use ($amount) {
             $decimal = Aplazame_Sdk_Serializer_Decimal::fromFloat($amount)->value;
-            $this->callToRest('POST', '/orders/' . $mid . '/refund', array('amount' => $decimal));
+            $this->callToRest('POST', '/orders/' . $mid . '/refund-extended', array('amount' => $decimal));
         };
 
         try {
@@ -730,14 +841,41 @@ HTML;
         return $order->addOrderPayment(-$amount, $this->displayName);
     }
 
+    public function captureOrder(Order $order)
+    {
+        $reference = $order->reference;
+
+        try {
+            $payload = $this->callToRest('GET', '/orders/' . $reference . '/captures');
+        } catch (Exception $e) {
+            $this->log(self::LOG_CRITICAL, 'Cannot retrieve capture. Detail ' . $e->getMessage(), $reference);
+
+            return false;
+        }
+
+        if ($payload['remaining_capture_amount'] != 0) {
+            try {
+                $response = $this->callToRest('POST', '/orders/' . $reference . '/captures', array('amount' => $payload['remaining_capture_amount']));
+            } catch (Exception $e) {
+                $this->log(self::LOG_CRITICAL, 'Cannot do capture. Detail ' . $e->getMessage(), $reference);
+
+                return false;
+            }
+
+            return $response;
+        }
+
+        return false;
+    }
+
     /**
      * @return array
      *
      * @throws Exception
      */
-    public function createCheckoutOnAplazame(Cart $cart)
+    public function createCheckoutOnAplazame(Cart $cart, $type)
     {
-        $checkout = Aplazame_Aplazame_BusinessModel_Checkout::createFromCart($cart, (int) $this->id, $this->currentOrder);
+        $checkout = Aplazame_Aplazame_BusinessModel_Checkout::createFromCart($cart, (int) $this->id, $this->currentOrder, $type);
 
         $response = $this->callToRest('POST', '/checkout', Aplazame_Sdk_Serializer_JsonSerializer::serializeValue($checkout));
 
@@ -763,16 +901,15 @@ HTML;
         return (boolean) $tab->add();
     }
 
-    private function getButtonTemplateVars(Cart $cart)
+    private function getButtonTemplateVars(Cart $cart, $type)
     {
         $currency = new Currency((int) ($cart->id_currency));
 
         return array(
-            'aplazame_button' => array(
-                'selector' => Configuration::get('APLAZAME_BUTTON'),
-                'currency' => $currency->iso_code,
-                'amount' => Aplazame_Sdk_Serializer_Decimal::fromFloat($cart->getOrderTotal())->value,
-            ),
+            'selector' => Configuration::get('APLAZAME_BUTTON_' . strtoupper($type)),
+            'currency' => $currency->iso_code,
+            'amount' => Aplazame_Sdk_Serializer_Decimal::fromFloat($cart->getOrderTotal())->value,
+            'product' => array('type' => $type),
         );
     }
 

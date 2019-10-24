@@ -20,7 +20,7 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
         }
 
         try {
-            $payload = $this->module->createCheckoutOnAplazame($cart);
+            $payload = $this->module->createCheckoutOnAplazame($cart, Tools::getValue('type'));
         } catch (Aplazame_Sdk_Api_ApiClientException $e) {
             $this->errors[] = 'Aplazame Error: ' . $e->getMessage();
 

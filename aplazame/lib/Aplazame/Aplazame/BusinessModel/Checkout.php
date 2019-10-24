@@ -12,7 +12,7 @@
  */
 class Aplazame_Aplazame_BusinessModel_Checkout
 {
-    public static function createFromCart(Cart $cart, $moduleId, $orderId)
+    public static function createFromCart(Cart $cart, $moduleId, $orderId, $type)
     {
         /** @var Aplazame $aplazame */
         $aplazame = ModuleCore::getInstanceByName('aplazame');
@@ -51,6 +51,8 @@ class Aplazame_Aplazame_BusinessModel_Checkout
             ),
             'version' => _PS_VERSION_,
         );
+
+        $checkout->product = array('type' => $type);
 
         return $checkout;
     }
