@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v6.0.1](https://github.com/aplazame/prestashop/tree/v6.0.1) (2019-10-30)
+
+* [FIX] Prevents missing customer secure key message in order when accept payment.
+
 #### [v6.0.0](https://github.com/aplazame/prestashop/tree/v6.0.0) (2019-10-24)
 
 * [ADD] 'Pay in 15 days' as payment method.
