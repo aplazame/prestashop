@@ -171,12 +171,19 @@ class Aplazame extends PaymentModule
         $cartId = $cart->id;
         $orderStateId = Configuration::get('PS_OS_PAYMENT');
 
+        $customer = new Customer($cart->id_customer);
+
         if (!$cart->orderExists()) {
             return !(false === $this->validateOrder(
                 $cartId,
                 $orderStateId,
                 $cart->getOrderTotal(true),
-                $this->displayName
+                $this->displayName,
+                null,
+                array(),
+                null,
+                false,
+                $customer->secure_key
             ));
         }
 
