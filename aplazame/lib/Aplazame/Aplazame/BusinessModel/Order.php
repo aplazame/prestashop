@@ -12,7 +12,7 @@
  */
 class Aplazame_Aplazame_BusinessModel_Order
 {
-    public static function createFromCart(Cart $cart)
+    public static function createFromCart(Cart $cart, $order_date = null)
     {
         $currency = new Currency($cart->id_currency);
 
@@ -33,6 +33,10 @@ class Aplazame_Aplazame_BusinessModel_Order
             return Aplazame_Aplazame_BusinessModel_Article::createFromProductData($cart, $productData);
         }, $cart->getProducts());
         $aOrder->discount = Aplazame_Sdk_Serializer_Decimal::fromFloat($cart->getOrderTotal(false, Cart::ONLY_DISCOUNTS));
+
+        if ($order_date) {
+            $aOrder->created = Aplazame_Sdk_Serializer_Date::fromDateTime(new DateTime($order_date));
+        }
 
         return $aOrder;
     }

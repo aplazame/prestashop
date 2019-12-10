@@ -31,7 +31,7 @@ class Aplazame_Aplazame_BusinessModel_Checkout
         $merchant->pending_url = $merchant->success_url;
         $merchant->checkout_url = $link->getPageLink('order');
         $merchant->notification_url = $link->getModuleLink($aplazame->name, 'api', array('path' => '/confirm/', 'cart_id' => $cart->id));
-        $merchant->history_url = $link->getModuleLink($aplazame->name, 'api', array('path' => '/order/{order_id}/history/'));
+        $merchant->customer_history_url = $link->getModuleLink($aplazame->name, 'api', array('path' => '/order/history/'));
 
         $checkout = new self();
         $checkout->toc = true;

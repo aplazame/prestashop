@@ -139,6 +139,7 @@ class Aplazame extends PaymentModule
         $order_state->delivery = false;
         $order_state->logable = false;
         $order_state->invoice = false;
+        $order_state->unremovable = true;
         if ($order_state->add()) {
             Configuration::updateValue(self::ORDER_STATE_PENDING, (int) $order_state->id);
         }
@@ -204,6 +205,10 @@ class Aplazame extends PaymentModule
 
     public function uninstall()
     {
+        $order_state = new OrderState(Configuration::get(self::ORDER_STATE_PENDING));
+        $order_state->delete();
+
+        Configuration::deleteByName(self::ORDER_STATE_PENDING);
         Configuration::deleteByName('APLAZAME_SANDBOX');
 
         return parent::uninstall();

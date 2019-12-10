@@ -12,42 +12,49 @@ class Aplazame_Aplazame_Api_BusinessModel_HistoricalOrder
     public static function createFromOrder(Order $order)
     {
         $cart = new Cart($order->id_cart);
-        $currency = new Currency($order->id_currency);
-        $status = $order->getCurrentStateFull(Context::getContext()->language->id);
-        $amount = $order->getTotalPaid();
-        $due = (!$amount) ? $cart->getOrderTotal(true) : 0;
+        $payment_method = $order->module;
+        $status = $order->getCurrentOrderState();
 
-        $serialized = array(
-            'id' => $order->id_cart,
-            'amount' => Aplazame_Sdk_Serializer_Decimal::fromFloat($amount),
-            'due' => Aplazame_Sdk_Serializer_Decimal::fromFloat($due),
-            'status' => $status['name'],
-            'type' => $order->module,
-            'order_date' => Aplazame_Sdk_Serializer_Date::fromDateTime(new DateTime($order->date_add)),
-            'currency' => $currency->iso_code,
-            'billing' => Aplazame_Aplazame_BusinessModel_Address::createFromAddress(new Address($order->id_address_invoice)),
-        );
-
-        if (!$cart->isVirtualCart()) {
-            $serialized['shipping'] = Aplazame_Aplazame_BusinessModel_ShippingInfo::createFromCart($cart);
+        if ($status->id == Configuration::get('PS_OS_CANCELED')) {
+            return self::createFromCart($cart, $payment_method, 'cancelled', 'cancelled');
         }
 
-        return $serialized;
+        if ($status->paid) {
+            if ($order->hasProductReturned()) {
+                return self::createFromCart($cart, $payment_method, 'refunded', 'refunded');
+            }
+
+            if ($status->shipped) {
+                return self::createFromCart($cart, $payment_method, 'payed', 'completed');
+            }
+
+            return self::createFromCart($cart, $payment_method, 'payed', 'processing');
+        }
+
+        return self::createFromCart($cart, $payment_method, 'pending', 'payment');
     }
 
-    public static function createFromCart(Cart $cart)
+    public static function createFromCart(Cart $cart, $payment_method = 'none', $payment_status = 'none', $status = 'cart')
     {
-        $currency = new Currency($cart->id_currency);
+        /** @var Aplazame $aplazame */
+        $aplazame = ModuleCore::getInstanceByName('aplazame');
 
         $serialized = array(
-            'id' => $cart->id,
-            'amount' => Aplazame_Sdk_Serializer_Decimal::fromFloat($cart->getOrderTotal(true)),
-            'due' => 0,
-            'status' => 'pending',
-            'type' => 'cart',
-            'order_date' => Aplazame_Sdk_Serializer_Date::fromDateTime(new DateTime($cart->date_add)),
-            'currency' => $currency->iso_code,
+            'customer' => Aplazame_Aplazame_BusinessModel_Customer::createFromCustomer(new Customer($cart->id_customer)),
+            'order' => Aplazame_Aplazame_BusinessModel_Order::createFromCart($cart, $cart->date_add),
             'billing' => Aplazame_Aplazame_BusinessModel_Address::createFromAddress(new Address($cart->id_address_invoice)),
+            'meta' => array(
+                'module' => array(
+                    'name' => 'aplazame:prestashop',
+                    'version' => $aplazame->version,
+                ),
+                'version' => _PS_VERSION_,
+            ),
+            'payment' => array(
+                'method' => $payment_method,
+                'status' => $payment_status,
+            ),
+            'status' => $status,
         );
 
         if (!$cart->isVirtualCart()) {

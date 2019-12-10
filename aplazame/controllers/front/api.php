@@ -107,7 +107,7 @@ class AplazameApiModuleFrontController extends ModuleFrontController
                 );
 
                 return $controller->confirm($queryArguments, $payload);
-            case '/order/{order_id}/history/':
+            case '/order/history/':
                 include_once _PS_MODULE_DIR_ . 'aplazame/controllers/front/Api/order.php';
                 $controller = new AplazameApiOrder(Db::getInstance());
 
