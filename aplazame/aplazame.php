@@ -783,6 +783,7 @@ HTML;
         $this->context->smarty->assign(array(
             'aplazame_amount' => Aplazame_Sdk_Serializer_Decimal::fromFloat($product->getPrice(true, null, 2))->value,
             'aplazame_currency_iso' => $currency->iso_code,
+            'aplazame_article_id' => $product->id,
         ));
 
         return $this->display(__FILE__, 'product.tpl');
