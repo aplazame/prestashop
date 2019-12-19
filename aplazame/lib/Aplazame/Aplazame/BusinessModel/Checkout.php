@@ -44,14 +44,7 @@ class Aplazame_Aplazame_BusinessModel_Checkout
             $checkout->shipping = Aplazame_Aplazame_BusinessModel_ShippingInfo::createFromCart($cart);
         }
 
-        $checkout->meta = array(
-            'module' => array(
-                'name' => 'aplazame:prestashop',
-                'version' => $aplazame->version,
-            ),
-            'version' => _PS_VERSION_,
-        );
-
+        $checkout->meta = Aplazame_Aplazame_BusinessModel_Meta::create();
         $checkout->product = array('type' => $type);
 
         return $checkout;

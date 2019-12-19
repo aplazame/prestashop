@@ -36,20 +36,11 @@ class Aplazame_Aplazame_Api_BusinessModel_HistoricalOrder
 
     public static function createFromCart(Cart $cart, $payment_method = 'none', $payment_status = 'none', $status = 'cart')
     {
-        /** @var Aplazame $aplazame */
-        $aplazame = ModuleCore::getInstanceByName('aplazame');
-
         $serialized = array(
             'customer' => Aplazame_Aplazame_BusinessModel_Customer::createFromCustomer(new Customer($cart->id_customer)),
             'order' => Aplazame_Aplazame_BusinessModel_Order::createFromCart($cart, $cart->date_add),
             'billing' => Aplazame_Aplazame_BusinessModel_Address::createFromAddress(new Address($cart->id_address_invoice)),
-            'meta' => array(
-                'module' => array(
-                    'name' => 'aplazame:prestashop',
-                    'version' => $aplazame->version,
-                ),
-                'version' => _PS_VERSION_,
-            ),
+            'meta' => Aplazame_Aplazame_BusinessModel_Meta::create(),
             'payment' => array(
                 'method' => $payment_method,
                 'status' => $payment_status,
