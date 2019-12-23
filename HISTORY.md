@@ -1,5 +1,10 @@
 ## Change Log
 
+#### [v6.0.2](https://github.com/aplazame/prestashop/tree/v6.0.2) (2019-12-23)
+
+* [ADD] Update history endpoint.
+* [FIX] Various fixes and improvements.
+
 #### [v6.0.1](https://github.com/aplazame/prestashop/tree/v6.0.1) (2019-10-30)
 
 * [FIX] Prevents missing customer secure key message in order when accept payment.
