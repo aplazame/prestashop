@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v6.0.3](https://github.com/aplazame/prestashop/tree/v6.0.3) (2020-01-14)
+
+* [FIX] Deprecated checks.
+
 #### [v6.0.2](https://github.com/aplazame/prestashop/tree/v6.0.2) (2019-12-23)
 
 * [ADD] Update history endpoint.
