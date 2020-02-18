@@ -12,4 +12,5 @@
     data-amount="{$aplazame_amount|escape:'htmlall':'UTF-8'}"
     data-currency="{$aplazame_currency_iso|escape:'htmlall':'UTF-8'}"
     data-article-id="{$aplazame_article_id|escape:'htmlall':'UTF-8'}"
+    data-option-legal-advice="{$aplazame_legal_advice|escape:'htmlall':'UTF-8'}"
 ></div>

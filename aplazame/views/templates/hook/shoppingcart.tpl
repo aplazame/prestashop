@@ -7,9 +7,10 @@
  *}
 
 <div
-    data-aplazame-simulator=""
+    data-aplazame-widget-instalments=""
     data-view="cart"
     data-amount="{$aplazame_cart_total|escape:'htmlall':'UTF-8'}"
     data-currency="{$aplazame_currency_iso|escape:'htmlall':'UTF-8'}"
     data-price="#total_price"
+    data-option-legal-advice="{$aplazame_legal_advice|escape:'htmlall':'UTF-8'}"
 ></div>

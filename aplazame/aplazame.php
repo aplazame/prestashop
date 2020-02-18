@@ -104,6 +104,8 @@ class Aplazame extends PaymentModule
 
         Configuration::updateValue('APLAZAME_PAYMENT_INSTALMENTS', true);
         Configuration::updateValue('APLAZAME_PAYMENT_PAY_LATER', false);
+        Configuration::updateValue('APLAZAME_PRODUCT_LEGAL_ADVICE', true);
+        Configuration::updateValue('APLAZAME_CART_LEGAL_ADVICE', true);
 
         return ($this->registerHook('actionOrderSlipAdd')
             && $this->registerHook('actionOrderStatusUpdate')
@@ -234,6 +236,8 @@ class Aplazame extends PaymentModule
             'APLAZAME_BUTTON_PAY_LATER',
             'APLAZAME_BUTTON_IMAGE',
             'APLAZAME_BUTTON_IMAGE_PAY_LATER',
+            'APLAZAME_PRODUCT_LEGAL_ADVICE',
+            'APLAZAME_CART_LEGAL_ADVICE',
         );
 
         if (Tools::isSubmit('submitAplazameModule')) {
@@ -434,6 +438,23 @@ HTML;
                             ),
                         ),
                         array(
+                            'type' => (_PS_VERSION_ >= 1.6) ? 'switch' : 'radio',
+                            'label' => $this->l('Legal notice'),
+                            'name' => 'APLAZAME_PRODUCT_LEGAL_ADVICE',
+                            'is_bool' => true,
+                            'desc' => $this->l('Show legal notice in product widget'),
+                            'values' => array(
+                                array(
+                                    'id' => 'active_on',
+                                    'value' => true,
+                                ),
+                                array(
+                                    'id' => 'active_off',
+                                    'value' => false,
+                                ),
+                            ),
+                        ),
+                        array(
                             'type' => 'select',
                             'label' => $this->l('Hook Product Widget'),
                             'desc' => $this->l('Select the hook where you want to display the product widget'),
@@ -472,6 +493,23 @@ HTML;
                             'label' => $this->l('Show widget on cart page'),
                             'name' => 'APLAZAME_CART_WIDGET_ENABLED',
                             'is_bool' => true,
+                            'values' => array(
+                                array(
+                                    'id' => 'active_on',
+                                    'value' => true,
+                                ),
+                                array(
+                                    'id' => 'active_off',
+                                    'value' => false,
+                                ),
+                            ),
+                        ),
+                        array(
+                            'type' => (_PS_VERSION_ >= 1.6) ? 'switch' : 'radio',
+                            'label' => $this->l('Legal notice'),
+                            'name' => 'APLAZAME_CART_LEGAL_ADVICE',
+                            'is_bool' => true,
+                            'desc' => $this->l('Show legal notice in cart widget'),
                             'values' => array(
                                 array(
                                     'id' => 'active_on',
@@ -657,6 +695,7 @@ HTML;
         $this->context->smarty->assign(array(
             'aplazame_cart_total' => Aplazame_Sdk_Serializer_Decimal::fromFloat($cart->getOrderTotal())->value,
             'aplazame_currency_iso' => $currency->iso_code,
+            'aplazame_legal_advice' => Configuration::get('APLAZAME_CART_LEGAL_ADVICE') ? 'true' : 'false',
         ));
 
         return $this->display(__FILE__, 'shoppingcart.tpl');
@@ -784,6 +823,7 @@ HTML;
             'aplazame_amount' => Aplazame_Sdk_Serializer_Decimal::fromFloat($product->getPrice(true, null, 2))->value,
             'aplazame_currency_iso' => $currency->iso_code,
             'aplazame_article_id' => $product->id,
+            'aplazame_legal_advice' => Configuration::get('APLAZAME_PRODUCT_LEGAL_ADVICE') ? 'true' : 'false',
         ));
 
         return $this->display(__FILE__, 'product.tpl');
