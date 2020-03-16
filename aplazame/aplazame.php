@@ -28,6 +28,12 @@ class Aplazame extends PaymentModule
     const ORDER_STATE_PENDING = 'APLAZAME_OS_PENDING';
 
     /**
+     * Product types.
+     */
+    const INSTALMENTS = 'instalments';
+    const PAY_LATER = 'pay_later';
+
+    /**
      * @var string
      */
     private $apiBaseUri;
@@ -238,6 +244,7 @@ class Aplazame extends PaymentModule
             'APLAZAME_BUTTON_IMAGE_PAY_LATER',
             'APLAZAME_PRODUCT_LEGAL_ADVICE',
             'APLAZAME_CART_LEGAL_ADVICE',
+            'APLAZAME_NOT_AVAILABLE',
         );
 
         if (Tools::isSubmit('submitAplazameModule')) {
@@ -334,7 +341,21 @@ HTML;
      */
     protected function getConfigForm()
     {
-        return array(
+        /**
+         * Check available products.
+         */
+        $is_instalments_available = $this->isAplazameProductAvailable(self::INSTALMENTS);
+        $is_pay_later_available = $this->isAplazameProductAvailable(self::PAY_LATER);
+
+        /**
+         * PS 1.5 compatibility radio buttons.
+         */
+        $switch_or_radio = (_PS_VERSION_ >= 1.6) ? 'switch' : 'radio';
+
+        /**
+         * Settings form.
+         */
+        $settings =
             array(
                 'form' => array(
                     'legend' => array(
@@ -343,7 +364,7 @@ HTML;
                     ),
                     'input' => array(
                         array(
-                            'type' => (_PS_VERSION_ >= 1.6) ? 'switch' : 'radio',
+                            'type' => $switch_or_radio,
                             'label' => $this->l('Test Mode (Sandbox)'),
                             'name' => 'APLAZAME_SANDBOX',
                             'is_bool' => true,
@@ -369,7 +390,12 @@ HTML;
                         ),
                     ),
                 ),
-            ),
+            );
+
+        /**
+         * Payment methods form.
+         */
+        $payment_methods =
             array(
                 'form' => array(
                     'legend' => array(
@@ -378,7 +404,7 @@ HTML;
                     ),
                     'input' => array(
                         array(
-                            'type' => (_PS_VERSION_ >= 1.6) ? 'switch' : 'radio',
+                            'type' => $switch_or_radio,
                             'label' => $this->l('Flexible financing'),
                             'name' => 'APLAZAME_PAYMENT_INSTALMENTS',
                             'is_bool' => true,
@@ -393,9 +419,10 @@ HTML;
                                     'value' => false,
                                 ),
                             ),
+                            'disabled' => (!$is_instalments_available) && $is_pay_later_available,
                         ),
                         array(
-                            'type' => (_PS_VERSION_ >= 1.6) ? 'switch' : 'radio',
+                            'type' => $switch_or_radio,
                             'label' => $this->l('Pay in 15 days'),
                             'name' => 'APLAZAME_PAYMENT_PAY_LATER',
                             'is_bool' => true,
@@ -410,10 +437,16 @@ HTML;
                                     'value' => false,
                                 ),
                             ),
+                            'disabled' => !$is_pay_later_available,
                         ),
                     ),
                 ),
-            ),
+            );
+
+        /**
+         * Widgets forms.
+         */
+        $product_widget =
             array(
                 'form' => array(
                     'legend' => array(
@@ -422,7 +455,7 @@ HTML;
                     ),
                     'input' => array(
                         array(
-                            'type' => (_PS_VERSION_ >= 1.6) ? 'switch' : 'radio',
+                            'type' => $is_instalments_available ? $switch_or_radio : 'hidden',
                             'label' => $this->l('Show widget on product page'),
                             'name' => 'APLAZAME_PRODUCT_WIDGET_ENABLED',
                             'is_bool' => true,
@@ -438,7 +471,7 @@ HTML;
                             ),
                         ),
                         array(
-                            'type' => (_PS_VERSION_ >= 1.6) ? 'switch' : 'radio',
+                            'type' => $is_instalments_available ? $switch_or_radio : 'hidden',
                             'label' => $this->l('Legal notice'),
                             'name' => 'APLAZAME_PRODUCT_LEGAL_ADVICE',
                             'is_bool' => true,
@@ -455,7 +488,7 @@ HTML;
                             ),
                         ),
                         array(
-                            'type' => 'select',
+                            'type' => $is_instalments_available ? 'select' : 'hidden',
                             'label' => $this->l('Hook Product Widget'),
                             'desc' => $this->l('Select the hook where you want to display the product widget'),
                             'name' => 'APLAZAME_WIDGET_PROD',
@@ -480,7 +513,9 @@ HTML;
                         ),
                     ),
                 ),
-            ),
+            );
+
+        $cart_widget =
             array(
                 'form' => array(
                     'legend' => array(
@@ -489,7 +524,7 @@ HTML;
                     ),
                     'input' => array(
                         array(
-                            'type' => (_PS_VERSION_ >= 1.6) ? 'switch' : 'radio',
+                            'type' => $is_instalments_available ? $switch_or_radio : 'hidden',
                             'label' => $this->l('Show widget on cart page'),
                             'name' => 'APLAZAME_CART_WIDGET_ENABLED',
                             'is_bool' => true,
@@ -505,7 +540,7 @@ HTML;
                             ),
                         ),
                         array(
-                            'type' => (_PS_VERSION_ >= 1.6) ? 'switch' : 'radio',
+                            'type' => $is_instalments_available ? $switch_or_radio : 'hidden',
                             'label' => $this->l('Legal notice'),
                             'name' => 'APLAZAME_CART_LEGAL_ADVICE',
                             'is_bool' => true,
@@ -521,9 +556,24 @@ HTML;
                                 ),
                             ),
                         ),
+                    ),
+                ),
+            );
+
+        /**
+         * Buttons form.
+         */
+        $buttons =
+            array(
+                'form' => array(
+                    'legend' => array(
+                        'title' => $this->l('Buttons'),
+                        'icon' => 'icon-cogs',
+                    ),
+                    'input' => array(
                         array(
                             'col' => 4,
-                            'type' => 'text',
+                            'type' => $is_instalments_available ? 'text' : 'hidden',
                             'prefix' => '<i class="icon icon-code"></i>',
                             'desc' => $this->l('Aplazame "Flexible financing" Button CSS Selector'),
                             'name' => 'APLAZAME_BUTTON_INSTALMENTS',
@@ -531,15 +581,7 @@ HTML;
                         ),
                         array(
                             'col' => 4,
-                            'type' => 'text',
-                            'prefix' => '<i class="icon icon-code"></i>',
-                            'desc' => $this->l('Aplazame "Pay in 15 days" Button CSS Selector'),
-                            'name' => 'APLAZAME_BUTTON_PAY_LATER',
-                            'label' => $this->l('"Pay in 15 days" Button'),
-                        ),
-                        array(
-                            'col' => 4,
-                            'type' => 'text',
+                            'type' => $is_instalments_available ? 'text' : 'hidden',
                             'prefix' => '<i class="icon icon-code"></i>',
                             'desc' => $this->l('Aplazame "Flexible financing" Button Image that you want to show'),
                             'name' => 'APLAZAME_BUTTON_IMAGE',
@@ -547,19 +589,65 @@ HTML;
                         ),
                         array(
                             'col' => 4,
-                            'type' => 'text',
+                            'type' => $is_pay_later_available ? 'text' : 'hidden',
+                            'prefix' => '<i class="icon icon-code"></i>',
+                            'desc' => $this->l('Aplazame "Pay in 15 days" Button CSS Selector'),
+                            'name' => 'APLAZAME_BUTTON_PAY_LATER',
+                            'label' => $this->l('"Pay in 15 days" Button'),
+                        ),
+                        array(
+                            'col' => 4,
+                            'type' => $is_pay_later_available ? 'text' : 'hidden',
                             'prefix' => '<i class="icon icon-code"></i>',
                             'desc' => $this->l('Aplazame "Pay in 15 days" Button Image that you want to show'),
                             'name' => 'APLAZAME_BUTTON_IMAGE_PAY_LATER',
                             'label' => $this->l('"Pay in 15 days" Button Image'),
                         ),
                     ),
-                    'submit' => array(
-                        'title' => $this->l('Save'),
-                    ),
                 ),
-            ),
-        );
+            );
+
+        /**
+         * Save button.
+         */
+        $save_button = array('title' => $this->l('Save'));
+
+        $form = array();
+        $form[] = $settings;
+
+        if (!$is_instalments_available) {
+            $text = array(
+                'type' => 'free',
+                'name' => 'APLAZAME_NOT_AVAILABLE',
+                'label' => $this->l('Not available'),
+            );
+
+            $product_widget['form']['input'][] = $text;
+            $cart_widget['form']['input'][] = $text;
+
+            if (!$is_pay_later_available) {
+                $payment_methods['form']['submit'] = $save_button;
+                $buttons['form']['input'][] = $text;
+            } else {
+                $buttons['form']['submit'] = $save_button;
+            }
+
+            $form[] = $payment_methods;
+            $form[] = $buttons;
+            $form[] = $product_widget;
+            $form[] = $cart_widget;
+
+            return $form;
+        }
+
+        $buttons['form']['submit'] = $save_button;
+
+        $form[] = $payment_methods;
+        $form[] = $product_widget;
+        $form[] = $cart_widget;
+        $form[] = $buttons;
+
+        return $form;
     }
 
     public function isAvailable()
@@ -572,6 +660,27 @@ HTML;
         $publicKey = Configuration::get('APLAZAME_PUBLIC_KEY');
 
         return (!empty($privateKey) && !empty($publicKey));
+    }
+
+    public function isAplazameProductAvailable($product_type)
+    {
+        if (!Configuration::get('APLAZAME_SECRET_KEY')) {
+            return false;
+        }
+
+        $client = $this->getApiClient();
+        try {
+            $response = $client->get('/me');
+        } catch (Exception $e) {
+            return false;
+        }
+
+        $products = array();
+        foreach ($response['products'] as $product) {
+            $products[] = $product['type'];
+        }
+
+        return in_array($product_type, $products);
     }
 
     public function hookActionOrderSlipAdd($params)
@@ -718,12 +827,12 @@ HTML;
             'aplazame_instalments' => array(
                 'is_enabled' => Configuration::get('APLAZAME_PAYMENT_INSTALMENTS'),
                 'button_image' => Configuration::get('APLAZAME_BUTTON_IMAGE'),
-                'button' => $this->getButtonTemplateVars($cart, 'instalments'),
+                'button' => $this->getButtonTemplateVars($cart, self::INSTALMENTS),
             ),
             'aplazame_pay_later' => array(
                 'is_enabled' => Configuration::get('APLAZAME_PAYMENT_PAY_LATER'),
                 'button_image' => Configuration::get('APLAZAME_BUTTON_IMAGE_PAY_LATER'),
-                'button' => $this->getButtonTemplateVars($cart, 'pay_later'),
+                'button' => $this->getButtonTemplateVars($cart, self::PAY_LATER),
             ),
         ));
 
@@ -744,11 +853,11 @@ HTML;
         $options = array();
 
         if (Configuration::get('APLAZAME_PAYMENT_INSTALMENTS')) {
-            $this->context->smarty->assign(array('aplazame_button' => $this->getButtonTemplateVars($cart, 'instalments')));
+            $this->context->smarty->assign(array('aplazame_button' => $this->getButtonTemplateVars($cart, self::INSTALMENTS)));
             $newOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
             $newOption->setCallToActionText($this->l('Aplazame - Flexible financing'))
                 ->setModuleName($this->name)
-                ->setAction($link->getModuleLink($this->name, 'redirect', array('type' => 'instalments')))
+                ->setAction($link->getModuleLink($this->name, 'redirect', array('type' => self::INSTALMENTS)))
                 ->setAdditionalInformation($this->fetch('module:aplazame/views/templates/hook/payment_1.7.tpl'))
                 ->setLogo(Configuration::get('APLAZAME_BUTTON_IMAGE'))
             ;
@@ -756,11 +865,11 @@ HTML;
         }
 
         if (Configuration::get('APLAZAME_PAYMENT_PAY_LATER')) {
-            $this->context->smarty->assign(array('aplazame_button' => $this->getButtonTemplateVars($cart, 'pay_later')));
+            $this->context->smarty->assign(array('aplazame_button' => $this->getButtonTemplateVars($cart, self::PAY_LATER)));
             $newOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
             $newOption->setCallToActionText($this->l('Aplazame - Pay in 15 days'))
                 ->setModuleName($this->name . '_pay_later')
-                ->setAction($link->getModuleLink($this->name, 'redirect', array('type' => 'pay_later')))
+                ->setAction($link->getModuleLink($this->name, 'redirect', array('type' => self::PAY_LATER)))
                 ->setAdditionalInformation($this->fetch('module:aplazame/views/templates/hook/payment_1.7.tpl'))
                 ->setLogo(Configuration::get('APLAZAME_BUTTON_IMAGE_PAY_LATER'))
             ;
