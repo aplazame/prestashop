@@ -1,5 +1,10 @@
 ## Change Log
 
+#### [v6.1.1](https://github.com/aplazame/prestashop/tree/v6.1.1) (2020-03-16)
+
+* Hide params if product not available.
+* Code improvements.
+
 #### [v6.1.0](https://github.com/aplazame/prestashop/tree/v6.1.0) (2020-02-18)
 
 * [ADD] Legal notice option to widget setup.
