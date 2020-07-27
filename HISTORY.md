@@ -1,5 +1,11 @@
 ## Change Log
 
+#### [v6.1.2](https://github.com/aplazame/prestashop/tree/v6.1.2) (2020-07-27)
+
+* [CHANGE] Instalments payment description.
+* [CHANGE] Redirect internal URL's.
+* [FIX] Client error function call.
+
 #### [v6.1.1](https://github.com/aplazame/prestashop/tree/v6.1.1) (2020-03-16)
 
 * Hide params if product not available.
