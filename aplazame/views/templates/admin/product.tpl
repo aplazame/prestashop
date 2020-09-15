@@ -28,6 +28,12 @@
 
     var articles = {$articles|@json_encode};
 
+    var dateObj = new Date();
+    var currentDate = dateObj.toISOString();
+    var byEndDate = function (campaign) {
+        return (campaign.end_date > currentDate);
+    };
+
     function associateArticlesToCampaign(articles, campaignId) {
         apiRequest("POST", "/me/campaigns/" + campaignId + "/articles", articles, function() {});
     }
@@ -96,6 +102,7 @@
     function apiRequest(method, path, data, callback) {
         $.ajax({
             type: "POST",
+            async: false,
             url: apiProxyEndpoint,
             data: {
                 method: method,
@@ -113,23 +120,30 @@
         });
     }
 
-    apiRequest("GET", "/me/campaigns", null, function(payload) {
-        var campaigns = payload.results;
-        var dateObj = new Date();
-        var currentDate = dateObj.toISOString();
-        var byEndDate = function (campaign) {
-            return (campaign.end_date > currentDate);
-        };
+    function getCampaigns(page = 1) {
+        apiRequest("GET", "/me/campaigns?page=" + page, null, function(payload) {
+            var campaigns = payload.results;
 
-        campaigns = campaigns.filter(byEndDate);
+            displayCampaigns(campaigns.filter(byEndDate));
 
-        apiRequest("GET", "/me/campaigns?articles-mid=" + articles[0].id, null, function(payload) {
+            if (payload.cursor.after != null) {
+                getCampaigns(payload.cursor.after);
+            }
+        });
+    }
+
+    function getCampaignsFromArticle(page = 1) {
+        apiRequest("GET", "/me/campaigns?articles-mid=" + articles[0].id + "&page=" + page, null, function(payload) {
             var selectedCampaigns = payload.results;
 
-            selectedCampaigns = selectedCampaigns.filter(byEndDate);
+            selectCampaigns(selectedCampaigns.filter(byEndDate));
 
-            displayCampaigns(campaigns);
-            selectCampaigns(selectedCampaigns);
+            if (payload.cursor.after != null) {
+                getCampaignsFromArticle(payload.cursor.after);
+            }
         });
-    });
+    }
+
+    getCampaigns();
+    getCampaignsFromArticle();
 </script>
