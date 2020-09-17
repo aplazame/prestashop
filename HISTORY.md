@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v6.1.3](https://github.com/aplazame/prestashop/tree/v6.1.3) (2020-07-27)
+
+* [FIX] Campaigns pagination.
+
 #### [v6.1.2](https://github.com/aplazame/prestashop/tree/v6.1.2) (2020-07-27)
 
 * [CHANGE] Instalments payment description.
