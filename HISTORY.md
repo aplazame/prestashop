@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v6.1.4](https://github.com/aplazame/prestashop/tree/v6.1.4) (2020-12-15)
+
+* [FIX] Minor order issues.
+
 #### [v6.1.3](https://github.com/aplazame/prestashop/tree/v6.1.3) (2020-07-27)
 
 * [FIX] Campaigns pagination.
