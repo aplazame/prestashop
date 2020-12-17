@@ -12,6 +12,10 @@ jobs:
           - v1-dependencies-
 
       - run:
+          name: PHP version
+          command: php -v
+
+      - run:
           name: Install dependencies
           command: composer install -n --prefer-dist
 
