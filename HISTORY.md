@@ -1,5 +1,10 @@
 ## Change Log
 
+#### [v6.1.5](https://github.com/aplazame/prestashop/tree/v6.1.5) (2020-12-17)
+
+* [FIX] Minor code improvements.
+* [FIX] CircleCI PHP version.
+
 #### [v6.1.4](https://github.com/aplazame/prestashop/tree/v6.1.4) (2020-12-15)
 
 * [FIX] Minor order issues.
