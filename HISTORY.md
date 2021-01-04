@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v6.1.6](https://github.com/aplazame/prestashop/tree/v6.1.6) (2021-01-04)
+
+* [FIX] Prevent paid order cancellation if previous order cart expires.
+
 #### [v6.1.5](https://github.com/aplazame/prestashop/tree/v6.1.5) (2020-12-17)
 
 * [FIX] Minor code improvements.
