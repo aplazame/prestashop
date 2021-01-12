@@ -1,5 +1,10 @@
 ## Change Log
 
+#### [v7.0.0](https://github.com/aplazame/prestashop/tree/v6.1.6) (2021-01-12)
+
+* [ADD] Blended checkout.
+* [CHANGE] Restore cart ID and deny logic.
+
 #### [v6.1.6](https://github.com/aplazame/prestashop/tree/v6.1.6) (2021-01-04)
 
 * [FIX] Prevent paid order cancellation if previous order cart expires.
