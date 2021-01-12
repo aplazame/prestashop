@@ -198,13 +198,6 @@ class Aplazame extends PaymentModule
         }
 
         $cartId = $cart->id;
-        $orderId = Order::getOrderByCartId($cartId);
-        $order = new Order($orderId);
-
-        if (Validate::isLoadedObject($order) && $order->hasBeenPaid()) {
-            return true;
-        }
-
         $orderStateId = (int) Configuration::get('PS_OS_CANCELED');
 
         return $this->setOrderStateToOrderByCartId($cartId, $orderStateId);

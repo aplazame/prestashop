@@ -25,15 +25,7 @@ class Aplazame_Aplazame_BusinessModel_Order
         $order_tax = $base_total_tax_inc - $base_total_tax_exc - $shipping_tax;
 
         $aOrder = new self();
-
-        if ($order_date) {
-            $aOrder->id = $cart->id;
-            $aOrder->created = Aplazame_Sdk_Serializer_Date::fromDateTime(new DateTime($order_date));
-        } else {
-            $date = new DateTime();
-            $aOrder->id = $cart->id . '-PScart' . $date->getTimestamp();
-        }
-
+        $aOrder->id = $cart->id;
         $aOrder->currency = $currency->iso_code;
         $aOrder->total_amount = Aplazame_Sdk_Serializer_Decimal::fromFloat($base_total_tax_inc);
         $aOrder->tax_rate = $order_tax ? Aplazame_Sdk_Serializer_Decimal::fromFloat(100 * $order_tax / $base_total_tax_exc) : 0;
@@ -41,6 +33,10 @@ class Aplazame_Aplazame_BusinessModel_Order
             return Aplazame_Aplazame_BusinessModel_Article::createFromProductData($cart, $productData);
         }, $cart->getProducts());
         $aOrder->discount = Aplazame_Sdk_Serializer_Decimal::fromFloat($cart->getOrderTotal(false, Cart::ONLY_DISCOUNTS));
+
+        if ($order_date) {
+            $aOrder->created = Aplazame_Sdk_Serializer_Date::fromDateTime(new DateTime($order_date));
+        }
 
         return $aOrder;
     }
