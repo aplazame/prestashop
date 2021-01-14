@@ -105,6 +105,9 @@ class Aplazame extends PaymentModule
         Configuration::updateValue('APLAZAME_PRODUCT_LEGAL_ADVICE', true);
         Configuration::updateValue('APLAZAME_CART_LEGAL_ADVICE', true);
 
+        Configuration::updateValue('APLAZAME_PRODUCT_DEFAULT_INSTALMENTS', '');
+        Configuration::updateValue('APLAZAME_CART_DEFAULT_INSTALMENTS', '');
+
         return ($this->registerHook('actionOrderSlipAdd')
             && $this->registerHook('actionOrderStatusUpdate')
             && $this->registerHook('displayAdminProductsExtra')
@@ -234,6 +237,8 @@ class Aplazame extends PaymentModule
             'APLAZAME_BUTTON_DESCRIPTION',
             'APLAZAME_PRODUCT_LEGAL_ADVICE',
             'APLAZAME_CART_LEGAL_ADVICE',
+            'APLAZAME_PRODUCT_DEFAULT_INSTALMENTS',
+            'APLAZAME_CART_DEFAULT_INSTALMENTS',
         );
 
         if (Tools::isSubmit('submitAplazameModule')) {
@@ -446,6 +451,13 @@ HTML;
                                 'name' => 'name',
                             ),
                         ),
+                        array(
+                            'type' => 'html',
+                            'label' => $this->l('Default instalments'),
+                            'desc' => $this->l('Select the default number instalments for the product widget'),
+                            'name' => 'APLAZAME_PRODUCT_DEFAULT_INSTALMENTS',
+                            'html_content' => '<input type="number" min="1" name="APLAZAME_PRODUCT_DEFAULT_INSTALMENTS" value="' . Configuration::get('APLAZAME_PRODUCT_DEFAULT_INSTALMENTS') . '">',
+                        ),
                     ),
                 ),
             );
@@ -490,6 +502,13 @@ HTML;
                                     'value' => false,
                                 ),
                             ),
+                        ),
+                        array(
+                            'type' => 'html',
+                            'label' => $this->l('Default instalments'),
+                            'desc' => $this->l('Select the default number instalments for the cart widget'),
+                            'name' => 'APLAZAME_CART_DEFAULT_INSTALMENTS',
+                            'html_content' => '<input type="number" min="1" name="APLAZAME_CART_DEFAULT_INSTALMENTS" value="' . Configuration::get('APLAZAME_CART_DEFAULT_INSTALMENTS') . '">',
                         ),
                     ),
                 ),
@@ -691,6 +710,7 @@ HTML;
             'aplazame_cart_total' => Aplazame_Sdk_Serializer_Decimal::fromFloat($cart->getOrderTotal())->value,
             'aplazame_currency_iso' => $currency->iso_code,
             'aplazame_legal_advice' => Configuration::get('APLAZAME_CART_LEGAL_ADVICE') ? 'true' : 'false',
+            'aplazame_default_instalments' => Configuration::get('APLAZAME_CART_DEFAULT_INSTALMENTS'),
         ));
 
         return $this->display(__FILE__, 'shoppingcart.tpl');
@@ -800,6 +820,7 @@ HTML;
             'aplazame_currency_iso' => $currency->iso_code,
             'aplazame_article_id' => $product->id,
             'aplazame_legal_advice' => Configuration::get('APLAZAME_PRODUCT_LEGAL_ADVICE') ? 'true' : 'false',
+            'aplazame_default_instalments' => Configuration::get('APLAZAME_PRODUCT_DEFAULT_INSTALMENTS'),
         ));
 
         return $this->display(__FILE__, 'product.tpl');
