@@ -1,6 +1,10 @@
 ## Change Log
 
-#### [v7.0.0](https://github.com/aplazame/prestashop/tree/v6.1.6) (2021-01-12)
+#### [v7.1.0](https://github.com/aplazame/prestashop/tree/v7.1.0) (2021-01-18)
+
+* [ADD] Instalments selector for widgets.
+
+#### [v7.0.0](https://github.com/aplazame/prestashop/tree/v7.0.0) (2021-01-12)
 
 * [ADD] Blended checkout.
 * [CHANGE] Restore cart ID and deny logic.
