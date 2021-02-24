@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v7.2.0](https://github.com/aplazame/prestashop/tree/v7.2.0) (2021-02-24)
+
+* [ADD] New widget (v4).
+
 #### [v7.1.0](https://github.com/aplazame/prestashop/tree/v7.1.0) (2021-01-18)
 
 * [ADD] Instalments selector for widgets.
