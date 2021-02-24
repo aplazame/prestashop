@@ -7,8 +7,15 @@
  *}
 
 <div
-    data-aplazame-widget-instalments=""
-    data-view="cart"
+    {if $aplazame_widget_legacy}
+        data-aplazame-widget-instalments=""
+        data-view="cart"
+    {else}
+        data-aplazame-widget-instalments="v4"
+		data-type="cart"
+		data-option-primary-color="{$aplazame_primary_color|escape:'htmlall':'UTF-8'}"
+		data-option-layout="{$aplazame_layout|escape:'htmlall':'UTF-8'}"
+    {/if}
     data-amount="{$aplazame_cart_total|escape:'htmlall':'UTF-8'}"
     data-currency="{$aplazame_currency_iso|escape:'htmlall':'UTF-8'}"
     data-price="#total_price"

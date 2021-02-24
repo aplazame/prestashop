@@ -108,6 +108,12 @@ class Aplazame extends PaymentModule
         Configuration::updateValue('APLAZAME_PRODUCT_DEFAULT_INSTALMENTS', '');
         Configuration::updateValue('APLAZAME_CART_DEFAULT_INSTALMENTS', '');
 
+        Configuration::updateValue('WIDGET_LEGACY', false);
+        Configuration::updateValue('PRODUCT_WIDGET_PRIMARY_COLOR', '#334bff');
+        Configuration::updateValue('PRODUCT_WIDGET_LAYOUT', 'horizontal');
+        Configuration::updateValue('CART_WIDGET_PRIMARY_COLOR', '#334bff');
+        Configuration::updateValue('CART_WIDGET_LAYOUT', 'horizontal');
+
         return ($this->registerHook('actionOrderSlipAdd')
             && $this->registerHook('actionOrderStatusUpdate')
             && $this->registerHook('displayAdminProductsExtra')
@@ -239,6 +245,11 @@ class Aplazame extends PaymentModule
             'APLAZAME_CART_LEGAL_ADVICE',
             'APLAZAME_PRODUCT_DEFAULT_INSTALMENTS',
             'APLAZAME_CART_DEFAULT_INSTALMENTS',
+            'WIDGET_LEGACY',
+            'PRODUCT_WIDGET_PRIMARY_COLOR',
+            'PRODUCT_WIDGET_LAYOUT',
+            'CART_WIDGET_PRIMARY_COLOR',
+            'CART_WIDGET_LAYOUT',
         );
 
         if (Tools::isSubmit('submitAplazameModule')) {
@@ -379,6 +390,22 @@ HTML;
                             'prefix' => '<i class="icon icon-key"></i>',
                             'col' => 4,
                         ),
+                        array(
+                            'name' => 'WIDGET_LEGACY',
+                            'type' => $switch_or_radio,
+                            'label' => $this->l('Turn on widget legacy'),
+                            'desc' => $this->l('Use widget legacy instead new widget'),
+                            'values' => array(
+                                array(
+                                    'id' => 'active_on',
+                                    'value' => true,
+                                ),
+                                array(
+                                    'id' => 'active_off',
+                                    'value' => false,
+                                ),
+                            ),
+                        ),
                     ),
                 ),
             );
@@ -458,6 +485,32 @@ HTML;
                             'name' => 'APLAZAME_PRODUCT_DEFAULT_INSTALMENTS',
                             'html_content' => '<input type="number" min="1" name="APLAZAME_PRODUCT_DEFAULT_INSTALMENTS" value="' . Configuration::get('APLAZAME_PRODUCT_DEFAULT_INSTALMENTS') . '">',
                         ),
+                        array(
+                            'name' => 'PRODUCT_WIDGET_PRIMARY_COLOR',
+                            'type' => 'color',
+                            'label' => $this->l('Primary color'),
+                            'desc' => $this->l('Primary color hexadecimal code for product widget (only new widget)'),
+                        ),
+                        array(
+                            'name' => 'PRODUCT_WIDGET_LAYOUT',
+                            'type' => 'select',
+                            'label' => $this->l('Layout'),
+                            'desc' => $this->l('Layout of product widget (only new widget)'),
+                            'options' => array(
+                                'query' => array(
+                                    array(
+                                        'id_option' => 'horizontal',
+                                        'name' => $this->l('Horizontal'),
+                                    ),
+                                    array(
+                                        'id_option' => 'vertical',
+                                        'name' => $this->l('Vertical'),
+                                    ),
+                                ),
+                                'id' => 'id_option',
+                                'name' => 'name',
+                            ),
+                        ),
                     ),
                 ),
             );
@@ -509,6 +562,32 @@ HTML;
                             'desc' => $this->l('Select the default number instalments for the cart widget'),
                             'name' => 'APLAZAME_CART_DEFAULT_INSTALMENTS',
                             'html_content' => '<input type="number" min="1" name="APLAZAME_CART_DEFAULT_INSTALMENTS" value="' . Configuration::get('APLAZAME_CART_DEFAULT_INSTALMENTS') . '">',
+                        ),
+                        array(
+                            'name' => 'CART_WIDGET_PRIMARY_COLOR',
+                            'type' => 'color',
+                            'label' => $this->l('Primary color'),
+                            'desc' => $this->l('Primary color hexadecimal code for cart widget (only new widget)'),
+                        ),
+                        array(
+                            'name' => 'CART_WIDGET_LAYOUT',
+                            'type' => 'select',
+                            'label' => $this->l('Layout'),
+                            'desc' => $this->l('Layout of cart widget (only new widget)'),
+                            'options' => array(
+                                'query' => array(
+                                    array(
+                                        'id_option' => 'horizontal',
+                                        'name' => $this->l('Horizontal'),
+                                    ),
+                                    array(
+                                        'id_option' => 'vertical',
+                                        'name' => $this->l('Vertical'),
+                                    ),
+                                ),
+                                'id' => 'id_option',
+                                'name' => 'name',
+                            ),
                         ),
                     ),
                 ),
@@ -711,6 +790,9 @@ HTML;
             'aplazame_currency_iso' => $currency->iso_code,
             'aplazame_legal_advice' => Configuration::get('APLAZAME_CART_LEGAL_ADVICE') ? 'true' : 'false',
             'aplazame_default_instalments' => Configuration::get('APLAZAME_CART_DEFAULT_INSTALMENTS'),
+            'aplazame_widget_legacy' => Configuration::get('WIDGET_LEGACY'),
+            'aplazame_primary_color' => Configuration::get('CART_WIDGET_PRIMARY_COLOR'),
+            'aplazame_layout' => Configuration::get('CART_WIDGET_LAYOUT'),
         ));
 
         return $this->display(__FILE__, 'shoppingcart.tpl');
@@ -821,6 +903,9 @@ HTML;
             'aplazame_article_id' => $product->id,
             'aplazame_legal_advice' => Configuration::get('APLAZAME_PRODUCT_LEGAL_ADVICE') ? 'true' : 'false',
             'aplazame_default_instalments' => Configuration::get('APLAZAME_PRODUCT_DEFAULT_INSTALMENTS'),
+            'aplazame_widget_legacy' => Configuration::get('WIDGET_LEGACY'),
+            'aplazame_primary_color' => Configuration::get('PRODUCT_WIDGET_PRIMARY_COLOR'),
+            'aplazame_layout' => Configuration::get('PRODUCT_WIDGET_LAYOUT'),
         ));
 
         return $this->display(__FILE__, 'product.tpl');
