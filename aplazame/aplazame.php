@@ -109,6 +109,7 @@ class Aplazame extends PaymentModule
         Configuration::updateValue('APLAZAME_CART_DEFAULT_INSTALMENTS', '');
 
         Configuration::updateValue('WIDGET_LEGACY', false);
+        Configuration::updateValue('PRODUCT_WIDGET_BORDER', true);
         Configuration::updateValue('PRODUCT_WIDGET_PRIMARY_COLOR', '#334bff');
         Configuration::updateValue('PRODUCT_WIDGET_LAYOUT', 'horizontal');
         Configuration::updateValue('CART_WIDGET_PRIMARY_COLOR', '#334bff');
@@ -246,6 +247,7 @@ class Aplazame extends PaymentModule
             'APLAZAME_PRODUCT_DEFAULT_INSTALMENTS',
             'APLAZAME_CART_DEFAULT_INSTALMENTS',
             'WIDGET_LEGACY',
+            'PRODUCT_WIDGET_BORDER',
             'PRODUCT_WIDGET_PRIMARY_COLOR',
             'PRODUCT_WIDGET_LAYOUT',
             'CART_WIDGET_PRIMARY_COLOR',
@@ -484,6 +486,23 @@ HTML;
                             'desc' => $this->l('Select the default number instalments for the product widget'),
                             'name' => 'APLAZAME_PRODUCT_DEFAULT_INSTALMENTS',
                             'html_content' => '<input type="number" min="1" name="APLAZAME_PRODUCT_DEFAULT_INSTALMENTS" value="' . Configuration::get('APLAZAME_PRODUCT_DEFAULT_INSTALMENTS') . '">',
+                        ),
+                        array(
+                            'type' => $switch_or_radio,
+                            'label' => $this->l('Border'),
+                            'name' => 'PRODUCT_WIDGET_BORDER',
+                            'is_bool' => true,
+                            'desc' => $this->l('Show border in product widget (only new widget)'),
+                            'values' => array(
+                                array(
+                                    'id' => 'active_on',
+                                    'value' => true,
+                                ),
+                                array(
+                                    'id' => 'active_off',
+                                    'value' => false,
+                                ),
+                            ),
                         ),
                         array(
                             'name' => 'PRODUCT_WIDGET_PRIMARY_COLOR',
@@ -906,6 +925,7 @@ HTML;
             'aplazame_widget_legacy' => Configuration::get('WIDGET_LEGACY'),
             'aplazame_primary_color' => Configuration::get('PRODUCT_WIDGET_PRIMARY_COLOR'),
             'aplazame_layout' => Configuration::get('PRODUCT_WIDGET_LAYOUT'),
+            'aplazame_border' => Configuration::get('PRODUCT_WIDGET_BORDER') ? 'true' : 'false',
         ));
 
         return $this->display(__FILE__, 'product.tpl');

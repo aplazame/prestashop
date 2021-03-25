@@ -15,6 +15,7 @@
 		data-type="product"
 		data-option-primary-color="{$aplazame_primary_color|escape:'htmlall':'UTF-8'}"
 		data-option-layout="{$aplazame_layout|escape:'htmlall':'UTF-8'}"
+        data-option-border-product="{$aplazame_border|escape:'htmlall':'UTF-8'}"
     {/if}
     data-amount="{$aplazame_amount|escape:'htmlall':'UTF-8'}"
     data-currency="{$aplazame_currency_iso|escape:'htmlall':'UTF-8'}"
