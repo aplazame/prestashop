@@ -1,5 +1,10 @@
 ## Change Log
 
+#### [v7.3.0](https://github.com/aplazame/prestashop/tree/v7.3.0) (2021-04-07)
+
+* [ADD] Show/hide border option on product widget v4.
+* [ADD] CSS selector for product/cart widget.
+
 #### [v7.2.0](https://github.com/aplazame/prestashop/tree/v7.2.0) (2021-02-24)
 
 * [ADD] New widget (v4).
