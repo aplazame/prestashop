@@ -13,6 +13,9 @@ if (!defined('_PS_VERSION_')) {
 
 function upgrade_module_7_3_0(Aplazame $module)
 {
+    Configuration::updateValue('APLAZAME_PRODUCT_CSS', '');
+    Configuration::updateValue('APLAZAME_CART_CSS', '#total_price');
+
     Configuration::updateValue('PRODUCT_WIDGET_BORDER', true);
 
     return true;

@@ -108,6 +108,9 @@ class Aplazame extends PaymentModule
         Configuration::updateValue('APLAZAME_PRODUCT_DEFAULT_INSTALMENTS', '');
         Configuration::updateValue('APLAZAME_CART_DEFAULT_INSTALMENTS', '');
 
+        Configuration::updateValue('APLAZAME_PRODUCT_CSS', '');
+        Configuration::updateValue('APLAZAME_CART_CSS', '#total_price');
+
         Configuration::updateValue('WIDGET_LEGACY', false);
         Configuration::updateValue('PRODUCT_WIDGET_BORDER', true);
         Configuration::updateValue('PRODUCT_WIDGET_PRIMARY_COLOR', '#334bff');
@@ -246,6 +249,8 @@ class Aplazame extends PaymentModule
             'APLAZAME_CART_LEGAL_ADVICE',
             'APLAZAME_PRODUCT_DEFAULT_INSTALMENTS',
             'APLAZAME_CART_DEFAULT_INSTALMENTS',
+            'APLAZAME_PRODUCT_CSS',
+            'APLAZAME_CART_CSS',
             'WIDGET_LEGACY',
             'PRODUCT_WIDGET_BORDER',
             'PRODUCT_WIDGET_PRIMARY_COLOR',
@@ -488,6 +493,14 @@ HTML;
                             'html_content' => '<input type="number" min="1" name="APLAZAME_PRODUCT_DEFAULT_INSTALMENTS" value="' . Configuration::get('APLAZAME_PRODUCT_DEFAULT_INSTALMENTS') . '">',
                         ),
                         array(
+                            'col' => 4,
+                            'type' => 'text',
+                            'prefix' => '<i class="icon icon-code"></i>',
+                            'desc' => $this->l('CSS selector pointing to variable product price'),
+                            'name' => 'APLAZAME_PRODUCT_CSS',
+                            'label' => $this->l('Variable price CSS'),
+                        ),
+                        array(
                             'type' => $switch_or_radio,
                             'label' => $this->l('Border'),
                             'name' => 'PRODUCT_WIDGET_BORDER',
@@ -581,6 +594,14 @@ HTML;
                             'desc' => $this->l('Select the default number instalments for the cart widget'),
                             'name' => 'APLAZAME_CART_DEFAULT_INSTALMENTS',
                             'html_content' => '<input type="number" min="1" name="APLAZAME_CART_DEFAULT_INSTALMENTS" value="' . Configuration::get('APLAZAME_CART_DEFAULT_INSTALMENTS') . '">',
+                        ),
+                        array(
+                            'col' => 4,
+                            'type' => 'text',
+                            'prefix' => '<i class="icon icon-code"></i>',
+                            'desc' => $this->l('CSS selector pointing to variable cart total price'),
+                            'name' => 'APLAZAME_CART_CSS',
+                            'label' => $this->l('Variable price CSS'),
                         ),
                         array(
                             'name' => 'CART_WIDGET_PRIMARY_COLOR',
@@ -807,6 +828,7 @@ HTML;
         $this->context->smarty->assign(array(
             'aplazame_cart_total' => Aplazame_Sdk_Serializer_Decimal::fromFloat($cart->getOrderTotal())->value,
             'aplazame_currency_iso' => $currency->iso_code,
+            'aplazame_css' => Configuration::get('APLAZAME_CART_CSS'),
             'aplazame_legal_advice' => Configuration::get('APLAZAME_CART_LEGAL_ADVICE') ? 'true' : 'false',
             'aplazame_default_instalments' => Configuration::get('APLAZAME_CART_DEFAULT_INSTALMENTS'),
             'aplazame_widget_legacy' => Configuration::get('WIDGET_LEGACY'),
@@ -919,6 +941,7 @@ HTML;
         $this->context->smarty->assign(array(
             'aplazame_amount' => Aplazame_Sdk_Serializer_Decimal::fromFloat($product->getPrice(true, null, 2))->value,
             'aplazame_currency_iso' => $currency->iso_code,
+            'aplazame_css' => Configuration::get('APLAZAME_PRODUCT_CSS'),
             'aplazame_article_id' => $product->id,
             'aplazame_legal_advice' => Configuration::get('APLAZAME_PRODUCT_LEGAL_ADVICE') ? 'true' : 'false',
             'aplazame_default_instalments' => Configuration::get('APLAZAME_PRODUCT_DEFAULT_INSTALMENTS'),
