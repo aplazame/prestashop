@@ -111,12 +111,17 @@ class Aplazame extends PaymentModule
         Configuration::updateValue('APLAZAME_PRODUCT_CSS', '');
         Configuration::updateValue('APLAZAME_CART_CSS', '#total_price');
 
+        /**
+         * Widget v4 params.
+         */
         Configuration::updateValue('WIDGET_LEGACY', false);
         Configuration::updateValue('PRODUCT_WIDGET_BORDER', true);
         Configuration::updateValue('PRODUCT_WIDGET_PRIMARY_COLOR', '#334bff');
         Configuration::updateValue('PRODUCT_WIDGET_LAYOUT', 'horizontal');
+        Configuration::updateValue('PRODUCT_WIDGET_ALIGN', 'center');
         Configuration::updateValue('CART_WIDGET_PRIMARY_COLOR', '#334bff');
         Configuration::updateValue('CART_WIDGET_LAYOUT', 'horizontal');
+        Configuration::updateValue('CART_WIDGET_ALIGN', 'center');
 
         return ($this->registerHook('actionOrderSlipAdd')
             && $this->registerHook('actionOrderStatusUpdate')
@@ -255,8 +260,10 @@ class Aplazame extends PaymentModule
             'PRODUCT_WIDGET_BORDER',
             'PRODUCT_WIDGET_PRIMARY_COLOR',
             'PRODUCT_WIDGET_LAYOUT',
+            'PRODUCT_WIDGET_ALIGN',
             'CART_WIDGET_PRIMARY_COLOR',
             'CART_WIDGET_LAYOUT',
+            'CART_WIDGET_ALIGN',
         );
 
         if (Tools::isSubmit('submitAplazameModule')) {
@@ -543,6 +550,30 @@ HTML;
                                 'name' => 'name',
                             ),
                         ),
+                        array(
+                            'name' => 'PRODUCT_WIDGET_ALIGN',
+                            'type' => 'select',
+                            'label' => $this->l('Alignment'),
+                            'desc' => $this->l('Product widget alignment (only new widget)'),
+                            'options' => array(
+                                'query' => array(
+                                    array(
+                                        'id_option' => 'left',
+                                        'name' => $this->l('Left'),
+                                    ),
+                                    array(
+                                        'id_option' => 'center',
+                                        'name' => $this->l('Center'),
+                                    ),
+                                    array(
+                                        'id_option' => 'right',
+                                        'name' => $this->l('Right'),
+                                    ),
+                                ),
+                                'id' => 'id_option',
+                                'name' => 'name',
+                            ),
+                        ),
                     ),
                 ),
             );
@@ -623,6 +654,30 @@ HTML;
                                     array(
                                         'id_option' => 'vertical',
                                         'name' => $this->l('Vertical'),
+                                    ),
+                                ),
+                                'id' => 'id_option',
+                                'name' => 'name',
+                            ),
+                        ),
+                        array(
+                            'name' => 'CART_WIDGET_ALIGN',
+                            'type' => 'select',
+                            'label' => $this->l('Alignment'),
+                            'desc' => $this->l('Cart widget alignment (only new widget)'),
+                            'options' => array(
+                                'query' => array(
+                                    array(
+                                        'id_option' => 'left',
+                                        'name' => $this->l('Left'),
+                                    ),
+                                    array(
+                                        'id_option' => 'center',
+                                        'name' => $this->l('Center'),
+                                    ),
+                                    array(
+                                        'id_option' => 'right',
+                                        'name' => $this->l('Right'),
                                     ),
                                 ),
                                 'id' => 'id_option',
@@ -834,6 +889,7 @@ HTML;
             'aplazame_widget_legacy' => Configuration::get('WIDGET_LEGACY'),
             'aplazame_primary_color' => Configuration::get('CART_WIDGET_PRIMARY_COLOR'),
             'aplazame_layout' => Configuration::get('CART_WIDGET_LAYOUT'),
+            'aplazame_align' => Configuration::get('CART_WIDGET_ALIGN'),
         ));
 
         return $this->display(__FILE__, 'shoppingcart.tpl');
@@ -948,6 +1004,7 @@ HTML;
             'aplazame_widget_legacy' => Configuration::get('WIDGET_LEGACY'),
             'aplazame_primary_color' => Configuration::get('PRODUCT_WIDGET_PRIMARY_COLOR'),
             'aplazame_layout' => Configuration::get('PRODUCT_WIDGET_LAYOUT'),
+            'aplazame_align' => Configuration::get('PRODUCT_WIDGET_ALIGN'),
             'aplazame_border' => Configuration::get('PRODUCT_WIDGET_BORDER') ? 'true' : 'false',
         ));
 
