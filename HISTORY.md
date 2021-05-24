@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v7.4.0](https://github.com/aplazame/prestashop/tree/v7.4.0) (2021-05-24)
+
+* [ADD] Alignment options for widget v4.
+
 #### [v7.3.0](https://github.com/aplazame/prestashop/tree/v7.3.0) (2021-04-07)
 
 * [ADD] Show/hide border option on product widget v4.
