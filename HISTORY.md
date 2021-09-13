@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v7.5.0](https://github.com/aplazame/prestashop/tree/v7.5.0) (2021-09-13)
+
+* [ADD] Pay in 4 widget.
+
 #### [v7.4.0](https://github.com/aplazame/prestashop/tree/v7.4.0) (2021-05-24)
 
 * [ADD] Alignment options for widget v4.
