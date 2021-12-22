@@ -114,6 +114,8 @@ class Aplazame extends PaymentModule
         Configuration::updateValue('APLAZAME_PRODUCT_CSS', '');
         Configuration::updateValue('APLAZAME_CART_CSS', '#total_price');
 
+        Configuration::updateValue('APLAZAME_WIDGET_OUT_OF_LIMITS', 'show');
+
         /**
          * Widget v4 params.
          */
@@ -261,6 +263,7 @@ class Aplazame extends PaymentModule
             'APLAZAME_CART_DEFAULT_INSTALMENTS',
             'APLAZAME_PRODUCT_CSS',
             'APLAZAME_CART_CSS',
+            'APLAZAME_WIDGET_OUT_OF_LIMITS',
             'WIDGET_LEGACY',
             'PRODUCT_WIDGET_BORDER',
             'PRODUCT_WIDGET_PRIMARY_COLOR',
@@ -408,6 +411,26 @@ HTML;
                             'desc' => $this->l('Aplazame API Private Key'),
                             'prefix' => '<i class="icon icon-key"></i>',
                             'col' => 4,
+                        ),
+                        array(
+                            'name' => 'APLAZAME_WIDGET_OUT_OF_LIMITS',
+                            'type' => 'select',
+                            'label' => $this->l('Widget if Aplazame is not available'),
+                            'desc' => $this->l('Show/hide alternative widget if Aplazame is not available'),
+                            'options' => array(
+                                'query' => array(
+                                    array(
+                                        'id_option' => 'show',
+                                        'name' => $this->l('Show'),
+                                    ),
+                                    array(
+                                        'id_option' => 'hide',
+                                        'name' => $this->l('Hide'),
+                                    ),
+                                ),
+                                'id' => 'id_option',
+                                'name' => 'name',
+                            ),
                         ),
                         array(
                             'name' => 'WIDGET_LEGACY',
@@ -926,6 +949,7 @@ HTML;
             'aplazame_legal_advice' => Configuration::get('APLAZAME_CART_LEGAL_ADVICE') ? 'true' : 'false',
             'aplazame_pay_in_4' => Configuration::get('APLAZAME_CART_PAY_IN_4'),
             'aplazame_default_instalments' => Configuration::get('APLAZAME_CART_DEFAULT_INSTALMENTS'),
+            'aplazame_widget_out_of_limits' => Configuration::get('APLAZAME_WIDGET_OUT_OF_LIMITS'),
             'aplazame_widget_legacy' => Configuration::get('WIDGET_LEGACY'),
             'aplazame_primary_color' => Configuration::get('CART_WIDGET_PRIMARY_COLOR'),
             'aplazame_layout' => Configuration::get('CART_WIDGET_LAYOUT'),
@@ -1042,6 +1066,7 @@ HTML;
             'aplazame_legal_advice' => Configuration::get('APLAZAME_PRODUCT_LEGAL_ADVICE') ? 'true' : 'false',
             'aplazame_pay_in_4' => Configuration::get('APLAZAME_PRODUCT_PAY_IN_4'),
             'aplazame_default_instalments' => Configuration::get('APLAZAME_PRODUCT_DEFAULT_INSTALMENTS'),
+            'aplazame_widget_out_of_limits' => Configuration::get('APLAZAME_WIDGET_OUT_OF_LIMITS'),
             'aplazame_widget_legacy' => Configuration::get('WIDGET_LEGACY'),
             'aplazame_primary_color' => Configuration::get('PRODUCT_WIDGET_PRIMARY_COLOR'),
             'aplazame_layout' => Configuration::get('PRODUCT_WIDGET_LAYOUT'),
