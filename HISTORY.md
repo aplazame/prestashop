@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v7.6.0](https://github.com/aplazame/prestashop/tree/v7.6.0) (2021-12-22)
+
+* [ADD] Show/hide alternative widget option.
+
 #### [v7.5.0](https://github.com/aplazame/prestashop/tree/v7.5.0) (2021-09-13)
 
 * [ADD] Pay in 4 widget.
