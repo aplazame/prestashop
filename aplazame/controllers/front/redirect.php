@@ -19,6 +19,10 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
             Tools::redirect('index.php?controller=order');
         }
 
+        if (Configuration::get('APLAZAME_CREATE_ORDER_AT_CHECKOUT')) {
+            $this->module->pending($cart);
+        }
+
         try {
             $payload = $this->module->createCheckoutOnAplazame($cart);
         } catch (Aplazame_Sdk_Api_ApiClientException $e) {
