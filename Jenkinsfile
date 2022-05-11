@@ -1,5 +1,4 @@
 library "aplazame-shared-library"
-deployToPro = false
 
 pipeline {
   agent {
@@ -21,7 +20,6 @@ pipeline {
         not {
           tag "*"
         }
-        beforeAgent true
       }
       agent {
         kubernetes {
@@ -139,7 +137,7 @@ pipeline {
         container('php') {
           sh """
           echo "Deploy to S3"
-           #aws s3 cp --acl public-read aplazame.latest.zip s3://aplazame/modules/prestashop/
+           aws s3 cp --acl public-read aplazame.latest.zip s3://aplazame/modules/prestashop/
           """
         }
       }
@@ -159,7 +157,7 @@ pipeline {
         container('php') {
           sh """
             echo "***************Create Release***************"
-            #gh release create v$BUILD_NUMBER --notes "Release created by Jenkins.<br />Build: $BUILD_TAG;$BUILD_URL&gt;"
+            gh release create v$BUILD_NUMBER --notes "Release created by Jenkins.<br />Build: $BUILD_TAG;$BUILD_URL&gt;"
           """
         }
       }
