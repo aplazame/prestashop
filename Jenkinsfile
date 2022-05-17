@@ -125,23 +125,21 @@ pipeline {
     }
 
     stage("Create bundle") {
-      //when {
-      //  branch 'master'
-      //}
+      when {
+        branch 'master'
+      }
       steps {  
           container('php') {
             sh """
               make zip
-              ls
-              pwd
             """
         }
       }
     }
     stage("Deploy to S3") {
-      //when {
-      //  branch 'master'
-      //}
+      when {
+        branch 'master'
+      }
       steps {  
         scmSkip()
 
@@ -153,8 +151,6 @@ pipeline {
         }
           container('php') {
             sh """
-              ls
-              pwd
               echo "****************Deploy to S3**********"
               cp aplazame.latest.zip aplazametest.latest.zip
               load-config
