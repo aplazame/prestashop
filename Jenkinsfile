@@ -49,7 +49,14 @@ pipeline {
           CACHE_KEY = 'v1-dependencies-' + HASH
 
           container('php') {
-            loadCache(CACHE_KEY)
+            sh """
+              load-config
+              export AWS_PROFILE=AplazameSharedServices
+              set -e
+              aws s3 cp --quiet s3://aplazameshared-jenkins-cache/Aplazame-Backend/prestashop/${CACHE_KEY} cache.tar.gz || exit 0
+              [ -f cache.tar.gz ] && tar -xf cache.tar.gz
+            """
+            //loadCache(CACHE_KEY)
           }
         }
       }
@@ -76,7 +83,15 @@ pipeline {
       }
       steps {  
         container('php') {
-          saveCache(CACHE_KEY,["${foldersCache}"])
+          sh """
+            load-config
+            export AWS_PROFILE=AplazameSharedServices
+            set -e
+            MATCHES=\$(aws s3 ls s3://aplazameshared-jenkins-cache/Aplazame-Backend/prestashop/${CACHE_KEY} | wc -l)
+            [ "\$MATCHES" = "0" ] && [ ! -f cache.tar.gz ] && tar -czf cache.tar.gz vendor/ && aws s3 cp --quiet cache.tar.gz s3://aplazameshared-jenkins-cache/Aplazame-Backend/prestashop/${CACHE_KEY}
+            exit 0
+        """
+          //saveCache(CACHE_KEY,["${foldersCache}"])
         }
       }
     }
@@ -114,10 +129,10 @@ pipeline {
         branch 'master'
       }
       steps {  
-        container('php') {
-          sh """
-            make zip
-          """
+          container('php') {
+            sh """
+              make zip
+            """
         }
       }
     }
@@ -134,14 +149,14 @@ pipeline {
             input id: 'ReleaseApproval', message: 'Deploy to S3?', ok: 'Yes'
           }
         }
-        container('php') {
-          sh """
-          echo "Deploy to S3"
-          load-config
-          export AWS_PROFILE=Aplazame
-          aws s3 cp --acl public-read aplazame.latest.zip s3://aplazame/modules/prestashop/
-          """
-        }
+          container('php') {
+            sh """
+              echo "****************Deploy to S3**********"
+              load-config
+              export AWS_PROFILE=Aplazame
+              aws s3 cp --acl public-read aplazame.latest.zip s3://aplazame/modules/prestashop/
+            """
+          }
       }
     }
     stage("Create Release") {
