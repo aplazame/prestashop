@@ -1,3 +1,4 @@
+version ?= v3.6.0
 errors = $(shell find aplazame -type f -name "*.php" -exec php -l "{}" \;| grep "Errors parsing ";)
 
 syntax.checker:
