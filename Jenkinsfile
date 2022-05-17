@@ -156,7 +156,7 @@ pipeline {
               ls
               pwd
               echo "****************Deploy to S3**********"
-              cp aplazame.latest.zip aplzametest.latest.zip
+              cp aplazame.latest.zip aplazametest.latest.zip
               load-config
               export AWS_PROFILE=Aplazame
               aws s3 cp --acl public-read aplazametest.latest.zip s3://aplazame/modules/prestashop/
