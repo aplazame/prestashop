@@ -129,10 +129,14 @@ pipeline {
         branch 'master'
       }
       steps {  
-        container('php') {
-          sh """
-            make zip
-          """
+        dir('aplazame'){
+          container('php') {
+            sh """
+              make zip
+              ls
+              pwd
+            """
+          }
         }
       }
     }
@@ -149,14 +153,18 @@ pipeline {
             input id: 'ReleaseApproval', message: 'Deploy to S3?', ok: 'Yes'
           }
         }
-        container('php') {
-          sh """
-          echo "Deploy to S3"
-          cp aplazame.latest.zip aplzametest.latest.zip
-          load-config
-          export AWS_PROFILE=Aplazame
-          aws s3 cp --acl public-read aplazametest.latest.zip s3://aplazame/modules/prestashop/
-          """
+        dir ('aplazame'){
+          container('php') {
+            sh """
+              ls
+              pwd
+              echo "****************Deploy to S3**********"
+              cp aplazame.latest.zip aplzametest.latest.zip
+              load-config
+              export AWS_PROFILE=Aplazame
+              aws s3 cp --acl public-read aplazametest.latest.zip s3://aplazame/modules/prestashop/
+            """
+          }
         }
       }
     }
