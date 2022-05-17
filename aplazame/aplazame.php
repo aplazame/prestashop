@@ -46,7 +46,7 @@ class Aplazame extends PaymentModule
     {
         $this->name = 'aplazame';
         $this->tab = 'payments_gateways';
-        $this->version = '7.6.0';
+        $this->version = '7.6.1';
         $this->author = 'Aplazame SL';
         $this->author_uri = 'https://aplazame.com';
         $this->module_key = '64b13ea3527b4df3fe2e3fc1526ce515';
@@ -1137,6 +1137,10 @@ HTML;
             $this->log(self::LOG_CRITICAL, 'Cannot refund. Detail ' . $e->getMessage(), $order->id_cart);
 
             return false;
+        }
+
+        if (_PS_VERSION_ >= '1.7.7') {
+            return true;
         }
 
         return $order->addOrderPayment(-$amount, $this->displayName);
