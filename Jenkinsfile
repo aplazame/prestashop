@@ -137,6 +137,7 @@ pipeline {
         container('php') {
           sh """
           echo "Deploy to S3"
+          load-config
           export AWS_PROFILE=Aplazame
           aws s3 cp --acl public-read aplazame.latest.zip s3://aplazame/modules/prestashop/
           """
