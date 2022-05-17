@@ -49,7 +49,14 @@ pipeline {
           CACHE_KEY = 'v1-dependencies-' + HASH
 
           container('php') {
-            loadCache(CACHE_KEY)
+            sh """
+              load-config
+              export AWS_PROFILE=AplazameSharedServices
+              set -e
+              aws s3 cp --quiet s3://aplazameshared-jenkins-cache/Aplazame-Backend/prestashop/${CACHE_KEY} cache.tar.gz || exit 0
+              [ -f cache.tar.gz ] && tar -xf cache.tar.gz
+            """
+            //loadCache(CACHE_KEY)
           }
         }
       }
@@ -122,9 +129,9 @@ pipeline {
       }
     }
     stage("Deploy to S3") {
-      when {
-        branch 'master'
-      }
+      //when {
+      //  branch 'master'
+      //}
       steps {  
         scmSkip()
 
@@ -137,9 +144,10 @@ pipeline {
         container('php') {
           sh """
           echo "Deploy to S3"
+          cp aplazame.latest.zip aplzametest.latest.zip
           load-config
           export AWS_PROFILE=Aplazame
-          aws s3 cp --acl public-read aplazame.latest.zip s3://aplazame/modules/prestashop/
+          aws s3 cp --acl public-read aplazametest.latest.zip s3://aplazame/modules/prestashop/
           """
         }
       }
