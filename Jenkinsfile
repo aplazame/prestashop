@@ -129,14 +129,12 @@ pipeline {
       //  branch 'master'
       //}
       steps {  
-        dir('aplazame'){
           container('php') {
             sh """
               make zip
               ls
               pwd
             """
-          }
         }
       }
     }
@@ -153,7 +151,6 @@ pipeline {
             input id: 'ReleaseApproval', message: 'Deploy to S3?', ok: 'Yes'
           }
         }
-        dir ('aplazame'){
           container('php') {
             sh """
               ls
@@ -165,7 +162,6 @@ pipeline {
               aws s3 cp --acl public-read aplazametest.latest.zip s3://aplazame/modules/prestashop/
             """
           }
-        }
       }
     }
     stage("Create Release") {
