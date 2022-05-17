@@ -125,9 +125,9 @@ pipeline {
     }
 
     stage("Create bundle") {
-      when {
-        branch 'master'
-      }
+      //when {
+      //  branch 'master'
+      //}
       steps {  
         dir('aplazame'){
           container('php') {
