@@ -83,7 +83,15 @@ pipeline {
       }
       steps {  
         container('php') {
-          saveCache(CACHE_KEY,["${foldersCache}"])
+          sh """
+            load-config
+            export AWS_PROFILE=AplazameSharedServices
+            set -e
+            MATCHES=\$(aws s3 ls s3://aplazameshared-jenkins-cache/Aplazame-Backend/prestashop/${CACHE_KEY} | wc -l)
+            [ "\$MATCHES" = "0" ] && [ ! -f cache.tar.gz ] && tar -czf cache.tar.gz vendor/ && aws s3 cp --quiet cache.tar.gz s3://aplazameshared-jenkins-cache/Aplazame-Backend/prestashop/${CACHE_KEY}
+            exit 0
+        """
+          //saveCache(CACHE_KEY,["${foldersCache}"])
         }
       }
     }
