@@ -1139,6 +1139,10 @@ HTML;
             return false;
         }
 
+        if (_PS_VERSION_ >= '1.7.7') {
+            return true;
+        }
+
         return $order->addOrderPayment(-$amount, $this->displayName);
     }
 
