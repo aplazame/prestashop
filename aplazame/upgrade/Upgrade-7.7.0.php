@@ -11,9 +11,9 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-function upgrade_module_7_6_0(Aplazame $module)
+function upgrade_module_7_7_0(Aplazame $module)
 {
-    Configuration::updateValue('APLAZAME_WIDGET_OUT_OF_LIMITS', 'show');
+    Configuration::updateValue('APLAZAME_CREATE_ORDER_AT_CHECKOUT', false);
 
     return true;
 }

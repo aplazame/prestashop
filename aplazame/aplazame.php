@@ -3,7 +3,7 @@
  * This file is part of the official Aplazame module for PrestaShop.
  *
  * @author    Aplazame <soporte@aplazame.com>
- * @copyright 2015-2021 Aplazame
+ * @copyright 2015-2022 Aplazame
  * @license   see file: LICENSE
  */
 
@@ -84,12 +84,15 @@ class Aplazame extends PaymentModule
             return false;
         }
 
+        /**
+         * Checkout settings.
+         */
         Configuration::updateValue('APLAZAME_SANDBOX', false);
+        Configuration::updateValue('APLAZAME_CREATE_ORDER_AT_CHECKOUT', true);
+        Configuration::updateValue('APLAZAME_BUTTON_TITLE', $this->l('Pay with Aplazame'));
+        Configuration::updateValue('APLAZAME_BUTTON_DESCRIPTION',
+            'Compra primero y paga después con <a href="https://aplazame.com" target="_blank">Aplazame</a>.', true);
 
-        Configuration::updateValue('APLAZAME_PRODUCT_WIDGET_ENABLED', true);
-        Configuration::updateValue('APLAZAME_WIDGET_PROD', '0');
-
-        Configuration::updateValue('APLAZAME_CART_WIDGET_ENABLED', true);
         if (_PS_VERSION_ >= 1.7) {
             Configuration::updateValue('APLAZAME_BUTTON_IMAGE', '');
             Configuration::updateValue('APLAZAME_BUTTON', "div.payment-option:has(input[data-module-name='{$this->name}'])");
@@ -98,23 +101,21 @@ class Aplazame extends PaymentModule
             Configuration::updateValue('APLAZAME_BUTTON', '#aplazame_payment_button');
         }
 
-        Configuration::updateValue('APLAZAME_BUTTON_TITLE', $this->l('Pay with Aplazame'));
-        Configuration::updateValue('APLAZAME_BUTTON_DESCRIPTION',
-            'Compra primero y paga después con <a href="https://aplazame.com" target="_blank">Aplazame</a>.', true);
-
-        Configuration::updateValue('APLAZAME_PRODUCT_LEGAL_ADVICE', true);
-        Configuration::updateValue('APLAZAME_CART_LEGAL_ADVICE', true);
-
-        Configuration::updateValue('APLAZAME_PRODUCT_PAY_IN_4', false);
-        Configuration::updateValue('APLAZAME_CART_PAY_IN_4', false);
-
-        Configuration::updateValue('APLAZAME_PRODUCT_DEFAULT_INSTALMENTS', '');
-        Configuration::updateValue('APLAZAME_CART_DEFAULT_INSTALMENTS', '');
-
-        Configuration::updateValue('APLAZAME_PRODUCT_CSS', '');
-        Configuration::updateValue('APLAZAME_CART_CSS', '#total_price');
-
+        /**
+         * Widgets settings.
+         */
         Configuration::updateValue('APLAZAME_WIDGET_OUT_OF_LIMITS', 'show');
+        Configuration::updateValue('APLAZAME_WIDGET_PROD', '0');
+        Configuration::updateValue('APLAZAME_PRODUCT_WIDGET_ENABLED', true);
+        Configuration::updateValue('APLAZAME_PRODUCT_LEGAL_ADVICE', true);
+        Configuration::updateValue('APLAZAME_PRODUCT_PAY_IN_4', false);
+        Configuration::updateValue('APLAZAME_PRODUCT_DEFAULT_INSTALMENTS', '');
+        Configuration::updateValue('APLAZAME_PRODUCT_CSS', '');
+        Configuration::updateValue('APLAZAME_CART_WIDGET_ENABLED', true);
+        Configuration::updateValue('APLAZAME_CART_LEGAL_ADVICE', true);
+        Configuration::updateValue('APLAZAME_CART_PAY_IN_4', false);
+        Configuration::updateValue('APLAZAME_CART_DEFAULT_INSTALMENTS', '');
+        Configuration::updateValue('APLAZAME_CART_CSS', '#total_price');
 
         /**
          * Widget v4 params.
@@ -172,22 +173,26 @@ class Aplazame extends PaymentModule
 
     public function pending(Cart $cart)
     {
-        $cartId = $cart->id;
-        $orderStateId = Configuration::get(self::ORDER_STATE_PENDING);
+        if (!$cart->orderExists()) {
+            $cartId = $cart->id;
+            $orderStateId = Configuration::get(self::ORDER_STATE_PENDING);
 
-        $customer = new Customer($cart->id_customer);
+            $customer = new Customer($cart->id_customer);
 
-        return !(false === $this->validateOrder(
-            $cartId,
-            $orderStateId,
-            $cart->getOrderTotal(true),
-            $this->displayName,
-            'Waiting for Aplazame review',
-            array(),
-            null,
-            false,
-            $customer->secure_key
-        ));
+            return !(false === $this->validateOrder(
+                $cartId,
+                $orderStateId,
+                $cart->getOrderTotal(true),
+                $this->displayName,
+                'Waiting for Aplazame payment/review',
+                array(),
+                null,
+                false,
+                $customer->secure_key
+            ));
+        }
+
+        return true;
     }
 
     public function accept(Cart $cart)
@@ -248,6 +253,7 @@ class Aplazame extends PaymentModule
         $settingsKeys = array(
             'APLAZAME_SANDBOX',
             'APLAZAME_SECRET_KEY',
+            'APLAZAME_CREATE_ORDER_AT_CHECKOUT',
             'APLAZAME_PRODUCT_WIDGET_ENABLED',
             'APLAZAME_WIDGET_PROD',
             'APLAZAME_CART_WIDGET_ENABLED',
@@ -411,6 +417,23 @@ HTML;
                             'desc' => $this->l('Aplazame API Private Key'),
                             'prefix' => '<i class="icon icon-key"></i>',
                             'col' => 4,
+                        ),
+                        array(
+                            'type' => $switch_or_radio,
+                            'label' => $this->l('Create order at checkout'),
+                            'name' => 'APLAZAME_CREATE_ORDER_AT_CHECKOUT',
+                            'is_bool' => true,
+                            'desc' => $this->l('Create order at checkout (with awaiting state) instead at confirmation'),
+                            'values' => array(
+                                array(
+                                    'id' => 'active_on',
+                                    'value' => true,
+                                ),
+                                array(
+                                    'id' => 'active_off',
+                                    'value' => false,
+                                ),
+                            ),
                         ),
                         array(
                             'name' => 'APLAZAME_WIDGET_OUT_OF_LIMITS',
