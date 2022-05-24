@@ -3,7 +3,7 @@
  * This file is part of the official Aplazame module for PrestaShop.
  *
  * @author    Aplazame <soporte@aplazame.com>
- * @copyright 2015-2021 Aplazame
+ * @copyright 2015-2022 Aplazame
  * @license   see file: LICENSE
  */
 
@@ -33,6 +33,10 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
             $this->setTemplate('display_errors.tpl');
 
             return;
+        }
+
+        if (Configuration::get('APLAZAME_CREATE_ORDER_AT_CHECKOUT')) {
+            $this->module->pending($cart);
         }
 
         $this->context->smarty->assign(array(

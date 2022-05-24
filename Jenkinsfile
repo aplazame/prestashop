@@ -67,7 +67,7 @@ pipeline {
           tag "*"
         }
       }
-      steps {  
+      steps {
           container('php') {
             sh """
               composer install -n --prefer-dist
@@ -81,7 +81,7 @@ pipeline {
           tag "*"
         }
       }
-      steps {  
+      steps {
         container('php') {
           sh """
             load-config
@@ -101,7 +101,7 @@ pipeline {
           tag "*"
         }
       }
-      steps {  
+      steps {
         container('php') {
           sh """
             make syntax.checker
@@ -115,7 +115,7 @@ pipeline {
           tag "*"
         }
       }
-      steps {  
+      steps {
         container('php') {
           sh """
             make style
@@ -128,7 +128,7 @@ pipeline {
       when {
         branch 'master'
       }
-      steps {  
+      steps {
           container('php') {
             sh """
               make zip
@@ -140,7 +140,7 @@ pipeline {
       when {
         branch 'master'
       }
-      steps {  
+      steps {
         scmSkip()
 
         timeout(time: 15, unit: "MINUTES") {
