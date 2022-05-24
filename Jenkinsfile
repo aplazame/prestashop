@@ -163,6 +163,9 @@ pipeline {
       when {
         branch 'master'
       }
+      environment {
+        GITHUB_TOKEN = credentials('gh-releases-token')
+      }
       steps {
         scmSkip()
         timeout(time: 15, unit: "MINUTES") {
