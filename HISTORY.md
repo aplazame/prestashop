@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v7.7.1](https://github.com/aplazame/prestashop/tree/v7.7.1) (2022-06-20)
+
+* [FIX] Deprecations.
+
 #### [v7.7.0](https://github.com/aplazame/prestashop/tree/v7.7.0) (2022-05-23)
 
 * [ADD] Option to create order at checkout.
