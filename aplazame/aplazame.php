@@ -1113,12 +1113,12 @@ HTML;
         return $this->apiClient;
     }
 
-    public function callToRest($method, $path, $values = null)
+    public function callToRest($method, $path, $values = null, $apiVersion = 1)
     {
         $client = $this->getApiClient();
 
         try {
-            return $client->request($method, $path, $values);
+            return $client->request($method, $path, $values, $apiVersion);
         } catch (Exception $e) {
             $this->log(self::LOG_ERROR, $e->getMessage());
 
@@ -1207,7 +1207,7 @@ HTML;
     {
         $checkout = Aplazame_Aplazame_BusinessModel_Checkout::createFromCart($cart, (int) $this->id, $this->currentOrder);
 
-        return $this->callToRest('POST', '/checkout', Aplazame_Sdk_Serializer_JsonSerializer::serializeValue($checkout));
+        return $this->callToRest('POST', '/checkout', Aplazame_Sdk_Serializer_JsonSerializer::serializeValue($checkout), 3);
     }
 
     private function registerController($className, $name)
