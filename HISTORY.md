@@ -1,5 +1,10 @@
 ## Change Log
 
+#### [v7.7.2](https://github.com/aplazame/prestashop/tree/v7.7.2) (2022-10-20)
+
+* [CHANGE] Checkout header.
+* [FIX] Show widget only for "ES" language.
+
 #### [v7.7.1](https://github.com/aplazame/prestashop/tree/v7.7.1) (2022-06-20)
 
 * [FIX] Deprecations.
