@@ -960,6 +960,11 @@ HTML;
             return false;
         }
 
+        $language = Context::getContext()->language->iso_code;
+        if ($language !== 'es') {
+            return false;
+        }
+
         /** @var Cart $cart */
         $cart = $params['cart'];
 
@@ -1077,6 +1082,11 @@ HTML;
         }
 
         if (!$product->show_price || !$product->available_for_order) {
+            return false;
+        }
+
+        $language = Context::getContext()->language->iso_code;
+        if ($language !== 'es') {
             return false;
         }
 
