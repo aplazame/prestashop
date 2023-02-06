@@ -291,15 +291,16 @@ class Aplazame extends PaymentModule
                         Configuration::updateValue($key, $value, true);
                         break;
                     case 'APLAZAME_SECRET_KEY':
-                        try {
-                            $this->updateSettingsFromAplazame($value);
+                        if($value != Configuration::get('APLAZAME_SECRET_KEY')){
+                            try {
+                                $this->updateSettingsFromAplazame($value);
 
-                            Configuration::updateValue($key, $value);
-                        } catch (Aplazame_Sdk_Api_ApiClientException $apiClientException) {
-                            $output .= $this->displayError($apiClientException->getMessage());
-                            $hasFoundErrors = true;
+                                Configuration::updateValue($key, $value);
+                            } catch (Aplazame_Sdk_Api_ApiClientException $apiClientException) {
+                                $output .= $this->displayError($apiClientException->getMessage());
+                                $hasFoundErrors = true;
+                            }
                         }
-
                         break;
                     default:
                         Configuration::updateValue($key, $value);
