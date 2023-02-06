@@ -92,6 +92,16 @@ final class AplazameApiConfirm
             }
         }
 
+        if (Configuration::get('APLAZAME_CREATE_ORDER_AT_CHECKOUT') !== false) {
+            $amount = $cart->getOrderTotal(true);
+            if ($payload['total_amount'] !== Aplazame_Sdk_Serializer_Decimal::fromFloat($amount)->jsonSerialize()) {
+                if (!$this->module->deny($cart)) {
+                    return self::ko("'deny' function failed (at fraud)");
+                }
+                return self::ko('Fraud detected');
+            }
+        }
+
         switch ($payload['status']) {
             case 'pending':
                 switch ($payload['status_reason']) {
