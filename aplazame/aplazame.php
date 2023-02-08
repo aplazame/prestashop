@@ -108,11 +108,13 @@ class Aplazame extends PaymentModule
         Configuration::updateValue('APLAZAME_WIDGET_PROD', '0');
         Configuration::updateValue('APLAZAME_PRODUCT_WIDGET_ENABLED', true);
         Configuration::updateValue('APLAZAME_PRODUCT_LEGAL_ADVICE', true);
+        Configuration::updateValue('APLAZAME_PRODUCT_DOWNPAYMENT_INFO', false);
         Configuration::updateValue('APLAZAME_PRODUCT_PAY_IN_4', false);
         Configuration::updateValue('APLAZAME_PRODUCT_DEFAULT_INSTALMENTS', '');
         Configuration::updateValue('APLAZAME_PRODUCT_CSS', '');
         Configuration::updateValue('APLAZAME_CART_WIDGET_ENABLED', true);
         Configuration::updateValue('APLAZAME_CART_LEGAL_ADVICE', true);
+        Configuration::updateValue('APLAZAME_CART_DOWNPAYMENT_INFO', false);
         Configuration::updateValue('APLAZAME_CART_PAY_IN_4', false);
         Configuration::updateValue('APLAZAME_CART_DEFAULT_INSTALMENTS', '');
         Configuration::updateValue('APLAZAME_CART_CSS', '#total_price');
@@ -263,6 +265,8 @@ class Aplazame extends PaymentModule
             'APLAZAME_BUTTON_DESCRIPTION',
             'APLAZAME_PRODUCT_LEGAL_ADVICE',
             'APLAZAME_CART_LEGAL_ADVICE',
+            'APLAZAME_PRODUCT_DOWNPAYMENT_INFO',
+            'APLAZAME_CART_DOWNPAYMENT_INFO',
             'APLAZAME_PRODUCT_PAY_IN_4',
             'APLAZAME_CART_PAY_IN_4',
             'APLAZAME_PRODUCT_DEFAULT_INSTALMENTS',
@@ -291,7 +295,7 @@ class Aplazame extends PaymentModule
                         Configuration::updateValue($key, $value, true);
                         break;
                     case 'APLAZAME_SECRET_KEY':
-                        if($value != Configuration::get('APLAZAME_SECRET_KEY')){
+                        if ($value != Configuration::get('APLAZAME_SECRET_KEY')) {
                             try {
                                 $this->updateSettingsFromAplazame($value);
 
@@ -505,6 +509,23 @@ HTML;
                         ),
                         array(
                             'type' => $switch_or_radio,
+                            'label' => $this->l('Downpayment info'),
+                            'name' => 'APLAZAME_PRODUCT_DOWNPAYMENT_INFO',
+                            'is_bool' => true,
+                            'desc' => $this->l('Show downpayment info in product widget'),
+                            'values' => array(
+                                array(
+                                    'id' => 'active_on',
+                                    'value' => true,
+                                ),
+                                array(
+                                    'id' => 'active_off',
+                                    'value' => false,
+                                ),
+                            ),
+                        ),
+                        array(
+                            'type' => $switch_or_radio,
                             'label' => $this->l('Legal notice'),
                             'name' => 'APLAZAME_PRODUCT_LEGAL_ADVICE',
                             'is_bool' => true,
@@ -660,6 +681,23 @@ HTML;
                             'label' => $this->l('Show widget on cart page'),
                             'name' => 'APLAZAME_CART_WIDGET_ENABLED',
                             'is_bool' => true,
+                            'values' => array(
+                                array(
+                                    'id' => 'active_on',
+                                    'value' => true,
+                                ),
+                                array(
+                                    'id' => 'active_off',
+                                    'value' => false,
+                                ),
+                            ),
+                        ),
+                        array(
+                            'type' => $switch_or_radio,
+                            'label' => $this->l('Downpayment info'),
+                            'name' => 'APLAZAME_CART_DOWNPAYMENT_INFO',
+                            'is_bool' => true,
+                            'desc' => $this->l('Show downpayment info in cart widget'),
                             'values' => array(
                                 array(
                                     'id' => 'active_on',
@@ -976,6 +1014,7 @@ HTML;
             'aplazame_currency_iso' => $currency->iso_code,
             'aplazame_css' => Configuration::get('APLAZAME_CART_CSS'),
             'aplazame_legal_advice' => Configuration::get('APLAZAME_CART_LEGAL_ADVICE') ? 'true' : 'false',
+            'aplazame_downpayment_info' => Configuration::get('APLAZAME_CART_DOWNPAYMENT_INFO') ? 'true' : 'false',
             'aplazame_pay_in_4' => Configuration::get('APLAZAME_CART_PAY_IN_4'),
             'aplazame_default_instalments' => Configuration::get('APLAZAME_CART_DEFAULT_INSTALMENTS'),
             'aplazame_widget_out_of_limits' => Configuration::get('APLAZAME_WIDGET_OUT_OF_LIMITS'),
@@ -1098,6 +1137,7 @@ HTML;
             'aplazame_css' => Configuration::get('APLAZAME_PRODUCT_CSS'),
             'aplazame_article_id' => $product->id,
             'aplazame_legal_advice' => Configuration::get('APLAZAME_PRODUCT_LEGAL_ADVICE') ? 'true' : 'false',
+            'aplazame_downpayment_info' => Configuration::get('APLAZAME_PRODUCT_DOWNPAYMENT_INFO') ? 'true' : 'false',
             'aplazame_pay_in_4' => Configuration::get('APLAZAME_PRODUCT_PAY_IN_4'),
             'aplazame_default_instalments' => Configuration::get('APLAZAME_PRODUCT_DEFAULT_INSTALMENTS'),
             'aplazame_widget_out_of_limits' => Configuration::get('APLAZAME_WIDGET_OUT_OF_LIMITS'),

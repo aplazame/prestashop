@@ -21,6 +21,7 @@
     data-currency="{$aplazame_currency_iso|escape:'htmlall':'UTF-8'}"
     data-price="{$aplazame_css|escape:'htmlall':'UTF-8'}"
     data-option-legal-advice="{$aplazame_legal_advice|escape:'htmlall':'UTF-8'}"
+    data-option-downpayment-info="{$aplazame_downpayment_info|escape:'htmlall':'UTF-8'}"
     data-option-out-of-limits="{$aplazame_widget_out_of_limits|escape:'htmlall':'UTF-8'}"
     {if $aplazame_pay_in_4}
         data-pay-in-4=""

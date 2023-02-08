@@ -98,6 +98,7 @@ final class AplazameApiConfirm
                 if (!$this->module->deny($cart)) {
                     return self::ko("'deny' function failed (at fraud)");
                 }
+
                 return self::ko('Fraud detected');
             }
         }
