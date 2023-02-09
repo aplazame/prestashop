@@ -108,13 +108,13 @@ class Aplazame extends PaymentModule
         Configuration::updateValue('APLAZAME_WIDGET_PROD', '0');
         Configuration::updateValue('APLAZAME_PRODUCT_WIDGET_ENABLED', true);
         Configuration::updateValue('APLAZAME_PRODUCT_LEGAL_ADVICE', true);
-        Configuration::updateValue('APLAZAME_PRODUCT_DOWNPAYMENT_INFO', false);
+        Configuration::updateValue('APLAZAME_PRODUCT_DOWNPAYMENT_INFO', true);
         Configuration::updateValue('APLAZAME_PRODUCT_PAY_IN_4', false);
         Configuration::updateValue('APLAZAME_PRODUCT_DEFAULT_INSTALMENTS', '');
         Configuration::updateValue('APLAZAME_PRODUCT_CSS', '');
         Configuration::updateValue('APLAZAME_CART_WIDGET_ENABLED', true);
         Configuration::updateValue('APLAZAME_CART_LEGAL_ADVICE', true);
-        Configuration::updateValue('APLAZAME_CART_DOWNPAYMENT_INFO', false);
+        Configuration::updateValue('APLAZAME_CART_DOWNPAYMENT_INFO', true);
         Configuration::updateValue('APLAZAME_CART_PAY_IN_4', false);
         Configuration::updateValue('APLAZAME_CART_DEFAULT_INSTALMENTS', '');
         Configuration::updateValue('APLAZAME_CART_CSS', '#total_price');
