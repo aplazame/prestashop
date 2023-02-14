@@ -3,7 +3,7 @@
  * This file is part of the official Aplazame module for PrestaShop.
  *
  * @author    Aplazame <soporte@aplazame.com>
- * @copyright 2015-2022 Aplazame
+ * @copyright 2015-2023 Aplazame
  * @license   see file: LICENSE
  */
 
@@ -89,6 +89,17 @@ final class AplazameApiConfirm
             $order = $this->getOrder($cartId);
             if (Validate::isLoadedObject($cart) && ($order->module != $this->module->name)) {
                 return self::ko('Aplazame is not the payment method');
+            }
+        }
+
+        if (Configuration::get('APLAZAME_CREATE_ORDER_AT_CHECKOUT') !== false) {
+            $amount = $cart->getOrderTotal(true);
+            if ($payload['total_amount'] !== Aplazame_Sdk_Serializer_Decimal::fromFloat($amount)->jsonSerialize()) {
+                if (!$this->module->deny($cart)) {
+                    return self::ko("'deny' function failed (at fraud)");
+                }
+
+                return self::ko('Fraud detected');
             }
         }
 

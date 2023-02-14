@@ -1,5 +1,10 @@
 ## Change Log
 
+#### [v7.8.0](https://github.com/aplazame/prestashop/tree/v7.8.0) (2023-02-14)
+
+* [ADD] Downpayment info option for widgets.
+* [FIX] Various tweaks and checks.
+
 #### [v7.7.2](https://github.com/aplazame/prestashop/tree/v7.7.2) (2022-10-20)
 
 * [CHANGE] Checkout header.

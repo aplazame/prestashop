@@ -2,7 +2,7 @@
  * This file is part of the official Aplazame module for PrestaShop.
  *
  * @author    Aplazame <soporte@aplazame.com>
- * @copyright 2015-2022 Aplazame
+ * @copyright 2015-2023 Aplazame
  * @license   see file: LICENSE
  *}
 
@@ -25,6 +25,7 @@
     {/if}
     data-article-id="{$aplazame_article_id|escape:'htmlall':'UTF-8'}"
     data-option-legal-advice="{$aplazame_legal_advice|escape:'htmlall':'UTF-8'}"
+    data-option-downpayment-info="{$aplazame_downpayment_info|escape:'htmlall':'UTF-8'}"
     data-option-out-of-limits="{$aplazame_widget_out_of_limits|escape:'htmlall':'UTF-8'}"
     {if $aplazame_pay_in_4}
         data-pay-in-4=""
