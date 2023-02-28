@@ -343,7 +343,7 @@ HTML;
             $privateKey
         );
 
-        $response = $client->get('/me');
+        $response = $client->get('/merchants/api-keys');
 
         Configuration::updateValue('APLAZAME_PUBLIC_KEY', $response['public_api_key']);
 
