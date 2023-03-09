@@ -1006,7 +1006,7 @@ HTML;
 
         /** @var Cart $cart */
         $cart = $params['cart'];
-
+        $address = new Address($cart->id_address_invoice);
         $currency = new Currency($cart->id_currency);
 
         $this->context->smarty->assign(array(
@@ -1022,6 +1022,7 @@ HTML;
             'aplazame_primary_color' => Configuration::get('CART_WIDGET_PRIMARY_COLOR'),
             'aplazame_layout' => Configuration::get('CART_WIDGET_LAYOUT'),
             'aplazame_align' => Configuration::get('CART_WIDGET_ALIGN'),
+            'aplazame_customer_id' => $address->dni,
         ));
 
         return $this->display(__FILE__, 'shoppingcart.tpl');
@@ -1130,6 +1131,9 @@ HTML;
             return false;
         }
 
+        /** @var Cart $cart */
+        $cart = $this->context->cart;
+        $address = new Address($cart->id_address_invoice);
         $currency = Context::getContext()->currency;
         $this->context->smarty->assign(array(
             'aplazame_amount' => Aplazame_Sdk_Serializer_Decimal::fromFloat($product->getPrice(true, null, 2))->value,
@@ -1146,6 +1150,7 @@ HTML;
             'aplazame_layout' => Configuration::get('PRODUCT_WIDGET_LAYOUT'),
             'aplazame_align' => Configuration::get('PRODUCT_WIDGET_ALIGN'),
             'aplazame_border' => Configuration::get('PRODUCT_WIDGET_BORDER') ? 'true' : 'false',
+            'aplazame_customer_id' => $address->dni,
         ));
 
         return $this->display(__FILE__, 'product.tpl');
