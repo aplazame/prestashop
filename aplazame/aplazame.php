@@ -46,7 +46,7 @@ class Aplazame extends PaymentModule
     {
         $this->name = 'aplazame';
         $this->tab = 'payments_gateways';
-        $this->version = '7.8.0';
+        $this->version = '7.8.1';
         $this->author = 'Aplazame SL';
         $this->author_uri = 'https://aplazame.com';
         $this->module_key = '64b13ea3527b4df3fe2e3fc1526ce515';
@@ -1006,7 +1006,7 @@ HTML;
 
         /** @var Cart $cart */
         $cart = $params['cart'];
-
+        $address = new Address($cart->id_address_invoice);
         $currency = new Currency($cart->id_currency);
 
         $this->context->smarty->assign(array(
@@ -1022,6 +1022,7 @@ HTML;
             'aplazame_primary_color' => Configuration::get('CART_WIDGET_PRIMARY_COLOR'),
             'aplazame_layout' => Configuration::get('CART_WIDGET_LAYOUT'),
             'aplazame_align' => Configuration::get('CART_WIDGET_ALIGN'),
+            'aplazame_customer_id' => $address->dni,
         ));
 
         return $this->display(__FILE__, 'shoppingcart.tpl');
@@ -1130,6 +1131,9 @@ HTML;
             return false;
         }
 
+        /** @var Cart $cart */
+        $cart = $this->context->cart;
+        $address = new Address($cart->id_address_invoice);
         $currency = Context::getContext()->currency;
         $this->context->smarty->assign(array(
             'aplazame_amount' => Aplazame_Sdk_Serializer_Decimal::fromFloat($product->getPrice(true, null, 2))->value,
@@ -1146,6 +1150,7 @@ HTML;
             'aplazame_layout' => Configuration::get('PRODUCT_WIDGET_LAYOUT'),
             'aplazame_align' => Configuration::get('PRODUCT_WIDGET_ALIGN'),
             'aplazame_border' => Configuration::get('PRODUCT_WIDGET_BORDER') ? 'true' : 'false',
+            'aplazame_customer_id' => $address->dni,
         ));
 
         return $this->display(__FILE__, 'product.tpl');

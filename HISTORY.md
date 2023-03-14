@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v7.8.1](https://github.com/aplazame/prestashop/tree/v7.8.1) (2023-03-14)
+
+* [ADD] Widget improvements.
+
 #### [v7.8.0](https://github.com/aplazame/prestashop/tree/v7.8.0) (2023-02-14)
 
 * [ADD] Downpayment info option for widgets.
