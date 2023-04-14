@@ -26,13 +26,13 @@ final class AdminAplazameApiProxyController extends ModuleAdminController
         $method = Tools::getValue('method');
         $path = Tools::getValue('path');
         $data = Tools::getValue('data');
-        $data = Tools::jsonDecode($data);
+        $data = json_decode($data);
         if (!$data) {
             $data = array();
         }
 
         $response = $this->aplazame->callToRest($method, $path, $data);
 
-        die(Tools::jsonEncode($response));
+        die(json_encode($response));
     }
 }

@@ -69,14 +69,14 @@ class AplazameApiModuleFrontController extends ModuleFrontController
     {
         $path = Tools::getValue('path', '');
         $queryArguments = $_GET;
-        $payload = Tools::jsonDecode(Tools::file_get_contents('php://input'), true);
+        $payload = json_decode(Tools::file_get_contents('php://input'), true);
 
         $response = $this->route($path, $queryArguments, $payload);
 
         $this->http_response_code($response['status_code']);
         header('Content-Type: application/json');
 
-        exit(Tools::jsonEncode($response['payload']));
+        exit(json_encode($response['payload']));
     }
 
     /**
