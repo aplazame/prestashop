@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v7.8.2](https://github.com/aplazame/prestashop/tree/v7.8.2) (2023-04-17)
+
+* [FIX] Deprecations.
+
 #### [v7.8.1](https://github.com/aplazame/prestashop/tree/v7.8.1) (2023-03-14)
 
 * [ADD] Widget improvements.
