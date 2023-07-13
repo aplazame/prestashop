@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v7.8.3](https://github.com/aplazame/prestashop/tree/v7.8.3) (2023-07-13)
+
+* [FIX] Fraud check conditional.
+
 #### [v7.8.2](https://github.com/aplazame/prestashop/tree/v7.8.2) (2023-04-17)
 
 * [FIX] Deprecations.

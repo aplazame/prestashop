@@ -92,7 +92,7 @@ final class AplazameApiConfirm
             }
         }
 
-        if (Configuration::get('APLAZAME_CREATE_ORDER_AT_CHECKOUT') !== false) {
+        if (Configuration::get('APLAZAME_CREATE_ORDER_AT_CHECKOUT') == null) {
             $amount = $cart->getOrderTotal(true);
             if ($payload['total_amount'] !== Aplazame_Sdk_Serializer_Decimal::fromFloat($amount)->jsonSerialize()) {
                 if (!$this->module->deny($cart)) {
