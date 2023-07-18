@@ -127,9 +127,11 @@ class Aplazame extends PaymentModule
         Configuration::updateValue('PRODUCT_WIDGET_PRIMARY_COLOR', '#334bff');
         Configuration::updateValue('PRODUCT_WIDGET_LAYOUT', 'horizontal');
         Configuration::updateValue('PRODUCT_WIDGET_ALIGN', 'center');
+        Configuration::updateValue('PRODUCT_WIDGET_MAX_DESIRED', false);
         Configuration::updateValue('CART_WIDGET_PRIMARY_COLOR', '#334bff');
         Configuration::updateValue('CART_WIDGET_LAYOUT', 'horizontal');
         Configuration::updateValue('CART_WIDGET_ALIGN', 'center');
+        Configuration::updateValue('CART_WIDGET_MAX_DESIRED', false);
 
         return ($this->registerHook('actionOrderSlipAdd')
             && $this->registerHook('actionOrderStatusUpdate')
@@ -279,9 +281,11 @@ class Aplazame extends PaymentModule
             'PRODUCT_WIDGET_PRIMARY_COLOR',
             'PRODUCT_WIDGET_LAYOUT',
             'PRODUCT_WIDGET_ALIGN',
+            'PRODUCT_WIDGET_MAX_DESIRED',
             'CART_WIDGET_PRIMARY_COLOR',
             'CART_WIDGET_LAYOUT',
             'CART_WIDGET_ALIGN',
+            'CART_WIDGET_MAX_DESIRED',
         );
 
         if (Tools::isSubmit('submitAplazameModule')) {
@@ -615,6 +619,23 @@ HTML;
                             ),
                         ),
                         array(
+                            'type' => $switch_or_radio,
+                            'label' => $this->l('Enter maximum instalment'),
+                            'name' => 'PRODUCT_WIDGET_MAX_DESIRED',
+                            'is_bool' => true,
+                            'desc' => $this->l('Allow the user to manually enter the maximum instalment they want to pay (only new widget)'),
+                            'values' => array(
+                                array(
+                                    'id' => 'active_on',
+                                    'value' => true,
+                                ),
+                                array(
+                                    'id' => 'active_off',
+                                    'value' => false,
+                                ),
+                            ),
+                        ),
+                        array(
                             'name' => 'PRODUCT_WIDGET_PRIMARY_COLOR',
                             'type' => 'color',
                             'label' => $this->l('Primary color'),
@@ -757,6 +778,23 @@ HTML;
                             'desc' => $this->l('CSS selector pointing to variable cart total price'),
                             'name' => 'APLAZAME_CART_CSS',
                             'label' => $this->l('Variable price CSS'),
+                        ),
+                        array(
+                            'type' => $switch_or_radio,
+                            'label' => $this->l('Enter maximum instalment'),
+                            'name' => 'CART_WIDGET_MAX_DESIRED',
+                            'is_bool' => true,
+                            'desc' => $this->l('Allow the user to manually enter the maximum instalment they want to pay (only new widget)'),
+                            'values' => array(
+                                array(
+                                    'id' => 'active_on',
+                                    'value' => true,
+                                ),
+                                array(
+                                    'id' => 'active_off',
+                                    'value' => false,
+                                ),
+                            ),
                         ),
                         array(
                             'name' => 'CART_WIDGET_PRIMARY_COLOR',
@@ -1019,6 +1057,7 @@ HTML;
             'aplazame_default_instalments' => Configuration::get('APLAZAME_CART_DEFAULT_INSTALMENTS'),
             'aplazame_widget_out_of_limits' => Configuration::get('APLAZAME_WIDGET_OUT_OF_LIMITS'),
             'aplazame_widget_legacy' => Configuration::get('WIDGET_LEGACY'),
+            'aplazame_max_desired' => Configuration::get('CART_WIDGET_MAX_DESIRED') ? 'true' : 'false',
             'aplazame_primary_color' => Configuration::get('CART_WIDGET_PRIMARY_COLOR'),
             'aplazame_layout' => Configuration::get('CART_WIDGET_LAYOUT'),
             'aplazame_align' => Configuration::get('CART_WIDGET_ALIGN'),
@@ -1146,6 +1185,7 @@ HTML;
             'aplazame_default_instalments' => Configuration::get('APLAZAME_PRODUCT_DEFAULT_INSTALMENTS'),
             'aplazame_widget_out_of_limits' => Configuration::get('APLAZAME_WIDGET_OUT_OF_LIMITS'),
             'aplazame_widget_legacy' => Configuration::get('WIDGET_LEGACY'),
+            'aplazame_max_desired' => Configuration::get('PRODUCT_WIDGET_MAX_DESIRED') ? 'true' : 'false',
             'aplazame_primary_color' => Configuration::get('PRODUCT_WIDGET_PRIMARY_COLOR'),
             'aplazame_layout' => Configuration::get('PRODUCT_WIDGET_LAYOUT'),
             'aplazame_align' => Configuration::get('PRODUCT_WIDGET_ALIGN'),
