@@ -13,6 +13,7 @@
     {else}
         data-aplazame-widget-instalments="v4"
 		data-type="product"
+        data-option-max-amount-desired="{$aplazame_max_desired|escape:'htmlall':'UTF-8'}"
 		data-option-primary-color="{$aplazame_primary_color|escape:'htmlall':'UTF-8'}"
 		data-option-layout="{$aplazame_layout|escape:'htmlall':'UTF-8'}"
         data-option-align="{$aplazame_align|escape:'htmlall':'UTF-8'}"
