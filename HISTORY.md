@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v7.9.1](https://github.com/aplazame/prestashop/tree/v7.9.1) (2023-08-14)
+
+* API improvements.
+
 #### [v7.9.0](https://github.com/aplazame/prestashop/tree/v7.9.0) (2023-07-20)
 
 * [ADD] Maximum instalment desired option for widgets.
