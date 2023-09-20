@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v7.9.2](https://github.com/aplazame/prestashop/tree/v7.9.2) (2023-09-20)
+
+* [ADD] Developer options for checkout v4 API tests.
+
 #### [v7.9.1](https://github.com/aplazame/prestashop/tree/v7.9.1) (2023-08-14)
 
 * API improvements.
