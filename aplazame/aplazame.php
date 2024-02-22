@@ -133,11 +133,6 @@ class Aplazame extends PaymentModule
         Configuration::updateValue('CART_WIDGET_ALIGN', 'center');
         Configuration::updateValue('CART_WIDGET_MAX_DESIRED', false);
 
-        /**
-         * Developer settings.
-         */
-        Configuration::updateValue('APLAZAME_V4', false);
-
         return ($this->registerHook('actionOrderSlipAdd')
             && $this->registerHook('actionOrderStatusUpdate')
             && $this->registerHook('displayAdminProductsExtra')
@@ -281,7 +276,6 @@ class Aplazame extends PaymentModule
             'APLAZAME_PRODUCT_CSS',
             'APLAZAME_CART_CSS',
             'APLAZAME_WIDGET_OUT_OF_LIMITS',
-            'APLAZAME_V4',
             'WIDGET_LEGACY',
             'PRODUCT_WIDGET_BORDER',
             'PRODUCT_WIDGET_PRIMARY_COLOR',
@@ -904,38 +898,6 @@ HTML;
             );
 
         /**
-         * Developer settings form.
-         */
-        $dev_settings =
-            array(
-                'form' => array(
-                    'legend' => array(
-                        'title' => $this->l('Developer Settings (WARNING: DO NOT TOUCH IF NOT NECESSARY)'),
-                        'icon' => 'icon-cogs',
-                    ),
-                    'input' => array(
-                        array(
-                            'type' => $switch_or_radio,
-                            'label' => $this->l('Use v4 checkout API'),
-                            'name' => 'APLAZAME_V4',
-                            'is_bool' => true,
-                            'desc' => $this->l('API version'),
-                            'values' => array(
-                                array(
-                                    'id' => 'active_on',
-                                    'value' => true,
-                                ),
-                                array(
-                                    'id' => 'active_off',
-                                    'value' => false,
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
-            );
-
-        /**
          * Save button.
          */
         $save_button = array('title' => $this->l('Save'));
@@ -946,7 +908,6 @@ HTML;
         $form[] = $product_widget;
         $form[] = $cart_widget;
         $form[] = $button;
-        $form[] = $dev_settings;
 
         return $form;
     }
@@ -1342,12 +1303,7 @@ HTML;
     {
         $checkout = Aplazame_Aplazame_BusinessModel_Checkout::createFromCart($cart, (int) $this->id, $this->currentOrder);
 
-        return $this->callToRest(
-            'POST',
-            '/checkout',
-            Aplazame_Sdk_Serializer_JsonSerializer::serializeValue($checkout),
-            Configuration::get('APLAZAME_V4') ? 4 : 3
-        );
+        return $this->callToRest('POST', '/checkout', Aplazame_Sdk_Serializer_JsonSerializer::serializeValue($checkout), 4);
     }
 
     private function registerController($className, $name)
