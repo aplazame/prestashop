@@ -1299,11 +1299,11 @@ HTML;
      *
      * @throws Exception
      */
-    public function createCheckoutOnAplazame(Cart $cart)
+    public function createCheckoutOnAplazame(Cart $cart, $apiVersion)
     {
         $checkout = Aplazame_Aplazame_BusinessModel_Checkout::createFromCart($cart, (int) $this->id, $this->currentOrder);
 
-        return $this->callToRest('POST', '/checkout', Aplazame_Sdk_Serializer_JsonSerializer::serializeValue($checkout), 4);
+        return $this->callToRest('POST', '/checkout', Aplazame_Sdk_Serializer_JsonSerializer::serializeValue($checkout), $apiVersion);
     }
 
     private function registerController($className, $name)
