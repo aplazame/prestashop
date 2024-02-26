@@ -1,5 +1,10 @@
 ## Change Log
 
+#### [v8.0.0](https://github.com/aplazame/prestashop/tree/v8.0.0) (2024-02-26)
+
+* [ADD] Checkout v4 as primary version.
+* [DEL] Developer options for previous checkout versions.
+
 #### [v7.9.2](https://github.com/aplazame/prestashop/tree/v7.9.2) (2023-09-20)
 
 * [ADD] Developer options for checkout v4 API tests.

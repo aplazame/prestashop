@@ -7,9 +7,13 @@
  * @license   see file: LICENSE
  */
 
-/**
- * Common interface for custom exceptions.
- */
-interface Aplazame_Sdk_Api_AplazameExceptionInterface
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
+function upgrade_module_8_0_0(Aplazame $module)
 {
+    Configuration::deleteByName('APLAZAME_V4');
+
+    return true;
 }
