@@ -3,7 +3,7 @@
  * This file is part of the official Aplazame module for PrestaShop.
  *
  * @author    Aplazame <soporte@aplazame.com>
- * @copyright 2015-2023 Aplazame
+ * @copyright 2015-2024 Aplazame
  * @license   see file: LICENSE
  */
 
@@ -20,7 +20,11 @@ class AplazameRedirectModuleFrontController extends ModuleFrontController
         }
 
         try {
-            $payload = $this->module->createCheckoutOnAplazame($cart);
+            try {
+                $payload = $this->module->createCheckoutOnAplazame($cart, 4);
+            } catch (Exception $e) {
+                $payload = $this->module->createCheckoutOnAplazame($cart, 3);
+            }
         } catch (Aplazame_Sdk_Api_ApiClientException $e) {
             $this->errors[] = 'Aplazame Error: ' . $e->getMessage();
 
