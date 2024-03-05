@@ -108,12 +108,14 @@ final class AplazameApiConfirm
                 if (!$this->module->pending($cart)) {
                     return self::ko("'pending' function failed");
                 }
+
                 return self::ok($this->buildMid($isCartIdQueryParamSet, $cartId));
 
             case 'ok':
                 if (!$this->module->accept($cart)) {
                     return self::ko("'accept' function failed");
                 }
+
                 return self::ok($this->buildMid($isCartIdQueryParamSet, $cartId));
 
             case 'ko':
