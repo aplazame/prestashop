@@ -105,21 +105,17 @@ final class AplazameApiConfirm
 
         switch ($payload['status']) {
             case 'pending':
-                switch ($payload['status_reason']) {
-                    case 'challenge_required':
-                        if (!$this->module->pending($cart)) {
-                            return self::ko("'pending' function failed");
-                        }
-
-                        return self::ok($this->buildMid($isCartIdQueryParamSet, $cartId));
-                    case 'confirmation_required':
-                        if (!$this->module->accept($cart)) {
-                            return self::ko("'accept' function failed");
-                        }
-
-                        return self::ok($this->buildMid($isCartIdQueryParamSet, $cartId));
+                if (!$this->module->pending($cart)) {
+                    return self::ko("'pending' function failed");
                 }
-                break;
+                return self::ok($this->buildMid($isCartIdQueryParamSet, $cartId));
+
+            case 'ok':
+                if (!$this->module->accept($cart)) {
+                    return self::ko("'accept' function failed");
+                }
+                return self::ok($this->buildMid($isCartIdQueryParamSet, $cartId));
+
             case 'ko':
                 if (!$this->module->deny($cart)) {
                     return self::ko("'deny' function failed");
