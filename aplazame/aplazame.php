@@ -624,7 +624,7 @@ HTML;
                             'label' => $this->l('Border'),
                             'name' => 'PRODUCT_WIDGET_BORDER',
                             'is_bool' => true,
-                            'desc' => $this->l('Show border in product widget (only new widget)'),
+                            'desc' => $this->l('Show border in product widget (only v4)'),
                             'values' => array(
                                 array(
                                     'id' => 'active_on',
@@ -641,7 +641,7 @@ HTML;
                             'label' => $this->l('Enter maximum instalment'),
                             'name' => 'PRODUCT_WIDGET_MAX_DESIRED',
                             'is_bool' => true,
-                            'desc' => $this->l('Allow the user to manually enter the maximum instalment they want to pay (only new widget)'),
+                            'desc' => $this->l('Allow the user to manually enter the maximum instalment they want to pay (only v4)'),
                             'values' => array(
                                 array(
                                     'id' => 'active_on',
@@ -657,13 +657,13 @@ HTML;
                             'name' => 'PRODUCT_WIDGET_PRIMARY_COLOR',
                             'type' => 'color',
                             'label' => $this->l('Primary color'),
-                            'desc' => $this->l('Primary color hexadecimal code for product widget (only new widget)'),
+                            'desc' => $this->l('Primary color hexadecimal code for product widget (only v4/v5)'),
                         ),
                         array(
                             'name' => 'PRODUCT_WIDGET_LAYOUT',
                             'type' => 'select',
                             'label' => $this->l('Layout'),
-                            'desc' => $this->l('Layout of product widget (only new widget)'),
+                            'desc' => $this->l('Layout of product widget (only v4)'),
                             'options' => array(
                                 'query' => array(
                                     array(
@@ -683,7 +683,7 @@ HTML;
                             'name' => 'PRODUCT_WIDGET_ALIGN',
                             'type' => 'select',
                             'label' => $this->l('Alignment'),
-                            'desc' => $this->l('Product widget alignment (only new widget)'),
+                            'desc' => $this->l('Product widget alignment (only v4/v5)'),
                             'options' => array(
                                 'query' => array(
                                     array(
@@ -860,7 +860,7 @@ HTML;
                             'label' => $this->l('Enter maximum instalment'),
                             'name' => 'CART_WIDGET_MAX_DESIRED',
                             'is_bool' => true,
-                            'desc' => $this->l('Allow the user to manually enter the maximum instalment they want to pay (only new widget)'),
+                            'desc' => $this->l('Allow the user to manually enter the maximum instalment they want to pay (only v4)'),
                             'values' => array(
                                 array(
                                     'id' => 'active_on',
@@ -876,13 +876,13 @@ HTML;
                             'name' => 'CART_WIDGET_PRIMARY_COLOR',
                             'type' => 'color',
                             'label' => $this->l('Primary color'),
-                            'desc' => $this->l('Primary color hexadecimal code for cart widget (only new widget)'),
+                            'desc' => $this->l('Primary color hexadecimal code for cart widget (only v4/v5)'),
                         ),
                         array(
                             'name' => 'CART_WIDGET_LAYOUT',
                             'type' => 'select',
                             'label' => $this->l('Layout'),
-                            'desc' => $this->l('Layout of cart widget (only new widget)'),
+                            'desc' => $this->l('Layout of cart widget (only v4)'),
                             'options' => array(
                                 'query' => array(
                                     array(
@@ -902,7 +902,7 @@ HTML;
                             'name' => 'CART_WIDGET_ALIGN',
                             'type' => 'select',
                             'label' => $this->l('Alignment'),
-                            'desc' => $this->l('Cart widget alignment (only new widget)'),
+                            'desc' => $this->l('Cart widget alignment (only v4/v5)'),
                             'options' => array(
                                 'query' => array(
                                     array(
