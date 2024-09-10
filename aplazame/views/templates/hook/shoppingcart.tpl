@@ -7,15 +7,22 @@
  *}
 
 <div
-    {if $aplazame_widget_legacy}
+    {if $aplazame_widget_ver == 'v3'}
         data-aplazame-widget-instalments=""
         data-view="cart"
-    {else}
+    {elseif $aplazame_widget_ver == 'v4'}
         data-aplazame-widget-instalments="v4"
 		data-type="cart"
         data-option-max-amount-desired="{$aplazame_max_desired|escape:'htmlall':'UTF-8'}"
 		data-option-primary-color="{$aplazame_primary_color|escape:'htmlall':'UTF-8'}"
 		data-option-layout="{$aplazame_layout|escape:'htmlall':'UTF-8'}"
+        data-option-align="{$aplazame_align|escape:'htmlall':'UTF-8'}"
+    {else}
+        data-aplazame-widget-instalments="v5"
+        data-type="cart"
+        data-option-slider="{$aplazame_slider|escape:'htmlall':'UTF-8'}"
+        data-option-small-size="{$aplazame_small_size|escape:'htmlall':'UTF-8'}"
+        data-option-primary-color="{$aplazame_primary_color|escape:'htmlall':'UTF-8'}"
         data-option-align="{$aplazame_align|escape:'htmlall':'UTF-8'}"
     {/if}
     data-amount="{$aplazame_cart_total|escape:'htmlall':'UTF-8'}"

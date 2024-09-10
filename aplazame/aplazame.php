@@ -120,18 +120,23 @@ class Aplazame extends PaymentModule
         Configuration::updateValue('APLAZAME_CART_CSS', '#total_price');
 
         /**
-         * Widget v4 settings.
+         * Widget v4 & v5 settings.
          */
-        Configuration::updateValue('WIDGET_LEGACY', false);
+        Configuration::updateValue('PRODUCT_WIDGET_VER', 'v5');
         Configuration::updateValue('PRODUCT_WIDGET_BORDER', true);
         Configuration::updateValue('PRODUCT_WIDGET_PRIMARY_COLOR', '#334bff');
         Configuration::updateValue('PRODUCT_WIDGET_LAYOUT', 'horizontal');
         Configuration::updateValue('PRODUCT_WIDGET_ALIGN', 'center');
         Configuration::updateValue('PRODUCT_WIDGET_MAX_DESIRED', false);
+        Configuration::updateValue('PRODUCT_WIDGET_SLIDER', true);
+        Configuration::updateValue('PRODUCT_WIDGET_SMALL_SIZE', false);
+        Configuration::updateValue('CART_WIDGET_VER', 'v5');
         Configuration::updateValue('CART_WIDGET_PRIMARY_COLOR', '#334bff');
         Configuration::updateValue('CART_WIDGET_LAYOUT', 'horizontal');
         Configuration::updateValue('CART_WIDGET_ALIGN', 'center');
         Configuration::updateValue('CART_WIDGET_MAX_DESIRED', false);
+        Configuration::updateValue('CART_WIDGET_SLIDER', true);
+        Configuration::updateValue('CART_WIDGET_SMALL_SIZE', false);
 
         return ($this->registerHook('actionOrderSlipAdd')
             && $this->registerHook('actionOrderStatusUpdate')
@@ -276,16 +281,21 @@ class Aplazame extends PaymentModule
             'APLAZAME_PRODUCT_CSS',
             'APLAZAME_CART_CSS',
             'APLAZAME_WIDGET_OUT_OF_LIMITS',
-            'WIDGET_LEGACY',
+            'PRODUCT_WIDGET_VER',
             'PRODUCT_WIDGET_BORDER',
             'PRODUCT_WIDGET_PRIMARY_COLOR',
             'PRODUCT_WIDGET_LAYOUT',
             'PRODUCT_WIDGET_ALIGN',
             'PRODUCT_WIDGET_MAX_DESIRED',
+            'PRODUCT_WIDGET_SLIDER',
+            'PRODUCT_WIDGET_SMALL_SIZE',
+            'CART_WIDGET_VER',
             'CART_WIDGET_PRIMARY_COLOR',
             'CART_WIDGET_LAYOUT',
             'CART_WIDGET_ALIGN',
             'CART_WIDGET_MAX_DESIRED',
+            'CART_WIDGET_SLIDER',
+            'CART_WIDGET_SMALL_SIZE',
         );
 
         if (Tools::isSubmit('submitAplazameModule')) {
@@ -464,22 +474,6 @@ HTML;
                                 'name' => 'name',
                             ),
                         ),
-                        array(
-                            'name' => 'WIDGET_LEGACY',
-                            'type' => $switch_or_radio,
-                            'label' => $this->l('Turn on widget legacy'),
-                            'desc' => $this->l('Use widget legacy instead new widget'),
-                            'values' => array(
-                                array(
-                                    'id' => 'active_on',
-                                    'value' => true,
-                                ),
-                                array(
-                                    'id' => 'active_off',
-                                    'value' => false,
-                                ),
-                            ),
-                        ),
                     ),
                 ),
             );
@@ -509,6 +503,30 @@ HTML;
                                     'id' => 'active_off',
                                     'value' => false,
                                 ),
+                            ),
+                        ),
+                        array(
+                            'type' => 'select',
+                            'label' => $this->l('Widget version'),
+                            'desc' => $this->l('Select your desired version for product widget'),
+                            'name' => 'PRODUCT_WIDGET_VER',
+                            'options' => array(
+                                'query' => array(
+                                    array(
+                                        'id_option' => 'v3',
+                                        'name' => $this->l('v3'),
+                                    ),
+                                    array(
+                                        'id_option' => 'v4',
+                                        'name' => $this->l('v4'),
+                                    ),
+                                    array(
+                                        'id_option' => 'v5',
+                                        'name' => $this->l('v5'),
+                                    ),
+                                ),
+                                'id' => 'id_option',
+                                'name' => 'name',
                             ),
                         ),
                         array(
@@ -685,6 +703,40 @@ HTML;
                                 'name' => 'name',
                             ),
                         ),
+                        array(
+                            'type' => $switch_or_radio,
+                            'label' => $this->l('Slider'),
+                            'name' => 'PRODUCT_WIDGET_SLIDER',
+                            'is_bool' => true,
+                            'desc' => $this->l('Show slider in product widget (only v5)'),
+                            'values' => array(
+                                array(
+                                    'id' => 'active_on',
+                                    'value' => true,
+                                ),
+                                array(
+                                    'id' => 'active_off',
+                                    'value' => false,
+                                ),
+                            ),
+                        ),
+                        array(
+                            'type' => $switch_or_radio,
+                            'label' => $this->l('Small size'),
+                            'name' => 'PRODUCT_WIDGET_SMALL_SIZE',
+                            'is_bool' => true,
+                            'desc' => $this->l('Reduce size of product widget (only v5)'),
+                            'values' => array(
+                                array(
+                                    'id' => 'active_on',
+                                    'value' => true,
+                                ),
+                                array(
+                                    'id' => 'active_off',
+                                    'value' => false,
+                                ),
+                            ),
+                        ),
                     ),
                 ),
             );
@@ -711,6 +763,30 @@ HTML;
                                     'id' => 'active_off',
                                     'value' => false,
                                 ),
+                            ),
+                        ),
+                        array(
+                            'type' => 'select',
+                            'label' => $this->l('Widget version'),
+                            'desc' => $this->l('Select your desired version for cart widget'),
+                            'name' => 'CART_WIDGET_VER',
+                            'options' => array(
+                                'query' => array(
+                                    array(
+                                        'id_option' => 'v3',
+                                        'name' => $this->l('v3'),
+                                    ),
+                                    array(
+                                        'id_option' => 'v4',
+                                        'name' => $this->l('v4'),
+                                    ),
+                                    array(
+                                        'id_option' => 'v5',
+                                        'name' => $this->l('v5'),
+                                    ),
+                                ),
+                                'id' => 'id_option',
+                                'name' => 'name',
                             ),
                         ),
                         array(
@@ -844,6 +920,40 @@ HTML;
                                 ),
                                 'id' => 'id_option',
                                 'name' => 'name',
+                            ),
+                        ),
+                        array(
+                            'type' => $switch_or_radio,
+                            'label' => $this->l('Slider'),
+                            'name' => 'CART_WIDGET_SLIDER',
+                            'is_bool' => true,
+                            'desc' => $this->l('Show slider in cart widget (only v5)'),
+                            'values' => array(
+                                array(
+                                    'id' => 'active_on',
+                                    'value' => true,
+                                ),
+                                array(
+                                    'id' => 'active_off',
+                                    'value' => false,
+                                ),
+                            ),
+                        ),
+                        array(
+                            'type' => $switch_or_radio,
+                            'label' => $this->l('Small size'),
+                            'name' => 'CART_WIDGET_SMALL_SIZE',
+                            'is_bool' => true,
+                            'desc' => $this->l('Reduce size of cart widget (only v5)'),
+                            'values' => array(
+                                array(
+                                    'id' => 'active_on',
+                                    'value' => true,
+                                ),
+                                array(
+                                    'id' => 'active_off',
+                                    'value' => false,
+                                ),
                             ),
                         ),
                     ),
@@ -1056,11 +1166,13 @@ HTML;
             'aplazame_pay_in_4' => Configuration::get('APLAZAME_CART_PAY_IN_4'),
             'aplazame_default_instalments' => Configuration::get('APLAZAME_CART_DEFAULT_INSTALMENTS'),
             'aplazame_widget_out_of_limits' => Configuration::get('APLAZAME_WIDGET_OUT_OF_LIMITS'),
-            'aplazame_widget_legacy' => Configuration::get('WIDGET_LEGACY'),
+            'aplazame_widget_ver' => Configuration::get('CART_WIDGET_VER'),
             'aplazame_max_desired' => Configuration::get('CART_WIDGET_MAX_DESIRED') ? 'true' : 'false',
             'aplazame_primary_color' => Configuration::get('CART_WIDGET_PRIMARY_COLOR'),
             'aplazame_layout' => Configuration::get('CART_WIDGET_LAYOUT'),
             'aplazame_align' => Configuration::get('CART_WIDGET_ALIGN'),
+            'aplazame_slider' => Configuration::get('CART_WIDGET_SLIDER') ? 'true' : 'false',
+            'aplazame_small_size' => Configuration::get('CART_WIDGET_SMALL_SIZE') ? 'true' : 'false',
             'aplazame_customer_id' => $address->dni,
         ));
 
@@ -1184,12 +1296,14 @@ HTML;
             'aplazame_pay_in_4' => Configuration::get('APLAZAME_PRODUCT_PAY_IN_4'),
             'aplazame_default_instalments' => Configuration::get('APLAZAME_PRODUCT_DEFAULT_INSTALMENTS'),
             'aplazame_widget_out_of_limits' => Configuration::get('APLAZAME_WIDGET_OUT_OF_LIMITS'),
-            'aplazame_widget_legacy' => Configuration::get('WIDGET_LEGACY'),
+            'aplazame_widget_ver' => Configuration::get('PRODUCT_WIDGET_VER'),
             'aplazame_max_desired' => Configuration::get('PRODUCT_WIDGET_MAX_DESIRED') ? 'true' : 'false',
             'aplazame_primary_color' => Configuration::get('PRODUCT_WIDGET_PRIMARY_COLOR'),
             'aplazame_layout' => Configuration::get('PRODUCT_WIDGET_LAYOUT'),
             'aplazame_align' => Configuration::get('PRODUCT_WIDGET_ALIGN'),
             'aplazame_border' => Configuration::get('PRODUCT_WIDGET_BORDER') ? 'true' : 'false',
+            'aplazame_slider' => Configuration::get('PRODUCT_WIDGET_SLIDER') ? 'true' : 'false',
+            'aplazame_small_size' => Configuration::get('PRODUCT_WIDGET_SMALL_SIZE') ? 'true' : 'false',
             'aplazame_customer_id' => $address->dni,
         ));
 
