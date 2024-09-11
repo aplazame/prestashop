@@ -23,7 +23,6 @@
         data-type="product"
         data-option-slider="{$aplazame_slider|escape:'htmlall':'UTF-8'}"
         data-option-small-size="{$aplazame_small_size|escape:'htmlall':'UTF-8'}"
-        data-option-primary-color="{$aplazame_primary_color|escape:'htmlall':'UTF-8'}"
         data-option-align="{$aplazame_align|escape:'htmlall':'UTF-8'}"
     {/if}
     data-amount="{$aplazame_amount|escape:'htmlall':'UTF-8'}"

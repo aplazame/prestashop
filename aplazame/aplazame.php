@@ -657,7 +657,7 @@ HTML;
                             'name' => 'PRODUCT_WIDGET_PRIMARY_COLOR',
                             'type' => 'color',
                             'label' => $this->l('Primary color'),
-                            'desc' => $this->l('Primary color hexadecimal code for product widget (only v4/v5)'),
+                            'desc' => $this->l('Primary color hexadecimal code for product widget (only v4)'),
                         ),
                         array(
                             'name' => 'PRODUCT_WIDGET_LAYOUT',
@@ -876,7 +876,7 @@ HTML;
                             'name' => 'CART_WIDGET_PRIMARY_COLOR',
                             'type' => 'color',
                             'label' => $this->l('Primary color'),
-                            'desc' => $this->l('Primary color hexadecimal code for cart widget (only v4/v5)'),
+                            'desc' => $this->l('Primary color hexadecimal code for cart widget (only v4)'),
                         ),
                         array(
                             'name' => 'CART_WIDGET_LAYOUT',
