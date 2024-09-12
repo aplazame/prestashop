@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v8.1.0](https://github.com/aplazame/prestashop/tree/v8.1.0) (2024-09-12)
+
+* [ADD] Widget v5.
+
 #### [v8.0.1](https://github.com/aplazame/prestashop/tree/v8.0.1) (2024-03-05)
 
 * Order confirmation process improved.
