@@ -1080,8 +1080,10 @@ HTML;
 
         $articles = array(Aplazame_Aplazame_Api_BusinessModel_Article::createFromProduct(new Product($id_product, false, $this->context->language->id)));
 
+        $link = $this->context->link;
         $this->context->smarty->assign(array(
             'articles' => $articles,
+            'link' => $link,
         ));
 
         return $this->display(__FILE__, 'views/templates/admin/product.tpl');
