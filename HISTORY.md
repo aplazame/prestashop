@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v8.1.1](https://github.com/aplazame/prestashop/tree/v8.1.1) (2024-09-18)
+
+* [FIX] Error at admin product hook for campaigns.
+
 #### [v8.1.0](https://github.com/aplazame/prestashop/tree/v8.1.0) (2024-09-12)
 
 * [ADD] Widget v5.
