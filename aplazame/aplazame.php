@@ -46,7 +46,7 @@ class Aplazame extends PaymentModule
     {
         $this->name = 'aplazame';
         $this->tab = 'payments_gateways';
-        $this->version = '8.1.0';
+        $this->version = '8.1.1';
         $this->author = 'Aplazame SL';
         $this->author_uri = 'https://aplazame.com';
         $this->module_key = '64b13ea3527b4df3fe2e3fc1526ce515';
@@ -1080,8 +1080,10 @@ HTML;
 
         $articles = array(Aplazame_Aplazame_Api_BusinessModel_Article::createFromProduct(new Product($id_product, false, $this->context->language->id)));
 
+        $link = $this->context->link;
         $this->context->smarty->assign(array(
             'articles' => $articles,
+            'link' => $link,
         ));
 
         return $this->display(__FILE__, 'views/templates/admin/product.tpl');
