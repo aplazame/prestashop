@@ -43,4 +43,6 @@
     {if $aplazame_customer_id}
         data-option-customer-id="{$aplazame_customer_id|escape:'htmlall':'UTF-8'}"
     {/if}
-></div>
+>
+    <div data-aplazame-loading></div>
+</div>
