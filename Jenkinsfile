@@ -164,7 +164,7 @@ pipeline {
         branch 'master'
       }
       environment {
-        GITHUB_TOKEN = credentials('gh-releases-token')
+        GITHUB_TOKEN = credentials('gh-releases-token-old')
       }
       steps {
         scmSkip()
