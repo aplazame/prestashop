@@ -46,7 +46,7 @@ class Aplazame extends PaymentModule
     {
         $this->name = 'aplazame';
         $this->tab = 'payments_gateways';
-        $this->version = '8.1.1';
+        $this->version = '8.1.2';
         $this->author = 'Aplazame SL';
         $this->author_uri = 'https://aplazame.com';
         $this->module_key = '64b13ea3527b4df3fe2e3fc1526ce515';
@@ -129,14 +129,12 @@ class Aplazame extends PaymentModule
         Configuration::updateValue('PRODUCT_WIDGET_ALIGN', 'center');
         Configuration::updateValue('PRODUCT_WIDGET_MAX_DESIRED', false);
         Configuration::updateValue('PRODUCT_WIDGET_SLIDER', true);
-        Configuration::updateValue('PRODUCT_WIDGET_SMALL_SIZE', false);
         Configuration::updateValue('CART_WIDGET_VER', 'v5');
         Configuration::updateValue('CART_WIDGET_PRIMARY_COLOR', '#334bff');
         Configuration::updateValue('CART_WIDGET_LAYOUT', 'horizontal');
         Configuration::updateValue('CART_WIDGET_ALIGN', 'center');
         Configuration::updateValue('CART_WIDGET_MAX_DESIRED', false);
         Configuration::updateValue('CART_WIDGET_SLIDER', true);
-        Configuration::updateValue('CART_WIDGET_SMALL_SIZE', false);
 
         return ($this->registerHook('actionOrderSlipAdd')
             && $this->registerHook('actionOrderStatusUpdate')
@@ -288,14 +286,12 @@ class Aplazame extends PaymentModule
             'PRODUCT_WIDGET_ALIGN',
             'PRODUCT_WIDGET_MAX_DESIRED',
             'PRODUCT_WIDGET_SLIDER',
-            'PRODUCT_WIDGET_SMALL_SIZE',
             'CART_WIDGET_VER',
             'CART_WIDGET_PRIMARY_COLOR',
             'CART_WIDGET_LAYOUT',
             'CART_WIDGET_ALIGN',
             'CART_WIDGET_MAX_DESIRED',
             'CART_WIDGET_SLIDER',
-            'CART_WIDGET_SMALL_SIZE',
         );
 
         if (Tools::isSubmit('submitAplazameModule')) {
@@ -720,23 +716,6 @@ HTML;
                                 ),
                             ),
                         ),
-                        array(
-                            'type' => $switch_or_radio,
-                            'label' => $this->l('Small size'),
-                            'name' => 'PRODUCT_WIDGET_SMALL_SIZE',
-                            'is_bool' => true,
-                            'desc' => $this->l('Reduce size of product widget (only v5)'),
-                            'values' => array(
-                                array(
-                                    'id' => 'active_on',
-                                    'value' => true,
-                                ),
-                                array(
-                                    'id' => 'active_off',
-                                    'value' => false,
-                                ),
-                            ),
-                        ),
                     ),
                 ),
             );
@@ -928,23 +907,6 @@ HTML;
                             'name' => 'CART_WIDGET_SLIDER',
                             'is_bool' => true,
                             'desc' => $this->l('Show slider in cart widget (only v5)'),
-                            'values' => array(
-                                array(
-                                    'id' => 'active_on',
-                                    'value' => true,
-                                ),
-                                array(
-                                    'id' => 'active_off',
-                                    'value' => false,
-                                ),
-                            ),
-                        ),
-                        array(
-                            'type' => $switch_or_radio,
-                            'label' => $this->l('Small size'),
-                            'name' => 'CART_WIDGET_SMALL_SIZE',
-                            'is_bool' => true,
-                            'desc' => $this->l('Reduce size of cart widget (only v5)'),
                             'values' => array(
                                 array(
                                     'id' => 'active_on',
@@ -1174,7 +1136,6 @@ HTML;
             'aplazame_layout' => Configuration::get('CART_WIDGET_LAYOUT'),
             'aplazame_align' => Configuration::get('CART_WIDGET_ALIGN'),
             'aplazame_slider' => Configuration::get('CART_WIDGET_SLIDER') ? 'true' : 'false',
-            'aplazame_small_size' => Configuration::get('CART_WIDGET_SMALL_SIZE') ? 'true' : 'false',
             'aplazame_customer_id' => $address->dni,
         ));
 
@@ -1305,7 +1266,6 @@ HTML;
             'aplazame_align' => Configuration::get('PRODUCT_WIDGET_ALIGN'),
             'aplazame_border' => Configuration::get('PRODUCT_WIDGET_BORDER') ? 'true' : 'false',
             'aplazame_slider' => Configuration::get('PRODUCT_WIDGET_SLIDER') ? 'true' : 'false',
-            'aplazame_small_size' => Configuration::get('PRODUCT_WIDGET_SMALL_SIZE') ? 'true' : 'false',
             'aplazame_customer_id' => $address->dni,
         ));
 

@@ -1,5 +1,10 @@
 ## Change Log
 
+#### [v8.1.2](https://github.com/aplazame/prestashop/tree/v8.1.2) (2024-11-19)
+
+* [ADD] Widget loading animation.
+* [DEL] Deprecated options.
+
 #### [v8.1.1](https://github.com/aplazame/prestashop/tree/v8.1.1) (2024-09-18)
 
 * [FIX] Error at admin product hook for campaigns.
