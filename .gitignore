@@ -4,3 +4,4 @@ aplazame/config*.xml
 composer.lock
 docker-compose.override.yml
 aplazame.latest.zip
+/.idea/

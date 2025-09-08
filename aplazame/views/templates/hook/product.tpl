@@ -25,6 +25,7 @@
         data-option-align="{$aplazame_align|escape:'htmlall':'UTF-8'}"
     {/if}
     data-amount="{$aplazame_amount|escape:'htmlall':'UTF-8'}"
+    data-country="{$aplazame_widget_country|escape:'htmlall':'UTF-8'}"
     data-currency="{$aplazame_currency_iso|escape:'htmlall':'UTF-8'}"
     {if $aplazame_css}
         data-price="{$aplazame_css|escape:'htmlall':'UTF-8'}"
