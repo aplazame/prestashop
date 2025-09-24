@@ -113,6 +113,7 @@ class Aplazame extends PaymentModule
         Configuration::updateValue('APLAZAME_PRODUCT_PAY_IN_4', false);
         Configuration::updateValue('APLAZAME_PRODUCT_DEFAULT_INSTALMENTS', '');
         Configuration::updateValue('APLAZAME_PRODUCT_CSS', '');
+        Configuration::updateValue('APLAZAME_PRODUCT_ONLY_CSS', true);
         Configuration::updateValue('APLAZAME_CART_WIDGET_ENABLED', true);
         Configuration::updateValue('APLAZAME_CART_LEGAL_ADVICE', true);
         Configuration::updateValue('APLAZAME_CART_DOWNPAYMENT_INFO', true);
@@ -278,6 +279,7 @@ class Aplazame extends PaymentModule
             'APLAZAME_PRODUCT_DEFAULT_INSTALMENTS',
             'APLAZAME_CART_DEFAULT_INSTALMENTS',
             'APLAZAME_PRODUCT_CSS',
+            'APLAZAME_PRODUCT_ONLY_CSS',
             'APLAZAME_CART_CSS',
             'APLAZAME_WIDGET_OUT_OF_LIMITS',
             'APLAZAME_WIDGET_COUNTRY',
@@ -640,6 +642,23 @@ HTML;
                             'desc' => $this->l('CSS selector pointing to variable product price'),
                             'name' => 'APLAZAME_PRODUCT_CSS',
                             'label' => $this->l('Variable price CSS'),
+                        ),
+                        array(
+                            'type' => $switch_or_radio,
+                            'label' => $this->l('Use only CSS'),
+                            'name' => 'APLAZAME_PRODUCT_ONLY_CSS',
+                            'is_bool' => true,
+                            'desc' => $this->l('Use only CSS selector to get the price'),
+                            'values' => array(
+                                array(
+                                    'id' => 'active_on',
+                                    'value' => true,
+                                ),
+                                array(
+                                    'id' => 'active_off',
+                                    'value' => false,
+                                ),
+                            ),
                         ),
                         array(
                             'type' => $switch_or_radio,
@@ -1280,6 +1299,7 @@ HTML;
             'aplazame_amount' => Aplazame_Sdk_Serializer_Decimal::fromFloat($product->getPrice(true, null, 2))->value,
             'aplazame_currency_iso' => $currency->iso_code,
             'aplazame_css' => Configuration::get('APLAZAME_PRODUCT_CSS'),
+            'aplazame_only_css' => Configuration::get('APLAZAME_PRODUCT_ONLY_CSS'),
             'aplazame_article_id' => $product->id,
             'aplazame_legal_advice' => Configuration::get('APLAZAME_PRODUCT_LEGAL_ADVICE') ? 'true' : 'false',
             'aplazame_downpayment_info' => Configuration::get('APLAZAME_PRODUCT_DOWNPAYMENT_INFO') ? 'true' : 'false',

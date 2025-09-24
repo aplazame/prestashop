@@ -24,7 +24,9 @@
         data-option-slider="{$aplazame_slider|escape:'htmlall':'UTF-8'}"
         data-option-align="{$aplazame_align|escape:'htmlall':'UTF-8'}"
     {/if}
-    data-amount="{$aplazame_amount|escape:'htmlall':'UTF-8'}"
+    {if !$aplazame_only_css || ($aplazame_only_css && !$aplazame_css)}
+        data-amount="{$aplazame_amount|escape:'htmlall':'UTF-8'}"
+    {/if}
     data-country="{$aplazame_widget_country|escape:'htmlall':'UTF-8'}"
     data-currency="{$aplazame_currency_iso|escape:'htmlall':'UTF-8'}"
     {if $aplazame_css}
