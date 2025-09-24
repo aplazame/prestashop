@@ -2,7 +2,7 @@
  * This file is part of the official Aplazame module for PrestaShop.
  *
  * @author    Aplazame <soporte@aplazame.com>
- * @copyright 2015-2024 Aplazame
+ * @copyright 2015-2025 Aplazame
  * @license   see file: LICENSE
  *}
 
@@ -24,7 +24,10 @@
         data-option-slider="{$aplazame_slider|escape:'htmlall':'UTF-8'}"
         data-option-align="{$aplazame_align|escape:'htmlall':'UTF-8'}"
     {/if}
-    data-amount="{$aplazame_amount|escape:'htmlall':'UTF-8'}"
+    {if !$aplazame_only_css || ($aplazame_only_css && !$aplazame_css)}
+        data-amount="{$aplazame_amount|escape:'htmlall':'UTF-8'}"
+    {/if}
+    data-country="{$aplazame_widget_country|escape:'htmlall':'UTF-8'}"
     data-currency="{$aplazame_currency_iso|escape:'htmlall':'UTF-8'}"
     {if $aplazame_css}
         data-price="{$aplazame_css|escape:'htmlall':'UTF-8'}"

@@ -11,10 +11,10 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-function upgrade_module_6_1_0(Aplazame $module)
+function upgrade_module_8_2_0(Aplazame $module)
 {
-    Configuration::updateValue('APLAZAME_PRODUCT_LEGAL_ADVICE', false);
-    Configuration::updateValue('APLAZAME_CART_LEGAL_ADVICE', false);
+    Configuration::updateValue('APLAZAME_WIDGET_COUNTRY', 'auto');
+    Configuration::updateValue('APLAZAME_PRODUCT_ONLY_CSS', true);
 
     return true;
 }
