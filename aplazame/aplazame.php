@@ -3,7 +3,7 @@
  * This file is part of the official Aplazame module for PrestaShop.
  *
  * @author    Aplazame <soporte@aplazame.com>
- * @copyright 2015-2024 Aplazame
+ * @copyright 2015-2025 Aplazame
  * @license   see file: LICENSE
  */
 
@@ -46,7 +46,7 @@ class Aplazame extends PaymentModule
     {
         $this->name = 'aplazame';
         $this->tab = 'payments_gateways';
-        $this->version = '8.1.2';
+        $this->version = '8.2.0';
         $this->author = 'Aplazame SL';
         $this->author_uri = 'https://aplazame.com';
         $this->module_key = '64b13ea3527b4df3fe2e3fc1526ce515';
@@ -106,12 +106,14 @@ class Aplazame extends PaymentModule
          */
         Configuration::updateValue('APLAZAME_WIDGET_OUT_OF_LIMITS', 'show');
         Configuration::updateValue('APLAZAME_WIDGET_PROD', '0');
+        Configuration::updateValue('APLAZAME_WIDGET_COUNTRY', 'auto');
         Configuration::updateValue('APLAZAME_PRODUCT_WIDGET_ENABLED', true);
         Configuration::updateValue('APLAZAME_PRODUCT_LEGAL_ADVICE', true);
         Configuration::updateValue('APLAZAME_PRODUCT_DOWNPAYMENT_INFO', true);
         Configuration::updateValue('APLAZAME_PRODUCT_PAY_IN_4', false);
         Configuration::updateValue('APLAZAME_PRODUCT_DEFAULT_INSTALMENTS', '');
         Configuration::updateValue('APLAZAME_PRODUCT_CSS', '');
+        Configuration::updateValue('APLAZAME_PRODUCT_ONLY_CSS', true);
         Configuration::updateValue('APLAZAME_CART_WIDGET_ENABLED', true);
         Configuration::updateValue('APLAZAME_CART_LEGAL_ADVICE', true);
         Configuration::updateValue('APLAZAME_CART_DOWNPAYMENT_INFO', true);
@@ -277,8 +279,10 @@ class Aplazame extends PaymentModule
             'APLAZAME_PRODUCT_DEFAULT_INSTALMENTS',
             'APLAZAME_CART_DEFAULT_INSTALMENTS',
             'APLAZAME_PRODUCT_CSS',
+            'APLAZAME_PRODUCT_ONLY_CSS',
             'APLAZAME_CART_CSS',
             'APLAZAME_WIDGET_OUT_OF_LIMITS',
+            'APLAZAME_WIDGET_COUNTRY',
             'PRODUCT_WIDGET_VER',
             'PRODUCT_WIDGET_BORDER',
             'PRODUCT_WIDGET_PRIMARY_COLOR',
@@ -470,6 +474,30 @@ HTML;
                                 'name' => 'name',
                             ),
                         ),
+                        array(
+                            'name' => 'APLAZAME_WIDGET_COUNTRY',
+                            'type' => 'select',
+                            'label' => $this->l('Widget country'),
+                            'desc' => $this->l('Select widget country'),
+                            'options' => array(
+                                'query' => array(
+                                    array(
+                                        'id_option' => 'auto',
+                                        'name' => $this->l('Auto'),
+                                    ),
+                                    array(
+                                        'id_option' => 'es',
+                                        'name' => $this->l('ES (Spain)'),
+                                    ),
+                                    array(
+                                        'id_option' => 'pt',
+                                        'name' => $this->l('PT (Portugal)'),
+                                    ),
+                                ),
+                                'id' => 'id_option',
+                                'name' => 'name',
+                            ),
+                        ),
                     ),
                 ),
             );
@@ -614,6 +642,23 @@ HTML;
                             'desc' => $this->l('CSS selector pointing to variable product price'),
                             'name' => 'APLAZAME_PRODUCT_CSS',
                             'label' => $this->l('Variable price CSS'),
+                        ),
+                        array(
+                            'type' => $switch_or_radio,
+                            'label' => $this->l('Use only CSS'),
+                            'name' => 'APLAZAME_PRODUCT_ONLY_CSS',
+                            'is_bool' => true,
+                            'desc' => $this->l('Use only CSS selector to get the price'),
+                            'values' => array(
+                                array(
+                                    'id' => 'active_on',
+                                    'value' => true,
+                                ),
+                                array(
+                                    'id' => 'active_off',
+                                    'value' => false,
+                                ),
+                            ),
                         ),
                         array(
                             'type' => $switch_or_radio,
@@ -1112,7 +1157,7 @@ HTML;
         }
 
         $language = Context::getContext()->language->iso_code;
-        if ($language !== 'es') {
+        if ($language !== 'es' && $language !== 'pt') {
             return false;
         }
 
@@ -1130,6 +1175,7 @@ HTML;
             'aplazame_pay_in_4' => Configuration::get('APLAZAME_CART_PAY_IN_4'),
             'aplazame_default_instalments' => Configuration::get('APLAZAME_CART_DEFAULT_INSTALMENTS'),
             'aplazame_widget_out_of_limits' => Configuration::get('APLAZAME_WIDGET_OUT_OF_LIMITS'),
+            'aplazame_widget_country' => Configuration::get('APLAZAME_WIDGET_COUNTRY') == 'auto' ? $language : Configuration::get('APLAZAME_WIDGET_COUNTRY'),
             'aplazame_widget_ver' => Configuration::get('CART_WIDGET_VER'),
             'aplazame_max_desired' => Configuration::get('CART_WIDGET_MAX_DESIRED') ? 'true' : 'false',
             'aplazame_primary_color' => Configuration::get('CART_WIDGET_PRIMARY_COLOR'),
@@ -1241,7 +1287,7 @@ HTML;
         }
 
         $language = Context::getContext()->language->iso_code;
-        if ($language !== 'es') {
+        if ($language !== 'es' && $language !== 'pt') {
             return false;
         }
 
@@ -1253,12 +1299,14 @@ HTML;
             'aplazame_amount' => Aplazame_Sdk_Serializer_Decimal::fromFloat($product->getPrice(true, null, 2))->value,
             'aplazame_currency_iso' => $currency->iso_code,
             'aplazame_css' => Configuration::get('APLAZAME_PRODUCT_CSS'),
+            'aplazame_only_css' => Configuration::get('APLAZAME_PRODUCT_ONLY_CSS'),
             'aplazame_article_id' => $product->id,
             'aplazame_legal_advice' => Configuration::get('APLAZAME_PRODUCT_LEGAL_ADVICE') ? 'true' : 'false',
             'aplazame_downpayment_info' => Configuration::get('APLAZAME_PRODUCT_DOWNPAYMENT_INFO') ? 'true' : 'false',
             'aplazame_pay_in_4' => Configuration::get('APLAZAME_PRODUCT_PAY_IN_4'),
             'aplazame_default_instalments' => Configuration::get('APLAZAME_PRODUCT_DEFAULT_INSTALMENTS'),
             'aplazame_widget_out_of_limits' => Configuration::get('APLAZAME_WIDGET_OUT_OF_LIMITS'),
+            'aplazame_widget_country' => Configuration::get('APLAZAME_WIDGET_COUNTRY') == 'auto' ? $language : Configuration::get('APLAZAME_WIDGET_COUNTRY'),
             'aplazame_widget_ver' => Configuration::get('PRODUCT_WIDGET_VER'),
             'aplazame_max_desired' => Configuration::get('PRODUCT_WIDGET_MAX_DESIRED') ? 'true' : 'false',
             'aplazame_primary_color' => Configuration::get('PRODUCT_WIDGET_PRIMARY_COLOR'),
