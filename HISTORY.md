@@ -1,5 +1,10 @@
 ## Change Log
 
+#### [v8.2.0](https://github.com/aplazame/prestashop/tree/v8.2.0) (2025-09-24)
+
+* [ADD] PT widget.
+* [ADD] Only CSS product widget option.
+
 #### [v8.1.2](https://github.com/aplazame/prestashop/tree/v8.1.2) (2024-11-19)
 
 * [ADD] Widget loading animation.
