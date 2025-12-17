@@ -1462,7 +1462,7 @@ HTML;
 
     private function setOrderStateToOrderByCartId($cartId, $orderStateId)
     {
-        $orderId = Order::getOrderByCartId($cartId);
+        $orderId = Order::getIdByCartId($cartId);
         $order = new Order($orderId);
         if (!Validate::isLoadedObject($order)) {
             return false;
