@@ -46,7 +46,7 @@ class Aplazame extends PaymentModule
     {
         $this->name = 'aplazame';
         $this->tab = 'payments_gateways';
-        $this->version = '8.2.0';
+        $this->version = '8.2.1';
         $this->author = 'Aplazame SL';
         $this->author_uri = 'https://aplazame.com';
         $this->module_key = '64b13ea3527b4df3fe2e3fc1526ce515';
@@ -1462,7 +1462,7 @@ HTML;
 
     private function setOrderStateToOrderByCartId($cartId, $orderStateId)
     {
-        $orderId = Order::getOrderByCartId($cartId);
+        $orderId = Order::getIdByCartId($cartId);
         $order = new Order($orderId);
         if (!Validate::isLoadedObject($order)) {
             return false;

@@ -25,7 +25,7 @@ final class AplazameApiOrder
             return AplazameApiModuleFrontController::not_found();
         }
 
-        $orderId = Order::getOrderByCartId($params['order_id']);
+        $orderId = Order::getIdByCartId($params['order_id']);
         $order = new Order($orderId);
         if (!Validate::isLoadedObject($order)) {
             $cart = new Cart($params['order_id']);
