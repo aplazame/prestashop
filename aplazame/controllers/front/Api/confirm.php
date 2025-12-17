@@ -130,7 +130,7 @@ final class AplazameApiConfirm
 
     public function getOrder($cartId)
     {
-        $order = new Order((int) Order::getOrderByCartId((int) $cartId));
+        $order = new Order((int) Order::getIdByCartId((int) $cartId));
 
         return $order;
     }
