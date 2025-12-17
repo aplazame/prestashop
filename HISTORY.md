@@ -1,5 +1,9 @@
 ## Change Log
 
+#### [v8.2.1](https://github.com/aplazame/prestashop/tree/v8.2.1) (2025-12-17)
+
+* [FIX] PrestaShop 9 deprecated function.
+
 #### [v8.2.0](https://github.com/aplazame/prestashop/tree/v8.2.0) (2025-09-24)
 
 * [ADD] PT widget.
