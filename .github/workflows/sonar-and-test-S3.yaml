@@ -13,7 +13,7 @@ jobs:
 
   test-sonarqube:
     name: Test SonarQube Scan
-    uses: aplazame/.github/.github/workflows/test-reusable-sonarqube.yml@master
+    uses: ./.github/workflows/test-reusable-sonarqube.yml
     secrets: 
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
