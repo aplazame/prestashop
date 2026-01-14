@@ -71,7 +71,7 @@ jobs:
          aws s3 cp --quiet ${s3Path} cache.tar.gz || exit 0
          [ -f cache.tar.gz ] && tar -xf cache.tar.gz
          aws s3 cp --quiet ${s3Path} cache.tar.gz
-         
+
       - name: Composer Install
         run: composer install --prefer-dist
 
@@ -100,8 +100,7 @@ jobs:
         env:
           branch: master
           s3Path: s3://aplazameshared-deploys/Aplazame-Backend/prestashop/${{ github.sha }}.zip
-          FOLDER: '.'
         run: |
          set -e
-         aws s3 cp --quiet ${FOLDER}/Aplazame-Prestashop.zip ${s3Path}
+         aws s3 cp --quiet ${s3Path}/Aplazame-Prestashop.zip 
 
