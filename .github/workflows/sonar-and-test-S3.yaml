@@ -67,7 +67,6 @@ jobs:
         env:
           s3Path: aws s3 cp --quiet s3://aplazameshared-jenkins-cache/Aplazame-Backend/prestashop/v1-dependencies-${{ github.sha }}.tar.gz
         run: |
-         load-config
          export AWS_PROFILE=AplazameSharedServices
          set -e
          aws s3 cp --quiet ${s3Path} cache.tar.gz || exit 0
@@ -82,7 +81,6 @@ jobs:
           foldersStr: '.'
           s3Path: aws s3 cp --quiet s3://aplazameshared-jenkins-cache/Aplazame-Backend/prestashop/v1-dependencies-${{ github.sha }}.tar.gz
         run: |
-         load-config
          export AWS_PROFILE=AplazameSharedServices
          set -e
          MATCHES=$(aws s3 ls ${s3Path} | wc -l)
@@ -105,7 +103,6 @@ jobs:
           branch: master
           s3Path: aws s3 cp --quiet s3://aplazameshared-deploys/Aplazame-Backend/prestashop/${{ github.sha }}.zip
         run: |
-         load-config
          export AWS_PROFILE=AplazameSharedServices
          set -e
          aws s3 cp --quiet ${FOLDER}/Aplazame-Prestashop.zip ${s3Path}
