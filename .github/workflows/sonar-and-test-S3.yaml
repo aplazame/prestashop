@@ -28,11 +28,11 @@ jobs:
     name: Test Composer Install
     needs: test-sonarqube
     runs-on: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/master' ||
-                  github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'master')
-                  && vars.AWS_RG_NAME_PRO || vars.AWS_RG_NAME_NONPRO }}
+                github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'master')
+                && vars.AWS_RG_NAME_PRO || vars.AWS_RG_NAME_NONPRO }}
     steps:
       - name: Checkout code
-        uses:  actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 #v6.0.1
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 #v6.0.1
         with:
             fetch-depth: 0   
     
@@ -63,8 +63,15 @@ jobs:
         uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 #V2
         with:
           registries: ${{ env.AWS_ACCOUNT }}
-      
-      - name: Get cache
+    
+  deploy:
+    name: Deploy to S3
+    needs: test-composer
+    runs-on: ubuntu-latest
+    container:
+      image: 666356151544.dkr.ecr.eu-central-1.amazonaws.com/tools/php:7.3.9_v2
+    steps: 
+      - name: Get cache 
         env:
           s3Path: s3://aplazameshared-jenkins-cache/Aplazame-Backend/prestashop/v1-dependencies-${{ github.sha }}.tar.gz
         run: |
