@@ -26,8 +26,8 @@ jobs:
   test-composer:
     name: Test Composer Install
     needs: test-sonarqube
-    runs-on: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/pro' ||
-                  github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'pro')
+    runs-on: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/master' ||
+                  github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'master')
                   && vars.AWS_RG_NAME_PRO || vars.AWS_RG_NAME_NONPRO }}
     steps:
       - name: Checkout code
