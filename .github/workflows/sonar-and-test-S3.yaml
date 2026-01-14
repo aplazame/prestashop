@@ -42,27 +42,7 @@ jobs:
           php-version: '5.6'
           extensions: mbstring, intl, xml, curl, zip, json
           tools: composer:v2
-    
-      - name: Install AWS CLI
-        run: |
-          sudo apt-get install unzip curl -y
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install --update
-          aws --version 
-      
-      - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@61815dcd50bd041e203e49132bacad1fd04d2708  #v5.1.1
-        with:
-          role-to-assume: ${{ env.ROLE_OIDC }}
-          role-session-name: ${{ github.run_id }}
-          aws-region: ${{ vars.WZ_OIDC_AWS_REGION }}
-  
-      - name: Login to Amazon ECR
-        id: ecrlogin
-        uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 #V2
-        with:
-          registries: ${{ env.AWS_ACCOUNT }}
+
     
   deploy:
     name: Deploy to S3
@@ -91,6 +71,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 #V2
         with:
           registries: ${{ env.AWS_ACCOUNT }}
+          
       - name: Get cache 
         env:
           s3Path: s3://aplazameshared-jenkins-cache/Aplazame-Backend/prestashop/v1-dependencies-${{ github.sha }}.tar.gz
