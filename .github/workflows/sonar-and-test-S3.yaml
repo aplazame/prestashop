@@ -8,6 +8,7 @@ on:
 env:
   FOLDER: "dist"
   foldersCache: "vendor/"
+  CODE_SOURCE_DEFAULT: "aplazame"
   AWS_REGION: 'eu-central-1'
   AWS_ACCOUNT: '666356151544'
 
