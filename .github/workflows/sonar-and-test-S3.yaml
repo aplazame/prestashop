@@ -91,16 +91,10 @@ jobs:
       - name: Make Styleci happy
         run: make style
       
-      #- name: Create Bundle
-      #  env:
-      #    branch: master
-      #  run: make zip
+      - name: Create Bundle
+        run: make zip
 
-      - name: Deply to S3
-        env:
-          branch: master
-          s3Path: s3://aplazameshared-deploys/Aplazame-Backend/prestashop/${{ github.sha }}.zip
+      - name: Deploy to S3
         run: |
-         set -e
-         aws s3 cp --quiet ${s3Path}/Aplazame-Prestashop.zip 
+           aws s3 cp --acl public-read aplazame.latest.zip s3://aplazame/modules/prestashop/
 
