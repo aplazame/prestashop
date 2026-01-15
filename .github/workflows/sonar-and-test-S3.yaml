@@ -67,12 +67,11 @@ jobs:
         env:
           s3Path: s3://aplazameshared-jenkins-cache/Aplazame-Backend/prestashop/v1-dependencies-${{ github.sha }}.tar.gz
         run: |
-
             set -e
-            export AWS_PROFILE=AplazameSharedServices
-            aws s3 cp --quiet ${s3Path} cache.tar.gz || exit 0
+            aws sts get-caller-identity --profile AplazameSharedServices
+            aws s3 cp --quiet ${s3Path} cache.tar.gz --profile AplazameSharedServices || exit 0
             [ -f cache.tar.gz ] && tar -xf cache.tar.gz
-            aws s3 cp --quiet ${s3Path} cache.tar.gz
+            aws s3 cp --quiet ${s3Path} cache.tar.gz --profile AplazameSharedServices
 
       - name: Composer Install
         run: composer install --prefer-dist
