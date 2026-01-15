@@ -19,9 +19,9 @@ permissions:
   id-token: write
 
 jobs:
-
   test-sonarqube:
     name: Test SonarQube Scan
+    runs-on: ${{ vars.AWS_RG_NAME_PRO }}
     uses: ./.github/workflows/test-reusable-sonarqube.yml
     secrets: 
       SONAR_TOKEN: ${{ secrets.WZ_SONAR_TOKEN }}
