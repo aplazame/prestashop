@@ -56,10 +56,6 @@ jobs:
           role-to-assume: ${{ vars.AWS_OIDC_ROLE_TF_PRO }}
           role-session-name: ${{ github.run_id }}
           aws-region: ${{ vars.WZ_OIDC_AWS_REGION }}
-
-      - name: Export Variable
-        run: |
-          export AWS_PROFILE=AplazameSharedServices
   
       #- name: Login to Amazon ECR
       #  id: ecrlogin
