@@ -11,6 +11,8 @@ env:
   CODE_SOURCE_DEFAULT: "aplazame"
   AWS_REGION: 'eu-central-1'
   AWS_ACCOUNT: '666356151544'
+  ROLE_OIDC: 'arn:aws:iam::666356151544:role/ghaAdministratorAccessAplazameSharedServicesTf'
+
 
 permissions:
   contents: read
@@ -98,6 +100,4 @@ jobs:
 
       - name: Deploy to S3
         run: |
-            load-config
-            export AWS_PROFILE=Aplazame
             aws s3 cp --acl public-read aplazame.latest.zip s3://aplazame/modules/prestashop/
