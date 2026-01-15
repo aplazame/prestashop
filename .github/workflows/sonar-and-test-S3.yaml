@@ -68,13 +68,18 @@ jobs:
         env:
           s3Path: s3://aplazameshared-jenkins-cache/Aplazame-Backend/prestashop/v1-dependencies-${{ github.sha }}.tar.gz
         run: |
-         docker run --rm -v ${{ github.workspace }}:/work -w /work 666356151544.dkr.ecr.eu-central-1.amazonaws.com/tools/php:7.3.9_v2  bash -c "
-         load-config
-         export AWS_PROFILE=AplazameSharedServices
-         set -e
-         aws s3 cp --quiet ${s3Path} cache.tar.gz || exit 0
-         [ -f cache.tar.gz ] && tar -xf cache.tar.gz
-         aws s3 cp --quiet ${s3Path} cache.tar.gz
+            docker run --rm \
+              -v ${{ github.workspace }}:/work \
+              -w /work \
+              666356151544.dkr.ecr.eu-central-1.amazonaws.com/tools/php:7.3.9_v2 \
+              bash -c '
+                load-config
+                export AWS_PROFILE=AplazameSharedServices
+                set -e
+                aws s3 cp --quiet ${s3Path} cache.tar.gz || exit 0
+                [ -f cache.tar.gz ] && tar -xf cache.tar.gz
+                aws s3 cp --quiet ${s3Path} cache.tar.gz
+              '
 
       - name: Composer Install
         run: composer install --prefer-dist
@@ -83,13 +88,18 @@ jobs:
         env:
           s3Path: s3://aplazameshared-jenkins-cache/Aplazame-Backend/prestashop/v1-dependencies-${{ github.sha }}.tar.gz
         run: |
-         docker run --rm -v ${{ github.workspace }}:/work -w /work 666356151544.dkr.ecr.eu-central-1.amazonaws.com/tools/php:7.3.9_v2  bash -c "
-         load-config
-         export AWS_PROFILE=AplazameSharedServices
-         set -e
-         MATCHES=$(aws s3 ls ${s3Path} | wc -l)
-         [ "$MATCHES" = "0" ] && [ ! -f cache.tar.gz ] && tar -czf cache.tar.gz ${foldersCache} && aws s3 cp --quiet cache.tar.gz ${s3Path}
-         exit 0
+            docker run --rm \
+              -v ${{ github.workspace }}:/work \
+              -w /work \
+              666356151544.dkr.ecr.eu-central-1.amazonaws.com/tools/php:7.3.9_v2 \
+              bash -c '
+                load-config
+                export AWS_PROFILE=AplazameSharedServices
+                set -e
+                MATCHES=$(aws s3 ls ${s3Path} | wc -l)
+                [ "$MATCHES" = "0" ] && [ ! -f cache.tar.gz ] && tar -czf cache.tar.gz ${foldersCache} && aws s3 cp --quiet cache.tar.gz ${s3Path}
+                exit 0
+              '
 
       - name: Check syntax
         run: make syntax.checker
@@ -99,13 +109,20 @@ jobs:
       
       - name: Create Bundle
         run: |
-          docker run --rm -v ${{ github.workspace }}:/work -w /work 666356151544.dkr.ecr.eu-central-1.amazonaws.com/tools/php:7.3.9_v2 bash -c " 
-          make zip
+            docker run --rm \
+              -v ${{ github.workspace }}:/work \
+              -w /work \
+              666356151544.dkr.ecr.eu-central-1.amazonaws.com/tools/php:7.3.9_v2 \
+              bash -c 'make zip'
 
       - name: Deploy to S3
         run: |
-         docker run --rm -v ${{ github.workspace }}:/work -w /work 666356151544.dkr.ecr.eu-central-1.amazonaws.com/tools/php:7.3.9_v2 bash -c "
-         load-config
-         export AWS_PROFILE=Aplazame
-         aws s3 cp --acl public-read aplazame.latest.zip s3://aplazame/modules/prestashop/
-
+            docker run --rm \
+              -v ${{ github.workspace }}:/work \
+              -w /work \
+              666356151544.dkr.ecr.eu-central-1.amazonaws.com/tools/php:7.3.9_v2 \
+              bash -c '
+                load-config
+                export AWS_PROFILE=Aplazame
+                aws s3 cp --acl public-read aplazame.latest.zip s3://aplazame/modules/prestashop/
+              '
