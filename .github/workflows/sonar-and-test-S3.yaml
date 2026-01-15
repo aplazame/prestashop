@@ -65,11 +65,11 @@ jobs:
       
       - name: Get cache
         env:
-          AWS_PROFILE: AplazameSharedServices
-          s3Path: s3://aplazameshared-jenkins-cache/Aplazame-Backend/prestashop/v1-dependencies-${{ github.sha }}.tar.gz --profile AplazameSharedServices
+          s3Path: s3://aplazameshared-jenkins-cache/Aplazame-Backend/prestashop/v1-dependencies-${{ github.sha }}.tar.gz
         run: |
 
             set -e
+            export AWS_PROFILE=AplazameSharedServices
             aws s3 cp --quiet ${s3Path} cache.tar.gz || exit 0
             [ -f cache.tar.gz ] && tar -xf cache.tar.gz
             aws s3 cp --quiet ${s3Path} cache.tar.gz
