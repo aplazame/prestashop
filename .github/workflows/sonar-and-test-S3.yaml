@@ -62,14 +62,15 @@ jobs:
         run: |
           export AWS_PROFILE=AplazameSharedServices
   
-      - name: Login to Amazon ECR
-        id: ecrlogin
-        uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 #V2
-        with:
-          registries: ${{ env.AWS_ACCOUNT }}
+      #- name: Login to Amazon ECR
+      #  id: ecrlogin
+      #  uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 #V2
+      #  with:
+      #    registries: ${{ env.AWS_ACCOUNT }}
       
       - name: Get cache
         env:
+          AWS_PROFILE: AplazameSharedServices
           s3Path: s3://aplazameshared-jenkins-cache/Aplazame-Backend/prestashop/v1-dependencies-${{ github.sha }}.tar.gz
         run: |
 
@@ -83,6 +84,7 @@ jobs:
 
       - name: Upload cache
         env:
+          AWS_PROFILE: AplazameSharedServices
           s3Path: s3://aplazameshared-jenkins-cache/Aplazame-Backend/prestashop/v1-dependencies-${{ github.sha }}.tar.gz
         run: |
 
@@ -101,5 +103,7 @@ jobs:
         run: make zip
 
       - name: Deploy to S3
+        env:
+          AWS_PROFILE: Aplazame
         run: |
             aws s3 cp --acl public-read aplazame.latest.zip s3://aplazame/modules/prestashop/
