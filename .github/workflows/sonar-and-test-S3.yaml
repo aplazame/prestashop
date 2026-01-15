@@ -66,7 +66,7 @@ jobs:
       - name: Get cache
         env:
           AWS_PROFILE: AplazameSharedServices
-          s3Path: s3://aplazameshared-jenkins-cache/Aplazame-Backend/prestashop/v1-dependencies-${{ github.sha }}.tar.gz
+          s3Path: s3://aplazameshared-jenkins-cache/Aplazame-Backend/prestashop/v1-dependencies-${{ github.sha }}.tar.gz --profile AplazameSharedServices
         run: |
 
             set -e
