@@ -54,7 +54,7 @@ jobs:
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@61815dcd50bd041e203e49132bacad1fd04d2708  #v5.1.1
         with:
-          role-to-assume: ${{ env.ROLE_OIDC }}
+          role-to-assume: ${{ vars.AWS_OIDC_ROLE_TF_PRO }}
           role-session-name: ${{ github.run_id }}
           aws-region: ${{ vars.WZ_OIDC_AWS_REGION }}
   
