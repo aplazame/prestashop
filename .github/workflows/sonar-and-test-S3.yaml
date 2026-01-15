@@ -85,7 +85,7 @@ jobs:
 
             set -e
             MATCHES=$(aws s3 ls ${s3Path} | wc -l)
-            [ "$MATCHES" = "0" ] && [ ! -f cache.tar.gz ] && tar -czf cache.tar.gz ${foldersCache} && aws s3 cp --quiet cache.tar.gz ${s3Path}
+            [ "$MATCHES" = "0" ] && [ ! -f cache.tar.gz ] && tar -czf cache.tar.gz ${foldersCache} && aws s3 cp --quiet cache.tar.gz ${s3Path} --profile AplazameSharedServices
             exit 0
 
       - name: Check syntax
@@ -101,4 +101,4 @@ jobs:
         env:
           AWS_PROFILE: Aplazame
         run: |
-            aws s3 cp --acl public-read aplazame.latest.zip s3://aplazame/modules/prestashop/
+            aws s3 cp --acl public-read aplazame.latest.zip s3://aplazame/modules/prestashop/ --profile Aplazame
