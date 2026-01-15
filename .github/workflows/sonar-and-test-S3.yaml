@@ -56,12 +56,6 @@ jobs:
           role-to-assume: ${{ vars.AWS_OIDC_ROLE_TF_PRO }}
           role-session-name: ${{ github.run_id }}
           aws-region: ${{ vars.WZ_OIDC_AWS_REGION }}
-  
-      #- name: Login to Amazon ECR
-      #  id: ecrlogin
-      #  uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 #V2
-      #  with:
-      #    registries: ${{ env.AWS_ACCOUNT }}
       
       - name: Get cache
         env:
@@ -78,12 +72,11 @@ jobs:
 
       - name: Upload cache
         env:
-          AWS_PROFILE: AplazameSharedServices
           s3Path: s3://aplazameshared-jenkins-cache/Aplazame-Backend/prestashop/v1-dependencies-${{ github.sha }}.tar.gz
         run: |
 
             set -e
-            MATCHES=$(aws s3 ls ${s3Path} | wc -l)
+            MATCHES=$(aws s3 ls ${s3Path} --profile AplazameSharedServices| wc -l)
             [ "$MATCHES" = "0" ] && [ ! -f cache.tar.gz ] && tar -czf cache.tar.gz ${foldersCache} && aws s3 cp --quiet cache.tar.gz ${s3Path} --profile AplazameSharedServices
             exit 0
 
@@ -97,7 +90,5 @@ jobs:
         run: make zip
 
       - name: Deploy to S3
-        env:
-          AWS_PROFILE: Aplazame
         run: |
             aws s3 cp --acl public-read aplazame.latest.zip s3://aplazame/modules/prestashop/ --profile Aplazame
