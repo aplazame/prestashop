@@ -62,7 +62,6 @@ jobs:
           s3Path: s3://aplazameshared-jenkins-cache/Aplazame-Backend/prestashop/v1-dependencies-${{ github.sha }}.tar.gz
         run: |
             set -e
-            aws sts get-caller-identity --profile AplazameSharedServices
             aws s3 cp --quiet ${s3Path} cache.tar.gz --profile AplazameSharedServices || exit 0
             [ -f cache.tar.gz ] && tar -xf cache.tar.gz
             aws s3 cp --quiet ${s3Path} cache.tar.gz --profile AplazameSharedServices
@@ -74,7 +73,6 @@ jobs:
         env:
           s3Path: s3://aplazameshared-jenkins-cache/Aplazame-Backend/prestashop/v1-dependencies-${{ github.sha }}.tar.gz
         run: |
-
             set -e
             MATCHES=$(aws s3 ls ${s3Path} --profile AplazameSharedServices| wc -l)
             [ "$MATCHES" = "0" ] && [ ! -f cache.tar.gz ] && tar -czf cache.tar.gz ${foldersCache} && aws s3 cp --quiet cache.tar.gz ${s3Path} --profile AplazameSharedServices
@@ -87,11 +85,8 @@ jobs:
         run: make style
       
       - name: Create Bundle
-        run: |
-          rm -f aplazame/config*.xml || true
-          rm -f aplazame.latest.zip
-          zip -r aplazame.latest.zip aplazame
+        run: make zip
 
-      #- name: Deploy to S3
-      #  run: |
-      #      aws s3 cp --acl public-read aplazame.latest.zip s3://aplazame/modules/prestashop/ --profile Aplazame
+      - name: Deploy to S3
+        run: |
+          aws s3 cp --acl public-read aplazame.latest.zip s3://aplazame/modules/prestashop/ --profile Aplazame
