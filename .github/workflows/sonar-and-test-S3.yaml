@@ -87,8 +87,11 @@ jobs:
         run: make style
       
       - name: Create Bundle
-        run: make zip
-
-      - name: Deploy to S3
         run: |
-            aws s3 cp --acl public-read aplazame.latest.zip s3://aplazame/modules/prestashop/ --profile Aplazame
+          rm -f aplazame/config*.xml || true
+          rm -f aplazame.latest.zip
+          zip -r aplazame.latest.zip aplazame
+
+      #- name: Deploy to S3
+      #  run: |
+      #      aws s3 cp --acl public-read aplazame.latest.zip s3://aplazame/modules/prestashop/ --profile Aplazame
