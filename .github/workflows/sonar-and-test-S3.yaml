@@ -85,7 +85,9 @@ jobs:
         run: make style
       
       - name: Create Bundle
-        run: make zip
+        run: |
+          sudo apt update && sudo apt install zip -y
+          make zip
 
       - name: Deploy to S3
         run: |
