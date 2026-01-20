@@ -94,7 +94,7 @@ jobs:
 
       - name: Create GitHub Release
         env:
-          GITHUB_TOKEN: ${{ secrets.gh-releases-token-old }}
+          GITHUB_TOKEN: ${{ secrets.AP_GH_RELEASE_TOKEN_OLD }}
         run: |
           sudo apt-get install gh -y
           echo "***************Create Release***************"
