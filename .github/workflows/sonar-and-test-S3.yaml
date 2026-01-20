@@ -91,23 +91,6 @@ jobs:
       - name: Deploy to S3
         run: |
           aws s3 cp --acl public-read aplazame.latest.zip s3://aplazame/modules/prestashop/ --profile Aplazame
-     
-      - name: Notify Slack for approval
-        uses: slackapi/slack-github-action@v1.27.0
-        with:
-          channel-id: backend-pipelines
-          slack-message: |
-            You need :hand: intervention in ${{ github.workflow }} #${{ github.run_number }}
-            <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Open here>
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-
-      - name: Manual approval
-        uses: trstringer/manual-approval@v1
-        with:
-          approvers: user1,user2
-          minimum-approvals: 1
-          instructions: "Create release for prod?"
 
       - name: Create GitHub Release
         env:
