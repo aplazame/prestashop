@@ -100,6 +100,6 @@ jobs:
           echo "***************Create Release***************"
           APP_VERSION=$(grep version Makefile | cut -d '=' -f2)
           echo "$APP_VERSION"
-
+          gh auth login --with-token < $GITHUB_TOKEN
           gh release create "$APP_VERSION" \
             --notes "Release created by GitHub Actions"
