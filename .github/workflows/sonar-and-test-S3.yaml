@@ -96,6 +96,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.gh-releases-token-old }}
         run: |
+          sudo apt-get install gh -y
           echo "***************Create Release***************"
           APP_VERSION=$(grep version Makefile | cut -d '=' -f2)
           echo "$APP_VERSION"
