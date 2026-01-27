@@ -64,7 +64,6 @@ jobs:
             set -e
             aws s3 cp --quiet ${s3Path} cache.tar.gz --profile AplazameSharedServices || exit 0
             [ -f cache.tar.gz ] && tar -xf cache.tar.gz
-            aws s3 cp --quiet ${s3Path} cache.tar.gz --profile AplazameSharedServices
 
       - name: Composer Install
         run: composer install --prefer-dist
@@ -82,14 +81,28 @@ jobs:
         run: make syntax.checker
 
       - name: Make Styleci happy
+        if: github.ref == 'refs/heads/master' 
         run: make style
       
       - name: Create Bundle
+        if: github.ref == 'refs/heads/master' 
         run: |
           sudo apt update && sudo apt install zip -y
           make zip
-
+      
+      - name: Await Manual Approval
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+        uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.token }}
+          minimum-approvals: 1
+          approvers: 'alexhernandezord'
+          timeout-minutes: 10
+          issue-title: "Manual Approval Required for Release"
+          issue-body: "Please approve or deny the deploy."
+      
       - name: Deploy to S3
+        if: github.ref == 'refs/heads/master' 
         run: |
           aws s3 cp --acl public-read aplazame.latest.zip s3://aplazame/modules/prestashop/ --profile Aplazame
 
@@ -97,11 +110,11 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         uses: trstringer/manual-approval@v1
         with:
-          secret: ${{ secrets.AP_GH_RELEASE_TOKEN_OLD }}
+          secret: ${{ github.token }}
           minimum-approvals: 1
-          approvers: 'AR40873_wzk'
+          approvers: 'alexhernandezord'
           timeout-minutes: 10
-          issue-title: "Manual Approval Required for Release (First change Makefile's App Version)"
+          issue-title: "Manual Approval Required for Github Release"
           issue-body: "Please approve or deny the deploy."
 
       - name: Create GitHub Release
