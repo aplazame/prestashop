@@ -107,7 +107,7 @@ jobs:
           aws s3 cp --acl public-read aplazame.latest.zip s3://aplazame/modules/prestashop/ --profile Aplazame
 
       - name: Await Manual Approval
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
         uses: trstringer/manual-approval@v1
         with:
           secret: ${{ github.token }}
@@ -118,6 +118,7 @@ jobs:
           issue-body: "Please approve or deny the deploy."
 
       - name: Create GitHub Release
+        if: github.ref == 'refs/heads/master'
         env:
           GH_TOKEN: ${{ secrets.AP_GH_RELEASE_TOKEN_OLD }}
         run: |
