@@ -80,7 +80,7 @@ jobs:
       - name: Check syntax
         run: make syntax.checker
 
-      - name: Make Styleci happy
+      - name: CS Style
         if: github.ref == 'refs/heads/master' 
         run: make style
       
