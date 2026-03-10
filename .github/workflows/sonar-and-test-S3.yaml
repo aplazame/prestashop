@@ -111,7 +111,7 @@ jobs:
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
         uses: trstringer/manual-approval@v1
         with:
-          secret: ${{ github.token }}
+          secret: ${{ secrets.AP_GH_RELEASE_TOKEN_OLD }}
           minimum-approvals: 1
           approvers: 'alexhernandezord'
           timeout-minutes: 10
