@@ -35,6 +35,7 @@
     data-article-id="{$aplazame_article_id|escape:'htmlall':'UTF-8'}"
     data-option-legal-advice="{$aplazame_legal_advice|escape:'htmlall':'UTF-8'}"
     data-option-downpayment-info="{$aplazame_downpayment_info|escape:'htmlall':'UTF-8'}"
+    data-option-show-open-fee="{$aplazame_open_fee_info|escape:'htmlall':'UTF-8'}"
     data-option-out-of-limits="{$aplazame_widget_out_of_limits|escape:'htmlall':'UTF-8'}"
     {if $aplazame_pay_in_4}
         data-pay-in-4=""
